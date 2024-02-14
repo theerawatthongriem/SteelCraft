@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+
+{% block content %}
+
+
+<div class="flex justify-center items-center">
+    <div class="w-96 p-6 bg-white">
+        <p class="text-2xl block text-center">รายการสินค้า</p>
+        <hr class="mt-3 h-1 bg-gray-500">
+    </div>
+</div>
+
+<div class="max-w-screen-xl mx-auto p-2 bg-white mb-10 rounded-lg">
+    <div class="container mx-auto">
+        <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-6 mx-auto rounded">
+            <a href="#" aria-current="false"
+                class="flex justify-center font-medium rounded-l py-2 border bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                Recent
+            </a>
+
+            <a href="#" aria-current="page"
+                class="flex justify-center font-medium px-5 py-2 bg-white text-gray-800  border hover:bg-gray-900 hover:text-white">
+                Popular
+            </a>
+
+            <a href="#" aria-current="false"
+                class="flex items-center gap-x-2 justify-center font-medium px-5 py-2 border bg-white bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                Trending
+            </a>
+
+            <a href="#" aria-current="false"
+                class="flex items-center gap-x-2 justify-center font-medium px-5 py-2 border bg-white bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                Trending
+            </a>
+
+            <a href="#" aria-current="false"
+                class="flex items-center gap-x-2 justify-center font-medium rounded-r px-5 py-2 border bg-white bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                Trending
+            </a>
+        </div>
+
+        {% if user.is_staff %}
+
+        <div class="container mt-4 mx-auto">
+            <div class="">
+                <a href="{% url 'add_product' %}"
+                    class="text-white bg-[#2B3843] px-2 rounded-md py-2 hover:bg-gray-600">
+                    <i class="fa-solid fa-plus"></i> &nbsp;&nbsp; เพิ่มรายการสินค้า
+                </a>
+            </div>
+        </div>
+
+
+        {% endif %}
+
+        <section id="Projects"
+            class="mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-5 gap-x-2 md:gap-y-10 md:gap-x-5 mt-10 mb-5">
+
+            {% for p in products %}
+
+            <div
+                class="bg-white w-full md:w-78 w-40 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-400">
+                <a href="{% url 'product_detail' p.id %}">
+                    <img src="{{ p.image.url }}" alt="Product"
+                        class="h-40 w-full md:h-72 md:w-78 object-cover rounded-t-xl" />
+                    <div class="px-4 py-3 border-t-2">
+                        <p class="text-lg font-bold text-black truncate block capitalize">{{ p.name }}</p>
+                        <div class="flex items-center">
+                            <p class="text-lg font-medium text-black cursor-auto mt-2">{{ p.price|intcomma }} ฿
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                {% if user.is_staff %}
+                <div class="m-1 mb-5">
+                    <a href="{% url 'delete_product' p.id %}"
+                        class="text-white rounded-md py-2 m-2 px-2 bg-red-600 hover:bg-red-700 border">
+                        <i class="fa-solid fa-trash"></i> &nbsp;&nbsp; ลบ
+                    </a>
+                    <a href="{% url 'edit_product' p.id %}"
+                        class="text-white bg-slate-700 rounded-md py-2 m-2 px-2 hover:bg-slate-900 border">
+                        <i class="fa-solid fa-pen-to-square"></i> &nbsp;&nbsp; แก้ไข
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+        </section>
+
+    </div>
+</div>
+
+
+<div class="flex justify-center items-center">
+    <div class="p-6 bg-white">
+        {% if products.paginator.num_pages > 1 %}
+        <div class="flex justify-center inset-x-0 bottom-0">
+
+            <nav class="relative z-0 inline-flex flex-wrap -space-x-px rounded-md shadow-md text-lg border">
+                {% if products.has_previous %}
+                <a href="?page={{ products.previous_page_number }}"
+                    class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                    <i class="fa-solid fa-backward"></i>
+                </a>
+                {% else %}
+                <a href="#" aria-disabled="true"
+                    class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                    <i class="fa-solid fa-backward"></i>
+                </a>
+                {% endif %}
+
+
+                {% for i in products.paginator.page_range %}
+                {% if products.number == i %}
+                <a href=""
+                    class="relative inline-flex items-center px-3 p-2 md:px-5 md:py-2 hover:bg-gray-200">{{i}}</a>
+                {% elif products.number > i|add:"-5" and products.number < i|add:"+5" %} <a href="?page={{ i }}"
+                    class="relative inline-flex items-center px-3 p-2 md:px-5 md:py-2 hover:bg-gray-200">{{i}}</a>
+                    {% endif %}
+                    {% endfor %}
+
+
+                    {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}"
+                        class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                        <i class="fa-solid fa-forward"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" aria-disabled="true"
+                        class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                        <i class="fa-solid fa-forward"></i>
+                    </a>
+                    {% endif %}
+            </nav>
+
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SteelCraft</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/16362367fd.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+  <link rel="shortcut icon" href="https://img2.pic.in.th/pic/---removebg-preview.png" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  {% load humanize %}
+  {% load crispy_forms_tags %}
+
+</head>
+
+<body class="" x-data="{ open: false }" style="font-family: 'Sarabun', sans-serif;">
+
+  {% include 'components/navbar.html' %}
+  
+  <div class="min-h-screen h-full max-w-screen">
+  {% block content %}
+
+
+  {% endblock %}
+  </div>
+
+  <div class="bg-[#2B3843] text-white py-16 mt-6">
+    <div class="container mx-auto text-center">
+      <p class="text-2xl font-bold mb-4">ติดต่อเรา</p>
+      <p>มีคำถามหรือต้องการให้เราช่วยเหลือ ติดต่อเราได้ที่</p>
+      <p>Email: info@example.com</p>
+      <p>โทร: 012-345-6789</p>
+    </div>
+  </div>
+
+
+  <footer class="bg-gray-800 text-white text-center py-4">
+    <p>&copy; 2024 ร้านรับทำเหล็กดัดสแตนเลส</p>
+  </footer>
+
+</body>
+
+</html>

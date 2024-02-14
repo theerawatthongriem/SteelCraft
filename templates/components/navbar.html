@@ -1,0 +1,67 @@
+<nav class="bg-[#1F252A] p-4">
+  <div class="container max-w-full flex justify-between items-center">
+
+    <a href="/" class="text-white text-2xl">SteelCraft</a>
+
+    <div class="lg:flex space-x-4 hidden items-center">
+
+      {% if user.is_authenticated %}
+      <a href="{% url 'fav' %}" class="relative text-white border border-white rounded px-3 py-1 hover:bg-gray-700">
+        <i class="fa-solid fa-heart"></i>
+        <p class="absolute top-0 right-1 -mt-4 -mr-4 px-2 text-black bg-white rounded-full">{{ favorite_count }}</p>
+      </a>
+      {% if user.is_staff %}
+      <a href="{% url 'manager_dashboard' %}" class="text-white">Dashboard</a>
+      {% else %}
+      <a href="{% url 'dashboard' %}" class="text-white">Dashboard</a>
+      {% endif %}
+      
+      <a href="{% url 'profile' %}" class="text-white"><i class="fa-regular fa-user mr-3"></i>{{ user }}
+        {{user.first_name }} {{ user.last_name }}</a>
+      <a href="{% url 'logout' %}"
+        class="text-white bg-[#E81C03] px-3 rounded py-1 hover:bg-red-700 border">ออกจากระบบ</a>
+      {% else %}
+      <a href="{% url 'register' %}"
+        class="text-white bg-[#2B3843] px-3 rounded py-1 hover:bg-gray-800 border">สมัครสมาชิก</a>
+      <a href="{% url 'login' %}"
+        class="text-black bg-[#FFE400] px-3 rounded py-1 hover:bg-yellow-200 borde border-gray-800">เข้าสู่ระบบ</a>
+      {% endif %}
+    </div>
+
+    <button @click="open = !open" class="lg:hidden text-white text-lg">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div x-show="open" @click.away="open = false" class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-95 z-50">
+      <div class="flex items-center justify-end p-4">
+        <button @click="open = !open" class="text-white">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+
+      <div class="flex flex-col items-center mt-10">
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'fav' %}" class="relative text-white border border-white rounded px-3 py-1 hover:bg-gray-700">
+          <i class="fa-solid fa-heart"></i>
+          <p class="absolute top-0 right-1 -mt-4 -mr-4 px-2 text-black bg-white rounded-full">{{ favorite_count }}</p>
+        </a>
+        {% if user.is_staff %}
+        <a href="{% url 'manager_dashboard' %}" class="text-white py-2 mt-2">Dashboard</a>
+        {% else %}
+        <a href="{% url 'dashboard' %}" class="text-white py-2 mt-2">Dashboard</a>
+        {% endif %}
+        <a href="{% url 'profile' %}" class="text-white"><i class="fa-regular fa-user mr-3 mt-2"></i>{{ user }} {{user.first_name }} {{ user.last_name }}</a>
+        <a href="{% url 'logout' %}"
+          class="text-white bg-[#E81C03] px-3 rounded py-1 m-2 hover:bg-red-700 border mt-5">ออกจากระบบ</a>
+        {% else %}
+        <a href="{% url 'register' %}"
+          class="text-white bg-[#2B3843] px-3 rounded py-1 m-2 hover:bg-gray-800 border mt-2">สมัครสมาชิก</a>
+        <a href="{% url 'login' %}"
+          class="text-black bg-[#FFE400] px-3 rounded py-1 m-2 hover:bg-yellow-200 border border-gray-800 mt-2">เข้าสู่ระบบ</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
