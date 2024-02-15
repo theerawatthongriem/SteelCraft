@@ -5,6 +5,7 @@ from django.contrib import messages
 
 from base_app.context_processors import favorite_count
 
+
 def add_favorite(request,id):
     product = Product.objects.get(pk=id)
     favorite = Favorite.objects.create(user=request.user,product=product)

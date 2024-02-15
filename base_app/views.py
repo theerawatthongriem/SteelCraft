@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from random import sample
 from django.contrib import messages
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required ,user_passes_test
 
 from .context_processors import favorite_count
 
@@ -15,7 +15,7 @@ from manager.models import *
 from members.models import *
 from .forms import *
 
-
+from .permissions import *
 
 
 def home(request):
@@ -57,15 +57,19 @@ def sign_in(request):
 
     return render(request,'login.html',{'form':form })
 
+
+@login_required(login_url='login')
 def sign_out(request):
     logout(request)
     return redirect('login')
 
 
+@login_required(login_url='login')
 def profile(request):
     return render(request,'profile.html' ,{'favorite_count':favorite_count(request)})
 
 
+@login_required(login_url='login')
 def editprofile(request):
     form = EditForm(instance=request.user)
     if request.method == 'POST':
@@ -81,6 +85,7 @@ def editprofile(request):
     return render(request,'editprofile.html',{'form':form ,'favorite_count':favorite_count(request)})
 
 
+@login_required(login_url='login')
 def change_password(request):
     if request.method == 'POST':
         form = ChangePasswordForm(request.user, request.POST)
@@ -91,10 +96,15 @@ def change_password(request):
         form = ChangePasswordForm(request.user)
     return render(request, 'change_password.html', {'form': form ,'favorite_count':favorite_count(request)})
 
+
+@login_required(login_url='login')
 def delete_user(request):
     User.objects.get(username=request.user).delete()
     return redirect('login')
 
+
+@login_required(login_url='login')
+@user_passes_test(members_user,login_url='found_page')
 def dashboard(request):
     return render(request,'members/dashboard.html',{'favorite_count':favorite_count(request)})
 
@@ -122,7 +132,7 @@ def product_detail(request,id):
             favorite = ''
     return render(request, 'product_detail.html', {'products': products,'product':random_products,'favorite':favorite, 'favorite_count':favorite_count(request)})
 
-
+@login_required(login_url='login')
 def found_page(request):
     return render(request,'found_page.html')
 

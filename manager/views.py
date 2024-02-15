@@ -54,11 +54,16 @@ def manager_dashboard(request):
     plot_div2 = fig.to_html(full_html=True)
     return render(request, 'manager/dashboard.html', {'plot_div': plot_div, 'favorite_count':favorite_count(request),'plot_divs':plot_divs,'plot_div2':plot_div2})
 
+
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def customer_orders(request):
     order = Order.objects.all()
     return render(request,'manager/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
 
 
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def add_product(request):
     form = ProductForm()
     if request.method == 'POST':
@@ -72,6 +77,9 @@ def add_product(request):
         form = ProductForm()
     return render(request,'manager/add_product.html',{'form':form})
 
+
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def edit_product(request,id):
     product = Product.objects.get(pk=id)
     form = ProductForm(instance=product)
@@ -87,11 +95,17 @@ def edit_product(request,id):
     return render(request,'manager/edit_product.html',{'form':form})
 
 
+
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def delete_product(request,id):
     product = Product.objects.get(pk=id).delete()
     return redirect('product_list')
 
 
+
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def order_detail(request,id):
     order = Order.objects.get(pk=id)
     return render(request, 'manager/order_detail.html',{'order':order})
