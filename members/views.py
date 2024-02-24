@@ -3,9 +3,12 @@ from .models import *
 from manager.models import Product
 from django.contrib import messages
 
+from django.contrib.auth.decorators import login_required ,user_passes_test
+
 from base_app.context_processors import favorite_count
+from .permissions import *
 
-
+@login_required(login_url='login')
 def add_favorite(request,id):
     product = Product.objects.get(pk=id)
     favorite = Favorite.objects.create(user=request.user,product=product)
@@ -15,20 +18,25 @@ def add_favorite(request,id):
 
     return redirect(f'/product_detail/{id}/')
 
+
+@login_required(login_url='login')
 def favorite(request):
     favorite = Favorite.objects.filter(user=request.user)
     return render(request,'members/favorite.html',{'fav':favorite, 'favorite_count':favorite_count(request)})
 
+
+@login_required(login_url='login')
 def delete_favorite(request,id):
     favorite = Favorite.objects.get(pk=id,user=request.user)
     favorite.delete()
     return redirect('fav')
 
+@login_required(login_url='login')
 def checkout(request,id):
     product = Product.objects.get(pk=id)
     return render(request,'members/checkout.html',{'product':product, 'favorite_count':favorite_count(request)})
 
-
+@login_required(login_url='login')
 def create_order(request,id):
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
@@ -72,6 +80,7 @@ def create_order(request,id):
     order.save()
     return redirect(f'/product_detail/{id}/')
 
+@login_required(login_url='login')
 def order_list(request):
     order = Order.objects.filter(user=request.user)
     return render(request,'members/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})

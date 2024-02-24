@@ -18,6 +18,49 @@ from .forms import *
 from .permissions import *
 
 
+from linebot import LineBotApi
+from linebot.models import TextSendMessage
+
+LINE_CHANNEL_SECRET = '877bd53f1ac80e48fa046639090ee827'
+LINE_ACCESS_TOKEN = 'aomFd5f2wOBWWUuzhS6kaVafX2MWzev8FdIpBnlRlRbg4/DrzbMG4heuCuiIbhKRBqYyM92KSZJ6fbiIWyjBqlwDpJZFz41hpc6lA3znUe3Bgu9XEmCO8bcH7kC28zVUUJcwxIjSDjcNjH19//Kx+AdB04t89/1O/w1cDnyilFU='
+LIFF_URL = 'https://liff.line.me/2003676133-7Jnl1WK9'
+LINE_LIFF_ID = '2003676133-7Jnl1WK9'
+
+def send_line_message(user_id, message):
+    url = 'https://api.line.me/v2/bot/message/push'
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {LINE_ACCESS_TOKEN}'
+    }
+    data = {
+        'to': user_id,
+        'messages': [
+            {
+                'type': 'text',
+                'text': message
+            }
+        ]
+    }
+    response = requests.post(url, headers=headers, json=data)
+
+#ผูกบัญชี line
+@login_required
+def bind_line_user(req, user_id):
+    user = req.user
+
+    user.line_user_id = user_id
+    user.save()
+
+    message = f"ผูกบัญชีกับ Line สำเร็จ"
+    send_line_message(user.line_user_id, message)
+    messages.success(req, 'ผูกบัญชีกับ Line สำเร็จ')
+
+    if req.is_superuser or req.is_staff and not req.is_active:
+        return redirect('manager_dashboard') 
+    else:
+        return redirect('dashboard') 
+
+
 def home(request):
 
     products = Product.objects.all()
@@ -47,9 +90,13 @@ def sign_in(request):
 
             user = authenticate(username=username,password=password)
             if user:
-                login(request,user)
-                next_path = request.GET.get('next', '/')
-                return redirect(next_path)
+                if user.is_superuser or user.is_staff and not user.is_active:
+                    login(request, user)
+                    return redirect('manager_dashboard') 
+                else:
+                    login(request, user)
+                    return redirect('dashboard')  
+
         else:
             form = LoginForm()
     else:
@@ -156,4 +203,5 @@ def found_page(request):
 
 #     context = {'people': people, 'count': all_people.count()}
 #     return render(request, 'search_results.html', context)
-    
+
+

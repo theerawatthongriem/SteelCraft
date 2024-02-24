@@ -17,4 +17,6 @@ urlpatterns = [
 
     path('found_page/',found_page,name='found_page'),
 
+    path('line-user/<str:user_id>/', bind_line_user, name='line_user'),
+
 ]
