@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="flex justify-center" style="font-family: kanit;">
+
+    <div class="mt-10 mb-10">
+        <div class="text-center text-2xl font-bold ">
+            <p>รายละเอียดรายการ</p>
+        </div>
+
+        <div class="p-2 md:border px-10 rounded-xl border-neutral-300 mt-5">
+        <p class="mt-10 text-2xl">เลขคิว : 10</p>
+        <p>ผู้เรียกรถ : โชคดี</p>
+        <p class="text-sm">วันที่เรียก : </p>
+        <p class="text-sm">ที่อยู่ : 85 มหาวิทยาลัยอุบลราชธานี</p>
+        <p class="text-sm">สถานะ : รอดำเนินการ</p>
+
+        <div class="text-center mt-5">
+            <img src="https://image.springnews.co.th/uploads/images/md/2023/06/0rHqUB9Pr1Q93jfdJco8.webp?x-image-process=style/LG-webp"
+                alt="" class="min-w-full h-96 object-cover rounded-2xl shadow-teal-900 shadow-lg">
+        </div>
+        <p class="mt-5 text-xl font-bold">รายการ
+        </p>
+        <div class="p-2">
+            <input type="checkbox" name="" id="" checked>&nbsp;ขวด <input type="text"
+                class="text-sm mx-10 border rounded-lg p-1.5" placeholder="กรอกน้ำหนัก"> กิโลกรัม
+        </div>
+        <div class="p-2">
+            <input type="checkbox" name="" id="" checked>&nbsp;ขวดแก้ว<input type="text"
+                class="text-sm mx-10 border rounded-lg p-1.5" placeholder="กรอกน้ำหนัก"> กิโลกรัม
+        </div>
+        <div class="p-2">
+            <input type="checkbox" name="" id="">&nbsp;กระดาษลัง<input type="text"
+                class="text-sm mx-10 border rounded-lg p-1.5" placeholder="กรอกน้ำหนัก">กิโลกรัม
+        </div>
+        <div class="p-2">
+            <input type="checkbox" name="" id="" checked>&nbsp;กระป๋อง<input type="text"
+                class="text-sm mx-10 border rounded-lg p-1.5" placeholder="กรอกน้ำหนัก"> กิโลกรัม
+        </div>
+        <p class="mt-5 text-xl font-bold">อัพเดทสถานะ
+        </p>
+        <div class="p-2">
+        <select name="" id="" class="border rounded-lg p-1.5 px-10">
+            <option value="">รอดำเนินการ</option>
+            <option value="">กำลังเข้ารับ</option>
+            <option value="">รับแล้ว</option>
+            <option value="">ตรวจสอบ</option>
+            <option value="">รอชำระเงิน</option>
+            <option value="" class="bg-green-500">เสร็จสิ้น</option>
+            <option value="" class="bg-red-700 text-white">ยกเลิก</option>
+        </select>
+        </div>
+        <div class="flex justify-center mt-5 mb-10">
+        <div class="grid grid-cols-2 gap-5 w-96 ">
+            <button class="p-2 border bg-slate-950 rounded-lg text-white hover:scale-105">ย้อนกลับ</button>
+            <button class="p-2 border bg-blue-900 rounded-lg text-white hover:scale-105">บันทึกการเปลี่ยนแปลง</button>
+        </div>
+    </div>
+    </div>
+    
+    </div>
+  
+
+
+
+</body>
+
+</html>
