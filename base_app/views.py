@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth import update_session_auth_hash
 from django.http import JsonResponse
@@ -10,21 +10,29 @@ from django.contrib.auth.decorators import login_required ,user_passes_test
 
 from .context_processors import favorite_count
 
-
+from .models import *
 from manager.models import *
 from members.models import *
 from .forms import *
 
 from .permissions import *
 
-
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
+from linebot import LineBotApi, WebhookHandler ,WebhookParser
 
-LINE_CHANNEL_SECRET = '877bd53f1ac80e48fa046639090ee827'
-LINE_ACCESS_TOKEN = 'aomFd5f2wOBWWUuzhS6kaVafX2MWzev8FdIpBnlRlRbg4/DrzbMG4heuCuiIbhKRBqYyM92KSZJ6fbiIWyjBqlwDpJZFz41hpc6lA3znUe3Bgu9XEmCO8bcH7kC28zVUUJcwxIjSDjcNjH19//Kx+AdB04t89/1O/w1cDnyilFU='
-LIFF_URL = 'https://liff.line.me/2003676133-7Jnl1WK9'
-LINE_LIFF_ID = '2003676133-7Jnl1WK9'
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import requests
+
+
+
+LINE_CHANNEL_SECRET = 'c1d5e281953c8e81cf8b80c4c0230f1a'
+LINE_ACCESS_TOKEN = '6heBocJbWYV6wSyCfNuoO57PPhLeCOBbgV2GGZY1ta5LDqveoj/R+nGoSMViOWBJpMYxZMTrE6IvfdCHMyzYZfQwUkuWf0ILXs3MrLmuKHyYFOex7B77oGMFl1h8jRwfuL3ug5E1t+SvlyIaKgts7AdB04t89/1O/w1cDnyilFU='
+LIFF_URL = 'https://liff.line.me/2003837170-ZVz5KK9o'
+LINE_LIFF_ID = '2003837170-ZVz5KK9o'
+
 
 def send_line_message(user_id, message):
     url = 'https://api.line.me/v2/bot/message/push'
@@ -43,23 +51,24 @@ def send_line_message(user_id, message):
     }
     response = requests.post(url, headers=headers, json=data)
 
-#ผูกบัญชี line
-@login_required
-def bind_line_user(req, user_id):
-    user = req.user
+@login_required(login_url='login')
+def connect_line_user(request):
+    if request.method == 'POST':
+        data = request.POST.get('userId')
+        check = UserMessage.objects.filter(user=request.user)
+        if check is None:
+            message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เคยผูกบัญชีไว้แล้ว ครับ/ค่ะ'
+        else:
+            UserMessage.objects.create(user=request.user, line_id=data)
+            message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เชื่อมต่อบัญชีไลน์เรียบร้อย ครับ/ค่ะ'
+        send_line_message(data, message)
+        if request.user.is_staff and request.user.is_superuser:
+            return redirect('manager_dashboard')
+        else:
+            return redirect('dashboard')
 
-    user.line_user_id = user_id
-    user.save()
-
-    message = f"ผูกบัญชีกับ Line สำเร็จ"
-    send_line_message(user.line_user_id, message)
-    messages.success(req, 'ผูกบัญชีกับ Line สำเร็จ')
-
-    if req.is_superuser or req.is_staff and not req.is_active:
-        return redirect('manager_dashboard') 
-    else:
-        return redirect('dashboard') 
-
+def line(request):
+    return render(request,'line.html')
 
 def home(request):
 
@@ -182,6 +191,8 @@ def product_detail(request,id):
 @login_required(login_url='login')
 def found_page(request):
     return render(request,'found_page.html')
+
+
 
 
 

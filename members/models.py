@@ -48,13 +48,9 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
 
 
-class UserMessage(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE) 
-    line_user_id = models.CharField(max_length=100, null=True, blank=True)
 
 
-    def __str__(self):
-        return f'Message from {self.user.username} at {self.line_user_id}'
-    
+
+
 
 

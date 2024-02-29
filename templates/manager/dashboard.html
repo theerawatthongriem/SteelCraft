@@ -17,7 +17,7 @@
     <div class="container mx-auto">
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-            
+
             <div class=" p-5 rounded-lg border border-gray-400">
                 <p class="text-lg font-bold mb-2">จัดการคำสั่งซื้อ</p>
                 <p class="text-gray-600">รายการสั่งซื้อของลูกค้า</p>
@@ -27,7 +27,7 @@
                 </a>
             </div>
 
-            
+
             <div class=" p-5 rounded-lg border border-gray-400">
                 <p class="text-lg font-bold mb-2">รายการสินค้า</p>
                 <p class="text-gray-600">เพิ่มรายการสินค้า แก้ไขรายการสินค้า</p>
@@ -37,7 +37,7 @@
                 </a>
             </div>
 
-            
+
             <div class=" p-5 rounded-lg border border-gray-400">
                 <p class="text-lg font-bold mb-2">คลังวัสดุ</p>
                 <p class="text-gray-600">ดูรายการวัสดุ และจัดการวัสดุ</p>
@@ -56,7 +56,7 @@
                 </a>
             </div>
 
-            
+
 
             <div class=" p-5 rounded-lg border border-gray-400">
                 <p class="text-lg font-bold mb-2">ใบสั่งซื้อวัสดุ</p>
@@ -76,14 +76,17 @@
                 </a> -->
             </div>
 
-            
+
             <div class="bg-yellow-100 p-5 rounded-lg border border-gray-400">
                 <p class="text-lg font-bold mb-2">เชื่อมต่อไลน์</p>
                 <p class="text-gray-600">เชื่อมต่อไลน์เพื่ออัพเดทข่าวสาร และสถานะคำสั่งซื้อ</p>
-                <a href="line://app/2003676133-7Jnl1WK9">
-                    <button class="mt-2 bg-yellow-500 hover:bg-yellow-700 text-white px-10 py-1.5 rounded border border-yellow-600">Connect with
-                        LINE</button>
+                <div class="mt-2">
+                    <a id="" href="{% url 'line' %}"
+                        class="bg-yellow-500 hover:bg-yellow-700 text-white px-10 py-1.5 rounded border border-yellow-600">
+                        Connect with LINE
                 </a>
+                </div>
+
             </div>
 
         </div>
@@ -92,30 +95,30 @@
             <div class="w-96 p-6 bg-white">
                 <p class="text-xl rounded-md block text-center px-2 py-2 bg-gray-200">ภาพรวม
                 </p>
-        
+
             </div>
         </div>
-        
+
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-10">
 
-            
+
             <div class=" p-5 rounded-lg border border-gray-400">
                 <div class="mx-auto h-full overflow-hidden   md:w-12/7 lg:w-15/10">
                     {{ plot_div | safe}}
-                  </div>
+                </div>
             </div>
 
             <div class=" p-5 rounded-lg border border-gray-400">
                 <div class="mx-auto h-full overflow-hidden   md:w-12/7 lg:w-15/10">
                     {{ plot_divs | safe}}
-                  </div>
+                </div>
             </div>
 
             <div class=" p-5 rounded-lg border border-gray-400">
                 <div class="mx-auto h-full overflow-hidden   md:w-12/7 lg:w-15/10">
                     {{ plot_div2 | safe}}
-                  </div>
+                </div>
             </div>
 
             <!-- <div class=" p-5 rounded-lg border border-gray-400">

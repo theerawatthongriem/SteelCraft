@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','https://4385-202-176-131-252.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','https://2736-202-176-131-45.ngrok-free.app']
 
 # Application definition
 
@@ -161,3 +161,9 @@ MEDIA_ROOT = 'media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LINE_CHANNEL_SECRET = 'c1d5e281953c8e81cf8b80c4c0230f1a'
+LINE_ACCESS_TOKEN = '6heBocJbWYV6wSyCfNuoO57PPhLeCOBbgV2GGZY1ta5LDqveoj/R+nGoSMViOWBJpMYxZMTrE6IvfdCHMyzYZfQwUkuWf0ILXs3MrLmuKHyYFOex7B77oGMFl1h8jRwfuL3ug5E1t+SvlyIaKgts7AdB04t89/1O/w1cDnyilFU='
+LIFF_URL = 'https://liff.line.me/2003837170-ZVz5KK9o'
+LINE_LIFF_ID = '2003837170-ZVz5KK9o'

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="flex justify-center items-center mt-10">
+    <div class="w-96 rounded-md bg-white  border-[#2B3843] justify-center">
+        <div class="justify-center flex">
+            <p class="text-2xl text-center p-2 px-8 bg-[#00c201] text-white rounded-lg">เชื่อมต่อไลน์</p>
+        </div>
+
+        <div class="mt-5 border p-10 rounded-md border-[#00c201]">
+
+            <div class="flex justify-center">
+                <button id="btnLogIn"
+                    class="bg-[#00c201] hover:bg-[#c27e00] border-[#00c201] hover:scale-105 p-2 rounded-md text-white"
+                    onclick="logIn()">Connect With Line</button>
+            </div>
+
+            <div class="flex justify-center">
+                <button id="btnLogOut"
+                    class="bg-[#aaaaaa] hover:bg-[#929191] border-[#00c201] hover:scale-105 p-2 rounded-md text-white"
+                    onclick="logOut()">ยกเลิกการเชื่อมต่อ</button>
+            </div>
+
+            <div class="text-center">
+                <p class="text-center mt-4 text-lg font-bold" id="displayName"></p>
+            </div>
+            <div class="flex justify-center mt-5 ">
+                <div class="border-2 rounded-full border-[#00c201] overflow-hidden" id="112">
+                    <img id="pictureUrl" class="w-32 object-cover ">
+                </div>
+            </div>
+
+            <form action="{% url 'connect_line_user' %}" id="formaddline" method="post">
+                {% csrf_token %}
+                <div class="text-center hidden">
+                    <!-- <p id="userId"></p> -->
+                    <input type="text" name="userId" id="userId" required>
+                </div>
+
+                <p class="text-center mt-5 text-xl font-semibold">โปรดแอดไลน์</p>
+
+                <div class="justify-center flex border-4 border-[#00c201] rounded-lg mt-3">
+                    <a href="https://lin.ee/OITLJZs">
+                    <img src="https://qr-official.line.me/sid/L/493hopbg.png" alt="" class="w-60 ">
+                    </a>
+                </div>
+
+                <p class="text-center text-2xl font-semibold mt-2">@493hopbg</p>
+
+                <div class="flex items-center mt-10">
+                    <input id="checked-checkbox" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        required>
+                    <label for="checked-checkbox"
+                        class="ms-2 text-lg text-gray-900 dark:text-gray-300">แอดไลน์แล้ว</label>
+                </div>
+
+                <div class="text-center mt-10">
+                    <button type="submit"
+                        class="border p-2 px-10 text-lg text-white rounded-md font-medium bg-[#00c201] hover:bg-[#c27e00] border-gray-500 hover:scale-105">ยืนยัน</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="flex justify-center items-center">
+    <div class=" rounded-md bg-white  border-[#2B3843] justify-center">
+        <img src="https://www.img02.xyz/assets/img/banner-new/F2.2-728x90-sexygame1688s-4.gif" alt="" class="mt-5">
+    </div>
+</div>
+
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+    function logOut() {
+        liff.logout()
+        window.location.reload()
+    }
+    function logIn() {
+        liff.login({ redirectUri: window.location.href })
+    }
+    async function getUserProfile() {
+        const profile = await liff.getProfile();
+        document.getElementById("pictureUrl").style.display = "block";
+        document.getElementById("pictureUrl").src = profile.pictureUrl;
+        document.getElementById("userId").value = profile.userId;
+        document.getElementById("displayName").innerText = profile.displayName; // เพิ่มบรรทัดนี้
+    }
+    async function main() {
+        await liff.init({ liffId: "2003837170-ZVz5KK9o" })
+        if (liff.isInClient()) {
+            getUserProfile()
+        } else {
+            if (liff.isLoggedIn()) {
+                getUserProfile()
+                document.getElementById("btnLogIn").style.display = "none"
+                document.getElementById("btnLogOut").style.display = "block"
+                document.getElementById("formaddline").style.display = "block"
+            } else {
+                document.getElementById("btnLogIn").style.display = "block"
+                document.getElementById("btnLogOut").style.display = "none"
+                document.getElementById("112").style.display = "none"
+                document.getElementById("formaddline").style.display = "none"
+            }
+        }
+    }
+    main()
+</script>
+
+{% endblock %}
