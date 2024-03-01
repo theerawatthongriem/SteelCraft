@@ -19,6 +19,7 @@ urlpatterns = [
     path('found_page/',found_page,name='found_page'),
 
     path('connect_line_user/', connect_line_user, name='connect_line_user'),
+    path('webhook/', webhook, name='webhook'),
 
 
 ]

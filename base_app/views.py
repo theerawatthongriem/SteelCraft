@@ -17,10 +17,12 @@ from .forms import *
 
 from .permissions import *
 
-from linebot import LineBotApi
-from linebot.models import TextSendMessage
-from linebot import LineBotApi, WebhookHandler ,WebhookParser
-
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST,require_GET
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage,ImageSendMessage
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -33,6 +35,46 @@ LINE_ACCESS_TOKEN = '6heBocJbWYV6wSyCfNuoO57PPhLeCOBbgV2GGZY1ta5LDqveoj/R+nGoSMV
 LIFF_URL = 'https://liff.line.me/2003837170-ZVz5KK9o'
 LINE_LIFF_ID = '2003837170-ZVz5KK9o'
 
+
+line_bot_api = LineBotApi('6heBocJbWYV6wSyCfNuoO57PPhLeCOBbgV2GGZY1ta5LDqveoj/R+nGoSMViOWBJpMYxZMTrE6IvfdCHMyzYZfQwUkuWf0ILXs3MrLmuKHyYFOex7B77oGMFl1h8jRwfuL3ug5E1t+SvlyIaKgts7AdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('15dc965632146d675d1bcd231f6cfeeb')
+
+@csrf_exempt
+def webhook(request):
+    if request.method == 'POST':
+        signature = request.headers.get('X-Line-Signature', '')
+        body = request.body.decode('utf-8')
+        
+        try:
+            handler.handle(body, signature)
+        except InvalidSignatureError:
+            return HttpResponseBadRequest()
+
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse("Method Not Allowed", status=405)
+
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    text = event.message.text
+    print("Received message:", text)  # แสดงข้อความในคอนโซล
+    user_id = event.source.user_id
+    if text == 'ติดตามสถานะ':  # รับ user_id ของผู้ส่งข้อความ
+        print("From user ID:", user_id)  # แสดง us
+        user_msg = UserMessage.objects.get(line_id=user_id)
+        order_status = Order.objects.filter(user=user_msg.user)
+        for i in order_status:
+            img_url = f'https://2736-202-176-131-45.ngrok-free.app'+i.product.image.url 
+            print(i.user)
+            text2 = f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}'
+            text_order = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}'+ text2+'\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/manager/order_detail/{i.id}/'
+            line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=text_order),
+            ImageSendMessage(original_content_url=img_url,preview_image_url=img_url)])
+
+            # 
+
+    # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=text))
 
 def send_line_message(user_id, message):
     url = 'https://api.line.me/v2/bot/message/push'
@@ -56,7 +98,7 @@ def connect_line_user(request):
     if request.method == 'POST':
         data = request.POST.get('userId')
         check = UserMessage.objects.filter(user=request.user)
-        if check is None:
+        if check is not None:
             message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เคยผูกบัญชีไว้แล้ว ครับ/ค่ะ'
         else:
             UserMessage.objects.create(user=request.user, line_id=data)
