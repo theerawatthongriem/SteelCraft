@@ -14,37 +14,73 @@
 
 
 <div class="container mx-auto py-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
         <!-- Order Item -->
 
-        {% for o in orders %}
 
+        <div class="overflow-x-auto rounded-lg border  border-slate-300 overflow-hidden m-1">
+            <table class="w-full table-auto divide-y divide-slate-300">
+                <thead class="bg-[#3E5062] text-white">
+                    <tr>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                             เลขที่คำสั่งซื้อ
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            วันที่สั่งซื้อ
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            สินค้า
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            ราคา
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            จำนวน
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            ราคารวม
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                           สถานะ
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
 
-        <div class="bg-white shadow-xl rounded-md p-4 border">
-            <p class="text-lg font-semibold mb-2">เลขคำสั่งซื้อ : {{ o.id }}</p>
-            <p class="text-gray-500 mb-2">วันที่สั่งซื้อ : {{ o.order_date }}</p>
-            <ul>
-                <li class="flex justify-between">
-                    <span>สินค้า {{ o.product.name }}</span>
-                    <span>ราคา  {{ o.product.price|intcomma }}</span>
-                </li>
-                <li class="flex justify-between">
-                    <span>จำนวน  {{ o.quantity }}</span>
-                </li>
+                    {% for o in orders %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.id }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.order_date }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.product.name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.product.price|intcomma }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.quantity }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.total_price|intcomma }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ o.status }}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
 
-            </ul>
-            <hr class="my-2">
-            <div class="flex justify-between">
-                <span class="font-semibold">ราคารวม :</span>
-                <span>฿ {{ o.total_price|intcomma }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="font-semibold">สถานะ :</span>
-                <span>{{ o.status }}</span>
-            </div>
+                </tbody>
+            </table>
         </div>
 
-        {% endfor %}
+
+
+
+
 
 
 

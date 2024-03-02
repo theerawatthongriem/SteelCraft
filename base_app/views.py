@@ -58,39 +58,61 @@ def webhook(request):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-    print("Received message:", text)  # แสดงข้อความในคอนโซล
+    # print("Received message:", text)  # แสดงข้อความในคอนโซล
     user_id = event.source.user_id
     if text == 'ติดตามสถานะ':  # รับ user_id ของผู้ส่งข้อความ
         print("From user ID:", user_id)  # แสดง us
         user_msg = UserMessage.objects.get(line_id=user_id)
         order_status = Order.objects.filter(user=user_msg.user)
+        print(order_status)
+
         for i in order_status:
             img_url = f'https://2736-202-176-131-45.ngrok-free.app'+i.product.image.url 
-            print(i.user)
-            text2 = f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}'
-            text_order = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}'+ text2+'\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/manager/order_detail/{i.id}/'
-            line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=text_order),
-            ImageSendMessage(original_content_url=img_url,preview_image_url=img_url)])
+            text_msg = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}' + f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}' + '\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/members/order_detail/{i.id}/'
+            send_line_message(user_id, message=text_msg ,image_url=img_url)
 
-            # 
+# def send_line_message(user_id, message):
+#     url = 'https://api.line.me/v2/bot/message/push'
+#     headers = {
+#         'Content-Type': 'application/json',
+#         'Authorization': f'Bearer {LINE_ACCESS_TOKEN}'
+#     }
+#     data = {
+#         'to': user_id,
+#         'messages': [
+#             {
+#                 'type': 'text',
+#                 'text': message
+#             }
+#         ]
+#     }
+#     response = requests.post(url, headers=headers, json=data)
 
-    # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=text))
-
-def send_line_message(user_id, message):
+def send_line_message(user_id, message, image_url):
     url = 'https://api.line.me/v2/bot/message/push'
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {LINE_ACCESS_TOKEN}'
     }
-    data = {
-        'to': user_id,
-        'messages': [
-            {
+    text = {
                 'type': 'text',
                 'text': message
             }
-        ]
-    }
+
+    img = {
+                'type': 'image',
+                'originalContentUrl': image_url,
+                'previewImageUrl': image_url
+            }
+
+    data = {
+            'to': user_id,
+            'messages': [
+                text,
+                img
+            ]
+        }
+
     response = requests.post(url, headers=headers, json=data)
 
 @login_required(login_url='login')
