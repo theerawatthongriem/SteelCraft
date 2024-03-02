@@ -15,3 +15,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+class Material(models.Model):
+    name = models.CharField(max_length=500)
+    quantity = models.IntegerField()
+    image = models.ImageField(upload_to='meterial/')
+
+    def __str__(self):
+        return self.name
