@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="flex justify-center items-center">
+    <div class="w-96 rounded-md p-6">
+        <p class="text-2xl block text-center font-medium mt-4">รายการวัสดุ</p>
+        <hr class="mt-3 h-1 bg-gray-500 px-2">
+    </div>
+</div>
+
+<div class="container mx-auto">
+    <div class="flex justify-end items-center">
+        <a href="{% url 'add_material' %}" class="mx-3 p-2 px-8 hover:scale-105 border rounded-md bg-gray-500 hover:bg-gray-600 text-white"><i class="fa-solid fa-plus"></i> &nbsp;&nbsp;เพิ่มวัสดุ</a>
+    </div>
+</div>
+
+<div class="container mx-auto py-4">
+    <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+        <!-- Order Item -->
+
+        <div class="overflow-x-auto rounded-lg border  border-slate-300 overflow-hidden m-1">
+            <table class="w-full table-auto divide-y divide-slate-300">
+                <thead class="bg-[#3E5062] text-white">
+                    <tr>
+
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            รหัสวัสดุ
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            ชื่อ
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            จำนวน
+                        </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            รูปภาพ
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+
+                    {% for mtr in m %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ mtr.id }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ mtr.name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900">{{ mtr.quantity }}</div>
+                        </td>
+                        <td class=" py-2 whitespace-nowrap">
+                            <img src="{{ mtr.image.url }}" alt="" class="h-20 w-20 object-cover rounded-md">
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+{% endblock %}

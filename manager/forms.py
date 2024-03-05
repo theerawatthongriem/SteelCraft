@@ -1,5 +1,5 @@
 from django import forms
-from .models import *
+from .models import * 
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -12,4 +12,15 @@ class ProductForm(forms.ModelForm):
             'price':'ราคา',
             'image':'รูปภาพ',
             'category':'หมวดหมู่',
+        }
+
+class MaterialForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = '__all__'
+
+        labels = {
+            'name':'ชื่อวัสดุ',
+            'quantity':'จำนวน',
+            'image':'รูปภาพ',
         }

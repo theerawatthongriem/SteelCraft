@@ -27,24 +27,24 @@
             </a>
 
             <a href="#" aria-current="false"
-                class="flex items-center gap-x-2 justify-center font-medium px-5 py-2 border bg-white bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                class="flex items-center gap-x-2 justify-center font-medium px-5 py-2 border bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
                 Trending
             </a>
 
             <a href="#" aria-current="false"
-                class="flex items-center gap-x-2 justify-center font-medium px-5 py-2 border bg-white bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                class="flex items-center gap-x-2 justify-center font-medium px-5 py-2 border bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
                 Trending
             </a>
 
             <a href="#" aria-current="false"
-                class="flex items-center gap-x-2 justify-center font-medium rounded-r px-5 py-2 border bg-white bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
+                class="flex items-center gap-x-2 justify-center font-medium rounded-r px-5 py-2 border bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
                 Trending
             </a>
         </div>
 
         {% if user.is_staff %}
 
-        <div class="container mt-4 mx-auto">
+        <div class="container mt-6 mx-auto">
             <div class="">
                 <a href="{% url 'add_product' %}"
                     class="text-white bg-[#2B3843] px-2 rounded-md py-2 hover:bg-gray-600">
@@ -57,12 +57,12 @@
         {% endif %}
 
         <section id="Projects"
-            class="mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-5 gap-x-2 md:gap-y-10 md:gap-x-5 mt-10 mb-5">
+            class="mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-5 gap-x-2 md:gap-y-10 md:gap-x-5 mt-6 mb-5">
 
             {% for p in products %}
 
             <div
-                class="bg-white w-full md:w-78 w-40 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-400">
+                class="bg-white w-full md:w-78 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-400">
                 <a href="{% url 'product_detail' p.id %}">
                     <img src="{{ p.image.url }}" alt="Product"
                         class="h-40 w-full md:h-72 md:w-78 object-cover rounded-t-xl" />

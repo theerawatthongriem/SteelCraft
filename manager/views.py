@@ -110,5 +110,26 @@ def order_detail(request,id):
     order = Order.objects.get(pk=id)
     return render(request, 'manager/order_detail.html',{'order':order})
 
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
+def material_list(request):
+    m = Material.objects.all()
+    return render(request, 'manager/material.html',{'m':m})
+
+
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
+def add_material(request):
+    form = MaterialForm()
+    if request.method == 'POST':
+        form = MaterialForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('material_list')
+        else:
+            form = ProductForm()
+    else:
+        form = MaterialForm()
+    return render(request,'manager/add_material.html',{'form':form})
 
 

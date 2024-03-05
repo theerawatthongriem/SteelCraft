@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','https://2736-202-176-131-45.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','https://0734-202-176-130-25.ngrok-free.app']
 
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_SAMESITE = None

@@ -67,7 +67,7 @@ def handle_message(event):
         print(order_status)
 
         for i in order_status:
-            img_url = f'https://2736-202-176-131-45.ngrok-free.app'+i.product.image.url 
+            img_url = f'https://0734-202-176-130-25.ngrok-free.app'+i.product.image.url 
             text_msg = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}' + f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}' + '\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/members/order_detail/{i.id}/'
             send_line_message(user_id, message=text_msg ,image_url=img_url)
 
@@ -125,7 +125,25 @@ def connect_line_user(request):
         else:
             UserMessage.objects.create(user=request.user, line_id=data)
             message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เชื่อมต่อบัญชีไลน์เรียบร้อย ครับ/ค่ะ'
-        send_line_message(data, message)
+        url = 'https://api.line.me/v2/bot/message/push'
+        headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {LINE_ACCESS_TOKEN}'
+        }
+
+        text = {
+                'type': 'text',
+                'text': message
+            }
+
+        datas = {
+            'to': data,
+            'messages': [
+                text,
+            ]
+        }
+
+        response = requests.post(url, headers=headers, json=datas)
         if request.user.is_staff and request.user.is_superuser:
             return redirect('manager_dashboard')
         else:
