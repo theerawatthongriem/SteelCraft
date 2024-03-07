@@ -6,6 +6,9 @@ from django.core.paginator import Paginator
 from random import sample
 from django.contrib import messages
 
+from django.contrib.auth.models import User
+
+
 from django.contrib.auth.decorators import login_required ,user_passes_test
 
 from .context_processors import favorite_count
@@ -248,14 +251,23 @@ def dashboard(request):
 
 
 def product_list(request):
-    products = Product.objects.all()
+    users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+    products = Product.objects.filter(user__in=users)
     paginator = Paginator(products, 8)
     page = request.GET.get('page', 1)  
     products = paginator.get_page(page)
     return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request)})
 
+def product_members(request):
+    products = Product.objects.filter(user=request.user)
+    paginator = Paginator(products, 8)
+    page = request.GET.get('page', 1)  
+    products = paginator.get_page(page)
+    return render(request, 'members/product_members.html', {'products': products ,'favorite_count':favorite_count(request)})
+
 def product_detail(request,id):
-    product = list(Product.objects.all())
+    users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+    product = list(Product.objects.filter(user__in=users))
     if len(product) >= 8:
         random_products = sample(list(product), 5)
     else:
@@ -275,26 +287,24 @@ def found_page(request):
     return render(request,'found_page.html')
 
 
-
-
-
 # def search_view(request):
-#     all_people = User.objects.all()
+#     all_people = Product.objects.all()
 #     context = {'count': all_people.count()}
 #     return render(request, 'search.html', context)
 
 
 # def search_results_view(request):
-#     query = request.GET.get('search', '')
+#     query = request.GET.get('search')
 #     print(f'{query = }')
 
-#     all_people = User.objects.all()
+#     all_people = Product.objects.all()
 #     if query:
-#         people = all_people.filter(username__icontains=query)
-#     else:
-#         people = []
+#         if query != '':
+#             people = all_people.filter(name__icontains=query)
+#         elif query == '':
+#             people = all_people.all()
 
-#     context = {'people': people, 'count': all_people.count()}
+#     context = {'people': people, 'count': all_people.count(),'all_people':all_people}
 #     return render(request, 'search_results.html', context)
 
 

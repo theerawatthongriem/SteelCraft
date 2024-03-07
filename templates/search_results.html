@@ -1,8 +1,44 @@
+{% load humanize %}
 
-<div class=" max-w-screen">
-    {% for u in people %}
-    <div class="m-10 p-6 shadow-lg rounded-md bg-white border border-[#2B3843]">
-        <p class="text-2xl block">{{ u.id }} {{ u.username }} {{ u.first_name}} {{ u.last_name }}</p>
+<div class="max-w-screen-xl mx-auto p-2 bg-white mb-10 rounded-lg">
+    <div class="container mx-auto">
+        <div class=" max-w-screen">
+            <section id="Projects"
+                class="mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-5 gap-x-2 md:gap-y-10 md:gap-x-5 mt-6 mb-5">
+                {% if people %}
+                {% for u in people %}
+
+                <div
+                    class="bg-white w-full md:w-78 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-400">
+                    <img src="{{ u.image.url }}" alt="Product"
+                        class="h-40 w-full md:h-72 md:w-78 object-cover rounded-t-xl" />
+                    <div class="px-4 py-3 border-t-2">
+                        <p class="text-lg font-bold text-black truncate block capitalize">{{ u.name }}</p>
+                        <div class="flex items-center">
+                            <p class="text-lg font-medium text-black cursor-auto mt-2">{{ u.price|intcomma }} ฿
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% else %}
+                {% for u in all_people %}
+                <div
+                    class="bg-white w-full md:w-78 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-400">
+                    <img src="{{ u.image.url }}" alt="Product"
+                        class="h-40 w-full md:h-72 md:w-78 object-cover rounded-t-xl" />
+                    <div class="px-4 py-3 border-t-2">
+                        <p class="text-lg font-bold text-black truncate block capitalize">{{ u.name }}</p>
+                        <div class="flex items-center">
+                            <p class="text-lg font-medium text-black cursor-auto mt-2">{{ u.price|intcomma }} ฿
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </section>
+        </div>
     </div>
-    {% endfor %}
 </div>

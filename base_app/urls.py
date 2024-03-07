@@ -17,9 +17,13 @@ urlpatterns = [
     path('product_detail/<int:id>/',product_detail,name='product_detail'),
 
     path('found_page/',found_page,name='found_page'),
-
+    path('product_members/', product_members, name='product_members'),
+    
     path('connect_line_user/', connect_line_user, name='connect_line_user'),
     path('webhook/', webhook, name='webhook'),
+
+    # path('search/results/', search_results_view, name='search_results_view'),
+    # path('search/', search_view, name='search'),
 
 
 ]

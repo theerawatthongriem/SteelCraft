@@ -63,12 +63,12 @@ def customer_orders(request):
 
 
 @login_required(login_url='login')
-@user_passes_test(manager_user,login_url='found_page')
 def add_product(request):
     form = ProductForm()
     if request.method == 'POST':
         form = ProductForm(request.POST,request.FILES)
         if form.is_valid():
+            form.instance.user = request.user
             form.save()
             return redirect('product_list')
         else:
@@ -79,7 +79,6 @@ def add_product(request):
 
 
 @login_required(login_url='login')
-@user_passes_test(manager_user,login_url='found_page')
 def edit_product(request,id):
     product = Product.objects.get(pk=id)
     form = ProductForm(instance=product)
@@ -123,6 +122,7 @@ def add_material(request):
     form = MaterialForm()
     if request.method == 'POST':
         form = MaterialForm(request.POST,request.FILES)
+        form.instance.user = request.user
         if form.is_valid():
             form.save()
             return redirect('material_list')

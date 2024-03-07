@@ -14,6 +14,8 @@ class ProductForm(forms.ModelForm):
             'category':'หมวดหมู่',
         }
 
+        exclude = ['user']
+
 class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material

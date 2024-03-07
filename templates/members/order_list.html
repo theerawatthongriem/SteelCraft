@@ -47,10 +47,12 @@
                 <tbody class="bg-white divide-y divide-gray-200">
 
                     {% for o in orders %}
-                    <tr>
+                    
+                    <tr class="hover:bg-slate-100 cursor-pointer" onclick='window.location="/manager/order_detail/{{ o.id }}/"'>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.id }}</div>
                         </td>
+                        
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.order_date }}</div>
                         </td>
@@ -69,7 +71,9 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.status }}</div>
                         </td>
+                        
                     </tr>
+                    
                     {% endfor %}
 
                 </tbody>
