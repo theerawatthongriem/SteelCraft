@@ -16,14 +16,13 @@
 <div class="max-w-screen-xl mx-auto p-2 bg-white mb-10 rounded-lg">
     <div class="container mx-auto">
         <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-6 mx-auto rounded">
-            {% for c in cate %}
-            <a href="/product_category/{{ c.id }}/" aria-current="false"
-                class="flex justify-center font-medium rounded-l py-2 border bg-white text-gray-800 border-gray-200 hover:bg-gray-900 hover:text-white">
-                {{ c.name }}
-            </a>
-            {% endfor %}
 
-            
+            <div href="#" aria-current="false"
+                class="flex justify-center font-medium rounded-l py-2 bg-white text-gray-800 border-gray-200 ">
+                หมวดหมู่ : {{ cate.name }}  จำนวน : {{ products|length }}
+            </div>
+      
+
         </div>
 
         {% if user.is_authenticated %}

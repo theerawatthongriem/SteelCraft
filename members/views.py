@@ -82,8 +82,10 @@ def create_order(request,id):
     order.save()
     user_order = Order.objects.filter(user=request.user).order_by('-id').first()
     data = UserMessage.objects.get(user=request.user)
-    message = (f'คำสั่งซื้อ : {user_order.id}  {user_order.product.name} \n จำนวน {user_order.quantity} รายการ ราคารวม {user_order.total_price} บาท \n - การจัดส่ง \n คุณ {user_order.first_name} {user_order.last_name} \n{user_order.address} \n {user_order.phone_number}')
-    send_line_message(data.line_id, message)
+    if data:
+        message = (f'คำสั่งซื้อ : {user_order.id}  {user_order.product.name} \n จำนวน {user_order.quantity} รายการ ราคารวม {user_order.total_price} บาท \n - การจัดส่ง \n คุณ {user_order.first_name} {user_order.last_name} \n{user_order.address} \n {user_order.phone_number}')
+        # if data.line_id:
+        #     send_line_message(data.line_id, message)
 
     return redirect(f'/product_detail/{id}/')
 
@@ -91,6 +93,11 @@ def create_order(request,id):
 def order_list(request):
     order = Order.objects.filter(user=request.user)
     return render(request,'members/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
+
+@login_required(login_url='login')
+def order_detail(request,id):
+    order = Order.objects.get(pk=id)
+    return render(request, 'members/order_detail.html',{'order':order})
 
 
 

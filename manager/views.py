@@ -1,11 +1,12 @@
 from django.shortcuts import render,redirect
-from members.models import Order
+from members.models import Order,MeasureSize
 from .forms import *
 from base_app.context_processors import favorite_count
 from django.contrib.auth.decorators import user_passes_test,login_required
 
 from django.db.models import Count, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
+
 
 
 import plotly.graph_objs as go
@@ -101,8 +102,6 @@ def delete_product(request,id):
     product = Product.objects.get(pk=id).delete()
     return redirect('product_list')
 
-
-
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def order_detail(request,id):
@@ -133,3 +132,24 @@ def add_material(request):
     return render(request,'manager/add_material.html',{'form':form})
 
 
+def size_save(request):
+    order =  Order.objects.all()
+    return render(request,'manager/size_save.html',
+    {
+        'orders':order,
+    })
+
+def size_save_detail(request,id):
+    order =  Order.objects.get(pk=id)
+    return render(request,'manager/size_save_detail.html',
+    {
+        'orders':order,
+    })
+
+
+def add_size(request,id):
+    order =  Order.objects.get(pk=id)
+    measuresize = MeasureSize.objects.create(
+        order=order,
+
+    )

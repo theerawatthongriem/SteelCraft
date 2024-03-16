@@ -8,5 +8,6 @@ urlpatterns = [
     path('checkout/product/<int:id>/',checkout,name='checkout'),
     path('create_order/product/<int:id>/',create_order,name='create_order'),
     path('orders/',order_list,name='orders'),
+    path('order/<int:id>/',order_detail, name="order_members"),
 
 ]

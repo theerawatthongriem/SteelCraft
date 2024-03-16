@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block content %}
+
+
+<div class="flex justify-center p-2 mt-16">
+    <div class="w-3/3 md:w-3/5 mx-auto bg-white border rounded-lg overflow-hidden">
+        <div class="bg-slate-800 rounded-t-lg justify-between flex">
+            <p class="text-white text-lg p-4">รายละเอียดคำสั่งซื้อ</p>
+            <p class="text-white text-lg p-4">เลขที่คำสั่งซื้อ : {{ order.id }}</p>
+        </div>
+
+        <div class="mx-auto bg-white p-10 rounded-md md:grid grid-cols-1 gap-8 md:grid-cols-2 justify-center flex m-2">
+
+
+            <div class="col-span-1">
+                <p class="text-lg block font-medium mt-3">วันที่ : {{ order.order_date }}</p>
+
+                <p class="text-xl font-semibold mb-2">ข้อมูลลูกค้า</p>
+                <div class="mt-10 text-lg">
+                    <p><strong>ชื่อลูกค้า :</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                    <p>( {{ order.user }} {{ order.user.first_name }} {{ order.user.last_name }} )</p>
+                    <p><strong>ที่อยู่ : </strong> {{ order.address }}</p>
+                    <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
+                    <p><strong>หมายเหตุ : </strong> {{ order.note }}</p>
+                </div>
+                <div class="mt-5">
+                    <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
+                        class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
+                        <i class="fa-solid fa-location-dot text-4xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- <div class="col-span-1">
+                <p class="text-xl font-semibold mb-2">หลักฐานการชำระเงิน</p>
+                <div class="mt-10 border w-60 rounded-md">
+                    <img src="https://www.scb.co.th/content/dam/scb/personal-banking/cards/prepaid-cards/images/how-to/transfer/planet-how-to-transfer-img-07.png"
+                        alt="Payment Proof" class="w-60 p-6">
+                </div>
+            </div> -->
+
+            <div class="col-span-1">
+                <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
+
+                <div class="mt-10 text-lg">
+                    <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
+                    <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
+                    <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
+                    <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
+
+                    <div class="border mt-10 rounded-md w-40">
+                        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="mt-4 w-60">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="flex justify-center items-center mt-16 mb-10">
+            <div class="md:flex md:items-center space-x-5 justify-center text-center">
+                {% for status,label in order.STATUS_CHOICES %}
+                {% if status == order.status and order.status != 'ยกเลิก' %}
+                <div class="md:grid md:grid-cols-1">
+                    <div class="">
+                        <i class="fa-solid fa-circle-check text-5xl text-green-600"></i>
+                    </div>
+                    <div class="mt-1">
+                        <div class="whitespace-nowrap">{{ label }}</div>
+                    </div>
+                </div>
+                {% elif order.status == 'ยกเลิก' and order.status == status %}
+                <div class="md:grid md:grid-cols-1">
+                    <div>
+                        <i class="fa-solid fa-circle-check text-5xl text-red-600"></i>
+                    </div>
+                    <div>
+                        <div class="whitespace-nowrap">{{ label }}</div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="md:grid md:grid-cols-1">
+                    <div>
+                        <i class="fa-regular fa-circle-check text-4xl m-2"></i>
+                    </div>
+                    <div>
+                        <div class="whitespace-nowrap">{{ label }}</div>
+                    </div>
+                </div>
+                {% endif %}
+       
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- <div class="container mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2">
+
+    <div class="col-span-1">
+        <p class="text-xl font-semibold mb-2">ข้อมูลลูกค้า</p>
+        <div class="mt-10 text-lg">
+            <p><strong>ชื่อลูกค้า :</strong> {{ order.first_name }} {{ order.last_name }}</p>
+            <p>( {{ order.user }} {{ order.user.first_name }} {{ order.user.last_name }} )</p>
+            <p><strong>ที่อยู่ : </strong> {{ order.address }}</p>
+            <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
+            <p><strong>หมายเหตุ : </strong> {{ order.note }}</p>
+        </div>
+        <div class="mt-5">
+            <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}" class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
+                <i class="fa-solid fa-location-dot text-4xl"></i>    
+            </a>
+        </div>
+    </div>
+
+    <div class="col-span-1">
+        <p class="text-xl font-semibold mb-2">หลักฐานการชำระเงิน</p>
+        <div class="mt-10 border w-60 rounded-md">
+        <img src="https://www.scb.co.th/content/dam/scb/personal-banking/cards/prepaid-cards/images/how-to/transfer/planet-how-to-transfer-img-07.png"
+            alt="Payment Proof" class="w-60 p-6">
+        </div>
+    </div>
+
+    <div class="col-span-1">
+        <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
+
+        <div class="mt-10 text-lg">
+            <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
+            <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
+            <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
+            <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
+
+            <div class="border mt-10 rounded-md w-60">
+            <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="mt-4 p-6 w-60">
+        </div>
+        </div>
+    </div> 
+
+</div> -->
+
+
+
+
+
+
+{% endblock %}

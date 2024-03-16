@@ -49,6 +49,11 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
 
 
+class MeasureSize(models.Model):
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    h = models.FloatField(default=0)
+    w = models.FloatField(default=0)
+    d = models.FloatField(default=0)
 
 
 

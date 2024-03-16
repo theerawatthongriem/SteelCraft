@@ -25,18 +25,21 @@
             <p><strong>หมายเหตุ : </strong> {{ order.note }}</p>
         </div>
         <div class="mt-5">
-            <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}" class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
-                <i class="fa-solid fa-location-dot text-4xl"></i>    
+            <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
+                class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
+                <i class="fa-solid fa-location-dot text-4xl"></i>
             </a>
         </div>
     </div>
+
+
 
     <!-- Payment Proof -->
     <div class="col-span-1">
         <p class="text-xl font-semibold mb-2">หลักฐานการชำระเงิน</p>
         <div class="mt-10 border w-60 rounded-md">
-        <img src="https://www.scb.co.th/content/dam/scb/personal-banking/cards/prepaid-cards/images/how-to/transfer/planet-how-to-transfer-img-07.png"
-            alt="Payment Proof" class="w-60 p-6">
+            <img src="https://www.scb.co.th/content/dam/scb/personal-banking/cards/prepaid-cards/images/how-to/transfer/planet-how-to-transfer-img-07.png"
+                alt="Payment Proof" class="w-60 p-6">
         </div>
     </div>
 
@@ -50,8 +53,8 @@
             <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
             <!-- Add product image -->
             <div class="border mt-10 rounded-md w-60">
-            <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="mt-4 p-6 w-60">
-        </div>
+                <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="mt-4 p-6 w-60">
+            </div>
         </div>
     </div>
 

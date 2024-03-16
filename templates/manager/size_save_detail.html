@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="flex justify-center items-center">
+    <div class="w-96 rounded-md px-6 mt-3">
+        <p class="text-2xl block text-center font-medium mt-4">คำสั่งซื้อที่ {{ orders.id }}</p>
+    </div>
+</div>
+
+<div class="flex justify-center mt-4 flex-wrap mx-2">
+    <div class="container border bg-[#1e293b] rounded-t-lg py-2 flex justify-between justify-items-center text-white">
+        <div class="p-2">{{ orders.product.name }}</div>
+        <div class="p-2">จำนวน : {{ orders.quantity }}</div>
+    </div>
+    <div class="container border rounded-b-lg py-2 flex justify-between justify-items-center">
+        <div class="p-2">ชิ้นที่ 1</div>
+        <div class="p-2">สูง : 10 cm</div>
+        <div class="p-2">กว้าง : 10 cm</div>
+        <div class="p-2">หนา : 10 cm</div>
+    </div>
+    <div class="container py-2 flex justify-between justify-items-center">
+        <div class="" x-data="{ open: false }">
+            <div class="flex justify-end items-center">
+                <button @click="open = true"
+                    class="p-2 px-8 hover:scale-105 border rounded-md bg-[#47791e] text-white"><i
+                        class="fa-solid fa-plus"></i> &nbsp;&nbsp;เพิ่มบันทึก</button>
+
+                <div x-show="open" @click.away="open = false" class="fixed inset-0 flex items-center justify-center">
+                    <div class="bg-white p-2 mx-auto rounded-lg shadow-xl border border-[#2B3843] flex-wrap">
+                        <div class="justify-end flex">
+                            <button @click="open = false"
+                                class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">ปิด</button>
+                        </div>
+
+
+                        <p class="text-xl font-family mb-4 text-center">เพิ่มบันทึก</p>
+                        <!-- <p>ยืนยันการลบบัญชีผู้ใช้หรือไม่</p> -->
+
+                        <form action="" method="post" class="text-center container justify-center grid grid-cols-3">
+                            {% csrf_token %}
+                            <div>
+                                สูง : <input type="number" class="p-2 m-2 rounded-md border" placeholder="cm">
+                            </div>
+                            <div>
+                                กว้าง : <input type="number" class="p-2 m-2 rounded-md border" placeholder="cm">
+                            </div>
+                            <div>
+                                หนา : <input type="number" class="p-2 m-2 rounded-md border" placeholder="cm">
+                            </div>
+                            <br>
+                            <div>
+                                <button type="submit"
+                                    class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>
+                            </div>
+
+                        </form>
+                        <!-- <button @click="open = false" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">ปิด</button> -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

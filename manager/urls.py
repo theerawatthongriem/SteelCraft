@@ -10,4 +10,6 @@ urlpatterns = [
     path('order_detail/<int:id>/',order_detail, name="order_detail"),
     path('material_list/',material_list, name="material_list"),
     path('add_material/',add_material, name="add_material"),
+    path('size_save/',size_save, name="size_save"),
+    path('size_save_detail/<int:id>/',size_save_detail, name="size_save_detail"),
 ]

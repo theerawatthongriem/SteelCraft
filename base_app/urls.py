@@ -14,6 +14,7 @@ urlpatterns = [
     path('delete_user/',delete_user,name='delete_user'),
     path('dashboard/',dashboard,name='dashboard'),
     path('product_list/',product_list,name='product_list'),
+    path('product_category/<int:cate>/',product_category,name='product_category'),
     path('product_detail/<int:id>/',product_detail,name='product_detail'),
 
     path('found_page/',found_page,name='found_page'),

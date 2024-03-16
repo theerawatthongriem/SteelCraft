@@ -70,7 +70,7 @@ def handle_message(event):
         print(order_status)
 
         for i in order_status:
-            img_url = f'https://0734-202-176-130-25.ngrok-free.app'+i.product.image.url 
+            img_url = f'https://4b11-202-176-130-47.ngrok-free.app'+i.product.image.url 
             text_msg = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}' + f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}' + '\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/members/order_detail/{i.id}/'
             send_line_message(user_id, message=text_msg ,image_url=img_url)
 
@@ -124,8 +124,8 @@ def connect_line_user(request):
         data = request.POST.get('userId')
         check = UserMessage.objects.filter(user=request.user)
         if check is not None:
-            message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เคยผูกบัญชีไว้แล้ว ครับ/ค่ะ'
-        else:
+        #     message = f'{request.user} {request.user.first_name} {request.user.last_name} \n ผูกบัญชีไว้แล้ว ครับ/ค่ะ'
+        # else:
             UserMessage.objects.create(user=request.user, line_id=data)
             message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เชื่อมต่อบัญชีไลน์เรียบร้อย ครับ/ค่ะ'
         url = 'https://api.line.me/v2/bot/message/push'
@@ -251,12 +251,22 @@ def dashboard(request):
 
 
 def product_list(request):
+    category = Category.objects.all()
     users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
     products = Product.objects.filter(user__in=users)
     paginator = Paginator(products, 8)
     page = request.GET.get('page', 1)  
     products = paginator.get_page(page)
-    return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request)})
+    return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
+
+def product_category(request,cate):
+    category = Category.objects.get(id=cate)
+    users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+    products = Product.objects.filter(user__in=users,category=category.id)
+    paginator = Paginator(products, 8)
+    page = request.GET.get('page', 1)  
+    products = paginator.get_page(page)
+    return render(request, 'product_category.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
 
 def product_members(request):
     products = Product.objects.filter(user=request.user)
