@@ -22,6 +22,8 @@ urlpatterns = [
     
     path('connect_line_user/', connect_line_user, name='connect_line_user'),
     path('webhook/', webhook, name='webhook'),
+    path('get_data/', get_data, name='get_data'),
+
 
     # path('search/results/', search_results_view, name='search_results_view'),
     # path('search/', search_view, name='search'),

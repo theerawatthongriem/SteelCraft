@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from members.models import Order,MeasureSize
 from .forms import *
 from base_app.context_processors import favorite_count
@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test,login_required
 
 from django.db.models import Count, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
-
+from django.http import JsonResponse
 
 
 import plotly.graph_objs as go
@@ -144,12 +144,54 @@ def size_save_detail(request,id):
     return render(request,'manager/size_save_detail.html',
     {
         'orders':order,
+        'MeasureSize':MeasureSize.objects.filter(order=order),
     })
 
+def add_size(request, id):
+    order = get_object_or_404(Order, pk=id)
+    if request.method == 'POST':
+        h = request.POST.get('h', 0) 
+        w = request.POST.get('w', 0) 
+        d = request.POST.get('d', 0) 
+        
+        if h and w and d:
+            measuresize = MeasureSize.objects.create(
+                order=order,
+                h=h,
+                w=w,
+                d=d,
+            )
+            measuresize.save()
+            return redirect(f'/manager/size_save_detail/{id}/')
 
-def add_size(request,id):
-    order =  Order.objects.get(pk=id)
-    measuresize = MeasureSize.objects.create(
-        order=order,
+def get_size(request, id):
+    measure_size = get_object_or_404(MeasureSize, pk=id)
+    data = {
+        'h': measure_size.h,
+        'w': measure_size.w,
+        'd': measure_size.d,
+        'id':measure_size.id
+    }
+    return JsonResponse(data)
 
-    )
+def delete_size(request, id,dlt):
+    order = get_object_or_404(Order, pk=id)
+    MeasureSize.objects.get(pk=dlt).delete()
+
+    return redirect(f'/manager/size_save_detail/{id}/')
+
+def edit_size(request, id,dlt):
+    order = get_object_or_404(Order, pk=id)
+    if request.method == 'POST':
+        h = request.POST.get('h', 0) 
+        w = request.POST.get('w', 0) 
+        d = request.POST.get('d', 0) 
+        
+        if h and w and d:
+            measuresize = MeasureSize.objects.get(order=order,pk=dlt)
+            measuresize.h = h
+            measuresize.w = w
+            measuresize.d = d
+            measuresize.save()
+            return redirect(f'/manager/size_save_detail/{id}/')
+

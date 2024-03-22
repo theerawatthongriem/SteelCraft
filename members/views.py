@@ -81,7 +81,7 @@ def create_order(request,id):
 
     order.save()
     user_order = Order.objects.filter(user=request.user).order_by('-id').first()
-    data = UserMessage.objects.get(user=request.user)
+    data = UserMessage.objects.filter(user=request.user).first()
     if data:
         message = (f'คำสั่งซื้อ : {user_order.id}  {user_order.product.name} \n จำนวน {user_order.quantity} รายการ ราคารวม {user_order.total_price} บาท \n - การจัดส่ง \n คุณ {user_order.first_name} {user_order.last_name} \n{user_order.address} \n {user_order.phone_number}')
         # if data.line_id:

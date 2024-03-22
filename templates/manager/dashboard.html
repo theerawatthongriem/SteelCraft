@@ -121,24 +121,55 @@
                     {{ plot_div2 | safe}}
                 </div>
             </div>
-
-            <!-- <div class=" p-5 rounded-lg border border-gray-400">
+            <!-- 
+            <div class=" p-5 rounded-lg border border-gray-400">
                 <div class="mx-auto w-11/12 overflow-hidden md:w-5/5">
-                    {{ plot_divs|safe}}
-                  </div>
-            </div> -->
+                    <iframe title="test" width="600" height="373.5"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiOTAzODE3YTgtZDFmNi00NmZhLWI5YjAtOWRkOTljYWU5YmJjIiwidCI6Ijc4MzMyZWRhLTQ4YzEtNGY0Zi1hNGRlLTYwMmU2MjYzODc2ZCIsImMiOjEwfQ%3D%3D"
+                        frameborder="0" allowFullScreen="true"></iframe>
+                </div>
+            </div>
+ -->
 
 
         </div>
-    </div>
-</div>
 
 
 
 
 
+    <!-- <iframe title="test" class="w-full min-h-screen"
+        src="https://app.powerbi.com/view?r=eyJrIjoiMTg4ODY0MzUtNmQ0NS00ZjAxLWFkMWUtMWEzMmI2NGFkMTg5IiwidCI6Ijc4MzMyZWRhLTQ4YzEtNGY0Zi1hNGRlLTYwMmU2MjYzODc2ZCIsImMiOjEwfQ%3D%3D"
+        frameborder="0" allowFullScreen="true"></iframe> -->
 
-<!-- <div class=" max-w-screen">
+
+    <script
+        src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.min.js"></script>
+
+
+    <div id="reportContainer" style="height: 600px;"></div>
+    <script>
+        // Embed code หรือ URL จะต้องแปะที่นี่
+        var embedConfig = {
+            type: 'report',
+            tokenType: models.TokenType.Embed,
+            accessToken: 'your-access-token',
+            embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=your-report-id',
+            id: 'your-report-id',
+            permissions: models.Permissions.All,
+            settings: {
+                filterPaneEnabled: false,
+                navContentPaneEnabled: false
+            }
+        };
+
+        // Embed รายงาน Power BI
+        var reportContainer = document.getElementById('reportContainer');
+        var report = powerbi.embed(reportContainer, embedConfig);
+    </script>
+
+
+    <!-- <div class=" max-w-screen">
     {% for u in users %}
     <div class="m-10 p-6 shadow-lg rounded-md bg-white border border-[#2B3843]">
         <p class="text-2xl block">{{ u.id }} {{ u.username }} {{ u.first_name}} {{ u.last_name }}</p>
@@ -146,4 +177,4 @@
     {% endfor %}
 </div> -->
 
-{% endblock %}
+    {% endblock %}

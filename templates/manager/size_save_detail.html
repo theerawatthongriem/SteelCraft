@@ -12,16 +12,70 @@
 </div>
 
 <div class="flex justify-center mt-4 flex-wrap mx-2">
-    <div class="container border bg-[#1e293b] rounded-t-lg py-2 flex justify-between justify-items-center text-white">
+    <div class="container border bg-[#1e293b] py-2 rounded-t-lg overflow-hidden flex justify-between justify-items-center text-white">
         <div class="p-2">{{ orders.product.name }}</div>
         <div class="p-2">จำนวน : {{ orders.quantity }}</div>
     </div>
-    <div class="container border rounded-b-lg py-2 flex justify-between justify-items-center">
-        <div class="p-2">ชิ้นที่ 1</div>
-        <div class="p-2">สูง : 10 cm</div>
-        <div class="p-2">กว้าง : 10 cm</div>
-        <div class="p-2">หนา : 10 cm</div>
+    {% for i in MeasureSize %}
+    <div class="container border py-2 flex justify-between justify-items-center {% if forloop.last %} rounded-b-lg{% endif %}">
+
+        <div class="p-2">ชิ้นที่ {{ forloop.counter }}</div>
+        <div class="p-2">สูง : {{ i.h}} cm</div>
+        <div class="p-2">กว้าง : {{i.w}} cm</div>
+        <div class="p-2">หนา : {{i.d}} cm</div>
+        <div class="p-2 cursor-pointer hover:scale-105" onclick="openEditModal('{{ orders.id }}', '{{ i.id }}', '{{ forloop.counter }}')">
+            <i class="fa-regular fa-pen-to-square"></i>&nbsp;แก้ไข
+        </div>
+        
+
+        <div class="p-2 px-5 hover:scale-105"><a href="{% url 'delete_size' orders.id i.id %}"
+                class="hover:scale-105"><i class="fa-solid fa-trash-can hover:scale-105"></i>&nbsp;ลบ</a></div>
+
     </div>
+
+    {% endfor %}
+
+    <div class="container justify-between justify-items-center hidden" id="editModal">
+        <div class="flex justify-end items-center">
+
+            <div class="fixed inset-0 flex items-center justify-center">
+                <div class="bg-white p-2 mx-auto rounded-lg shadow-xl border border-[#2B3843] flex-wrap">
+                    <div class="justify-end flex">
+                        <button onclick="closeEditModal()"
+                            class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">ปิด</button>
+                    </div>
+
+
+                    <p class="text-xl font-family mb-4 text-center">แก้ไขบันทึก ชิ้นที่ <label id="q"></label></p>
+
+                    <form id="edit_size_form" method="post"
+                        class="text-center container justify-center grid grid-cols-3">
+
+                        {% csrf_token %}
+                        <div>
+                            สูง : <input type="number" step="0.01"  name="h" id="h"
+                                class="p-2 m-2 rounded-md border" placeholder="cm">
+                        </div>
+                        <div>
+                            กว้าง : <input type="number" step="0.01"  name="w" id="w"
+                                class="p-2 m-2 rounded-md border" placeholder="cm">
+                        </div>
+                        <div>
+                            หนา : <input type="number" step="0.01" name="d" id="d"
+                                class="p-2 m-2 rounded-md border" placeholder="cm">
+                        </div>
+                        <br>
+                        <div>
+                            <button type="submit"
+                                class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container py-2 flex justify-between justify-items-center">
         <div class="" x-data="{ open: false }">
             <div class="flex justify-end items-center">
@@ -38,18 +92,21 @@
 
 
                         <p class="text-xl font-family mb-4 text-center">เพิ่มบันทึก</p>
-                        <!-- <p>ยืนยันการลบบัญชีผู้ใช้หรือไม่</p> -->
 
-                        <form action="" method="post" class="text-center container justify-center grid grid-cols-3">
+                        <form action="{% url 'add_size' orders.id %}" method="post"
+                            class="text-center container justify-center grid grid-cols-3">
                             {% csrf_token %}
                             <div>
-                                สูง : <input type="number" class="p-2 m-2 rounded-md border" placeholder="cm">
+                                สูง : <input type="number" step="0.01" value="0" name="h"
+                                    class="p-2 m-2 rounded-md border" placeholder="cm">
                             </div>
                             <div>
-                                กว้าง : <input type="number" class="p-2 m-2 rounded-md border" placeholder="cm">
+                                กว้าง : <input type="number" step="0.01" value="0" name="w"
+                                    class="p-2 m-2 rounded-md border" placeholder="cm">
                             </div>
                             <div>
-                                หนา : <input type="number" class="p-2 m-2 rounded-md border" placeholder="cm">
+                                หนา : <input type="number" step="0.01" value="0" name="d"
+                                    class="p-2 m-2 rounded-md border" placeholder="cm">
                             </div>
                             <br>
                             <div>
@@ -66,6 +123,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    function openEditModal(ordersId, iId, q) {
+    var modal = document.getElementById("editModal");
+    modal.style.display = "block";
+
+    // โหลดข้อมูลขนาดปัจจุบันเข้าไปในฟอร์ม Modal ด้วย Ajax
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            document.getElementById("h").value = data.h;
+            document.getElementById("w").value = data.w;
+            document.getElementById("d").value = data.d;
+            document.getElementById("q").innerText = q;
+            document.getElementById("edit_size_form").action = `/manager/edit_size/${ordersId}/${iId}/`;
+        }
+    };
+    xhr.open("GET", "/manager/get_size/" + iId + "/", true);
+    xhr.send();
+}
+
+
+    // ปิด Modal เมื่อคลิกที่ปุ่มปิดหรือพื้นหลัง
+    function closeEditModal() {
+        var modal = document.getElementById("editModal");
+        modal.style.display = "none";
+    }
+</script>
 
 
 {% endblock %}

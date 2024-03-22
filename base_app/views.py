@@ -70,9 +70,9 @@ def handle_message(event):
         print(order_status)
 
         for i in order_status:
-            img_url = f'https://4b11-202-176-130-47.ngrok-free.app'+i.product.image.url 
+            img_url = f'https://55a9-49-229-22-10.ngrok-free.app'+i.product.image.url 
             text_msg = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}' + f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}' + '\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/members/order_detail/{i.id}/'
-            send_line_message(user_id, message=text_msg ,image_url=img_url)
+            send_line_message(user_id, message=text_msg)
 
 # def send_line_message(user_id, message):
 #     url = 'https://api.line.me/v2/bot/message/push'
@@ -91,7 +91,7 @@ def handle_message(event):
 #     }
 #     response = requests.post(url, headers=headers, json=data)
 
-def send_line_message(user_id, message, image_url):
+def send_line_message(user_id, message):
     url = 'https://api.line.me/v2/bot/message/push'
     headers = {
         'Content-Type': 'application/json',
@@ -102,17 +102,17 @@ def send_line_message(user_id, message, image_url):
                 'text': message
             }
 
-    img = {
-                'type': 'image',
-                'originalContentUrl': image_url,
-                'previewImageUrl': image_url
-            }
+    # img = {
+    #             'type': 'image',
+    #             'originalContentUrl': image_url,
+    #             'previewImageUrl': image_url
+    #         }
 
     data = {
             'to': user_id,
             'messages': [
                 text,
-                img
+                # img
             ]
         }
 
@@ -317,4 +317,24 @@ def found_page(request):
 #     context = {'people': people, 'count': all_people.count(),'all_people':all_people}
 #     return render(request, 'search_results.html', context)
 
-
+import pandas as pd
+#power 
+def get_data(request):
+    data = Order.objects.all()
+    
+    # สร้าง DataFrame
+    dataframe = {
+        'category': [order.product_category.name for order in data],
+        'quantity': [order.quantity for order in data]
+    }
+    df = pd.DataFrame(dataframe)
+    
+    # รวมปริมาณสินค้าตามประเภท
+    total_quantity_by_category = df.groupby('category')['quantity'].sum()
+    
+    # แสดงผลลัพธ์
+    print(total_quantity_by_category)
+    
+    # ส่งผลลัพธ์กลับเป็น HTTP response
+    return HttpResponse(total_quantity_by_category.to_string())
+    # return JsonResponse(dataframe, safe=False)
