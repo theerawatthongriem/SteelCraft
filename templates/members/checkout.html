@@ -48,7 +48,7 @@
                         <div class="w-full">
                             <label for="phone_number"
                                 class="block mb-3 text-sm font-semibold text-gray-500">เบอร์โทร</label>
-                            <input name="phone_number" type="text" placeholder="กรอกเบอร์โทรศัพท์" required
+                            <input name="phone_number" value="{{ user.profile.phone_number }}" type="text" placeholder="กรอกเบอร์โทรศัพท์" required
                                 class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600">
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                             <label for="address" class="block mb-3 text-sm font-medium text-gray-500">ที่อยู่ </label>
                             <textarea required
                                 class="w-full px-4 py-3 text-xs border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                name="address" cols="20" rows="4" placeholder="กรอกที่อยู่"></textarea>
+                                name="address" cols="20" rows="4" placeholder="กรอกที่อยู่">{{ user.profile.address }}</textarea>
                         </div>
                     </div>
 

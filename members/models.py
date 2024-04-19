@@ -42,6 +42,7 @@ class Order(models.Model):
     delivery_location = models.CharField(max_length=500 ,null=True, blank=True)
     phone_number = models.CharField(max_length=15,default='')
     note = models.TextField(default='',null=True, blank=True)
+    appt_date = models.DateTimeField(null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True)
     ship_date = models.DateTimeField(null=True, blank=True)
     payment = models.BooleanField(default=False)
@@ -54,9 +55,3 @@ class MeasureSize(models.Model):
     h = models.FloatField(default=0)
     w = models.FloatField(default=0)
     d = models.FloatField(default=0)
-
-
-
-
-
-

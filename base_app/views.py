@@ -164,14 +164,22 @@ def register(request):
     form = RegisterForm()
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
+        profile_form = UserProfileForm(request.POST)
+        if form.is_valid() and profile_form.is_valid():
+            user = form.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
             return redirect('login')
         else:
             form = RegisterForm()
+            profile_form = UserProfileForm()
+
     else:
         form = RegisterForm()
-    return render(request,'register.html',{'form':form })
+        profile_form = UserProfileForm()
+
+    return render(request,'register.html',{'form':form,'profile_form':profile_form })
 
 
 def sign_in(request):
