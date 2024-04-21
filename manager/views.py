@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import user_passes_test,login_required
 from django.db.models import Count, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse
+from django.forms import formset_factory
 
 
 import plotly.graph_objs as go
@@ -63,20 +64,41 @@ def customer_orders(request):
     return render(request,'manager/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
 
 
+# @login_required(login_url='login')
+# def add_product(request):
+#     form = ProductForm()
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST,request.FILES)
+#         if form.is_valid():
+#             form.instance.user = request.user
+#             form.save()
+#             return redirect('product_list')
+#         else:
+#             form = ProductForm()
+#     else:
+#         form = ProductForm()
+#     return render(request,'manager/add_product.html',{'form':form})
+
 @login_required(login_url='login')
 def add_product(request):
-    form = ProductForm()
+    ImageFormSet = formset_factory(ProductImageForm, extra=3)  # extra คือจำนวนฟอร์มที่สร้างขึ้นมาเริ่มต้น
+    
     if request.method == 'POST':
-        form = ProductForm(request.POST,request.FILES)
-        if form.is_valid():
-            form.instance.user = request.user
-            form.save()
+        product_form = ProductForm(request.POST)
+        formset = ImageFormSet(request.POST, request.FILES)
+        if product_form.is_valid() and formset.is_valid():
+            product = product_form.save(commit=False)
+            product.user = request.user
+            product.save()
+            for form in formset:
+                image = form.cleaned_data.get('image')
+                ProductImage.objects.create(product=product, image=image)
             return redirect('product_list')
-        else:
-            form = ProductForm()
     else:
-        form = ProductForm()
-    return render(request,'manager/add_product.html',{'form':form})
+        product_form = ProductForm()
+        formset = ImageFormSet()
+    
+    return render(request, 'manager/add_product.html', {'product_form': product_form, 'formset': formset})
 
 
 @login_required(login_url='login')

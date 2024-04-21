@@ -9,5 +9,5 @@ class UserMessage(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     address = models.TextField()
-    phone_number = models.CharField(max_length=10, blank=True)
+    phone_number = models.CharField(max_length=10)
 

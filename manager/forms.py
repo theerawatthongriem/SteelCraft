@@ -1,5 +1,7 @@
 from django import forms
 from .models import * 
+from django.forms import formset_factory
+
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -10,11 +12,15 @@ class ProductForm(forms.ModelForm):
             'name':'ชื่อสินค้า',
             'description':'คำอธิบายสินค้า',
             'price':'ราคา',
-            'image':'รูปภาพ',
             'category':'หมวดหมู่',
         }
 
         exclude = ['user']
+
+class ProductImageForm(forms.ModelForm):
+    class Meta:
+        model = ProductImage
+        fields = ['image']
 
 class MaterialForm(forms.ModelForm):
     class Meta:

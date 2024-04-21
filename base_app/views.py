@@ -258,14 +258,18 @@ def dashboard(request):
     return render(request,'members/dashboard.html',{'favorite_count':favorite_count(request)})
 
 
+# def product_list(request):
+#     category = Category.objects.all()
+#     users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+#     products = Product.objects.filter(user__in=users)
+#     paginator = Paginator(products, 8)
+#     page = request.GET.get('page', 1)  
+#     products = paginator.get_page(page)
+#     return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
+
 def product_list(request):
-    category = Category.objects.all()
-    users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
-    products = Product.objects.filter(user__in=users)
-    paginator = Paginator(products, 8)
-    page = request.GET.get('page', 1)  
-    products = paginator.get_page(page)
-    return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
 
 def product_category(request,cate):
     category = Category.objects.get(id=cate)
@@ -286,19 +290,20 @@ def product_members(request):
 def product_detail(request,id):
     users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
     product = list(Product.objects.filter(user__in=users))
-    if len(product) >= 8:
-        random_products = sample(list(product), 5)
-    else:
-        random_products = product    
+    # if len(product) >= 8:
+    #     random_products = sample(list(product), 5)
+    # else:
+    #     random_products = product    
     
     products = Product.objects.get(pk=id)
-    favorite = Favorite.objects.filter(user=request.user)
-    for i in favorite:
-        if i.product.id == id:
-            favorite = id
-        else:
-            favorite = ''
-    return render(request, 'product_detail.html', {'products': products,'product':random_products,'favorite':favorite, 'favorite_count':favorite_count(request)})
+    # favorite = Favorite.objects.filter(user=request.user)
+    # for i in favorite:
+    #     if i.product.id == id:
+    #         favorite = id
+    #     else:
+    #         favorite = ''
+    return render(request, 'product_detail.html', {'products': products})
+    # return render(request, 'product_detail.html', {'products': products,'product':random_products,'favorite':favorite, 'favorite_count':favorite_count(request)})
 
 @login_required(login_url='login')
 def found_page(request):

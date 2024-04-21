@@ -13,8 +13,7 @@
 <div class="= dark:bg-gray-800 mt-2">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div x-data="{ open: true }" x-show="open" id="alert-1"
-            class="flex items-center p-4 mb-4 rounded-lg bg-yellow-500"
-            role="alert">
+            class="flex items-center p-4 mb-4 rounded-lg bg-yellow-500" role="alert">
             <div class="ms-3 text-sm font-medium">
                 {{ message }}
             </div>
@@ -39,11 +38,26 @@
 <div class="= dark:bg-gray-800 py-8 mt-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row -mx-4">
-            <div class="md:flex-1 px-4">
-                <div class="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4 border border-2">
-                    <img class="w-full h-full object-cover rounded-lg" src="{{ products.image.url }}"
-                        alt="Product Image">
+            <div class="md:flex-1 px-2 md:px-4">
+                <div class="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4 border-2">
+                    <div
+                        class="w3-content w3-display-container max-w-screen-lg h-full overflow-hidden relative border-2 border-[#3b3b3b] rounded-lg">
+
+                        {% for c in products.images.all %}
+                        <img class="mySlides w-full h-full object-cover rounded-lg" src="{{ c.image.url }}"
+                            alt="Product Image">
+                        {% endfor %}
+
+                        <button
+                            class="w3-button w3-black w3-display-left text-white absolute top-1/2 left-0 transform -translate-y-1/2"
+                            onclick="plusDivs(-1)">&#10094;</button>
+                        <button
+                            class="w3-button w3-black w3-display-right text-white absolute top-1/2 right-0 transform -translate-y-1/2"
+                            onclick="plusDivs(1)">&#10095;</button>
+
+                    </div>
                 </div>
+
                 <div class="flex -mx-2 mb-4">
                     <div class="w-1/2 px-2">
                         <a href="{% url 'checkout' products.id %}">
@@ -51,6 +65,8 @@
                                 class="w-full bg-gray-900 dark:bg-gray-600 text-white py-2 px-4 rounded-2xl font-bold hover:bg-gray-800 dark:hover:bg-gray-700">สั่งซื้อสินค้า</button>
                         </a>
                     </div>
+
+
 
 
                     {% if favorite == products.id %}
@@ -69,6 +85,7 @@
                     </div>
 
                     {% endif %}
+
 
 
 
@@ -126,17 +143,34 @@
     </div>
 </div>
 
+<section class="bg-white max-w-screen mt-5">
+    <div class="container mx-auto text-center">
+        <p class="text-xl font-bold mb-10">รูปภาพเพิ่มเติม</p>
+
+        <div class="grid grid-cols-2 gap-0 md:grid-cols-3 lg:grid-cols-3 md:gap-4">
+
+            {% for p in products.images.all %}
+            <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
+                <img src="{{ p.image.url }}" alt="Product" class="h-full w-full object-cover rounded-t" />
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
 
 <section class="bg-white max-w-screen mt-16">
     <div class="container mx-auto text-center">
         <p class="text-xl font-bold mb-10">สินค้าแนะนำ</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 justify-items-stretch">
 
             {% for p in product %}
             <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
                 <a href="{% url 'product_detail' p.id %}">
-                    <img src="{{ p.image.url }}" alt="Product" class="h-40 w-80 object-cover rounded-t" />
+                    <img src="{{ p.img.url }}" alt="Product" class="h-40 w-80 object-cover rounded-t" />
                     <div class="px-4 py-3 border-t-2">
                         <p class="text-lg font-bold text-black truncate block capitalize">{{ p.name }}</p>
                         <div class="flex items-center">
@@ -146,12 +180,52 @@
                     </div>
                 </a>
             </div>
+
             {% endfor %}
+
+
 
 
         </div>
     </div>
 </section>
+
+<!-- <div
+    class="w3-content w3-display-container max-w-screen-lg h-96 overflow-hidden relative border-2 border-[#3b3b3b] rounded-lg">
+    {% for c in products.images.all %}
+    <img class="mySlides rounded-lg object-cover h-full absolute inset-0 w-full" src="{{ c.image.url }}"
+        style="width: 100%;">
+    {% endfor %}
+
+    <button class="w3-button w3-black w3-display-left text-white absolute top-1/2 left-0 transform -translate-y-1/2"
+        onclick="plusDivs(-1)">&#10094;</button>
+    <button class="w3-button w3-black w3-display-right text-white absolute top-1/2 right-0 transform -translate-y-1/2"
+        onclick="plusDivs(1)">&#10095;</button>
+</div> -->
+
+<script>
+    var slideIndex = 1;
+    showDivs(slideIndex);
+
+    setInterval(function () {
+        plusDivs(1);
+    }, 3000);
+
+    function plusDivs(n) {
+        showDivs(slideIndex += n);
+    }
+
+    function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        if (n > x.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = x.length }
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        x[slideIndex - 1].style.display = "block";
+    }
+</script>
 
 
 {% endblock %}
