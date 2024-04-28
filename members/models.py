@@ -10,22 +10,16 @@ class Favorite(models.Model):
 class Order(models.Model):
     PENDING = 'รอดำเนินการ'
     CONFIRM = 'ยืนยันคำสั่งซื้อ'
-    MEASURING = 'นัดวัดขนาด'
-    MATERIAL_SELECTION = 'เลือกวัสดุ'
     IN_PROGRESS = 'ดำเนินการ'
-    READY_FOR_SHIPPING = 'พร้อมติดตั้ง'
-    INSTALLATION = 'ติดตั้ง'
+    READY_FOR_SHIPPING = 'ติดตั้ง'
     COMPLETED = 'เสร็จสิ้น'
     CANCELLED = 'ยกเลิก'
 
     STATUS_CHOICES = [
         (PENDING, 'รอดำเนินการ'),
         (CONFIRM, 'ยืนยันคำสั่งซื้อ'),
-        (MEASURING, 'นัดวัดขนาด'),
-        (MATERIAL_SELECTION, 'เลือกวัสดุ'),
         (IN_PROGRESS, 'ดำเนินการ'),
-        (READY_FOR_SHIPPING, 'พร้อมติดตั้ง'),
-        (INSTALLATION, 'ติดตั้ง'),
+        (READY_FOR_SHIPPING, 'ติดตั้ง'),
         (COMPLETED, 'เสร็จสิ้น'),
         (CANCELLED, 'ยกเลิก'),
     ]

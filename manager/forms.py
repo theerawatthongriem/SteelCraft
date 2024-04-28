@@ -22,6 +22,10 @@ class ProductImageForm(forms.ModelForm):
         model = ProductImage
         fields = ['image']
 
+        widgets = {
+            'image': forms.FileInput(attrs={'class': 'my-2'}),
+        }
+
 class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material

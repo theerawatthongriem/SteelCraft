@@ -64,6 +64,15 @@
 
                     <div class="mt-4">
                         <div class="w-full">
+                            <label for="address" class="block mb-3 text-sm font-medium text-gray-500">วันจองวัดขนาด </label>
+                            <input type="date" required
+                                class="w-full px-4 py-3 text-xs border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                                name="appt_date" cols="20" rows="4" placeholder="กรอกวันที่">
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="w-full">
                             <label for="phone_number"
                                 class="block mb-3 text-sm font-semibold text-gray-500">ปักหมุด</label>
                             <input name="delivery_location" id="locationInput" type="text" placeholder="" required hidden
@@ -87,20 +96,21 @@
         </div>
         <div class="flex flex-col w-full ml-0 lg:ml-12 lg:w-2/5">
             <div class="pt-12 md:pt-0 2xl:ps-4">
+
                 <p class="text-xl font-bold">สรุปคำสั่งซื้อ
                 </p>
+
                 <div class="mt-8">
-                    <div class="flex flex-col space-y-4">
-                        <div class="flex space-x-4">
+                       <div class="flex space-x-4">
                             <div class="border rounded">
-                                <img src="{{ product.image.url }}" alt="image" class="h-40 w-96 object-cover rounded">
-                            </div>
+                                <img src="{{ product.images.first.image.url }}" alt="image" class="h-40 w-96 object-cover rounded">
+                            </div>    <div class="flex flex-col space-y-4">
+                 
                             <div>
                                 <p class="text-xl font-bold">{{product.name}}</p>
 
                                 <span class="text-red-600">ราคา:</span>&nbsp;฿ {{ product.price|intcomma }}
                             </div>
-
                         </div>
 
                     </div>

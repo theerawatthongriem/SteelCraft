@@ -41,13 +41,16 @@
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
                            สถานะ
                         </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                           
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
 
                     {% for o in orders %}
                     
-                    <tr class="hover:bg-slate-100 cursor-pointer" onclick='window.location="/members/order/{{ o.id }}/"'>
+                    <tr class="hover:bg-slate-100 cursor-pointer" onclick='window.location="/manager/order_detail/{{ o.id }}/"'>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.id }}</div>
                         </td>
@@ -69,6 +72,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.status }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class=text-gray-900"><img src="https://www.aurobindoe.du.ac.in/assets/front/assets/images/new.gif" alt="" class="h-8"></div>
                         </td>
                         
                     </tr>

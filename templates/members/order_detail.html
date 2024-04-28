@@ -52,8 +52,8 @@
                     <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
                     <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
 
-                    <div class="border mt-10 rounded-md w-40">
-                        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="mt-4 w-60">
+                    <div class="border mt-10 rounded-md w-52 overflow-hidden">
+                        <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}" class=" w-full h-full">
                     </div>
                 </div>
             </div>

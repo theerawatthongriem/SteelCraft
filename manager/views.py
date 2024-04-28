@@ -60,7 +60,7 @@ def manager_dashboard(request):
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def customer_orders(request):
-    order = Order.objects.all()
+    order = Order.objects.all().order_by('-order_date')
     return render(request,'manager/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
 
 

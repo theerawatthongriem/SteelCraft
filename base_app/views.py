@@ -258,18 +258,18 @@ def dashboard(request):
     return render(request,'members/dashboard.html',{'favorite_count':favorite_count(request)})
 
 
-# def product_list(request):
-#     category = Category.objects.all()
-#     users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
-#     products = Product.objects.filter(user__in=users)
-#     paginator = Paginator(products, 8)
-#     page = request.GET.get('page', 1)  
-#     products = paginator.get_page(page)
-#     return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
-
 def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
+    category = Category.objects.all()
+    users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+    products = Product.objects.filter(user__in=users)
+    paginator = Paginator(products, 8)
+    page = request.GET.get('page', 1)  
+    products = paginator.get_page(page)
+    return render(request, 'product_list.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
+
+# def product_list(request):
+#     products = Product.objects.all()
+#     return render(request, 'product_list.html', {'products': products})
 
 def product_category(request,cate):
     category = Category.objects.get(id=cate)

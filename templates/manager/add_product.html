@@ -20,49 +20,104 @@
                 {% csrf_token %}
                 {{ product_form|crispy }}
 
-                {{ formset.management_form }}
-                {% for form in formset %}
-                <!-- {{form.image.label_tag}} {{ forloop.counter }} -->
-                <div class="formset">
-                    {{ form|crispy }} 
-                    <img id="preview_image_{{ forloop.counter }}" src="#" alt="ตัวอย่างรูปภาพ" style="display: none;" class="h-36 w-auto">
+                <div id="formset">
+                    {{ formset.management_form }}
+                    รูปภาพ
+                    {% for form in formset %}
+                    <div class="formset flex">
+                        {{ form.image }}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
 
                 <div class="mt-5 text-center">
-                    <button type="submit" class="text-white bg-[#2B3843] rounded py-2 m-2 px-6 hover:bg-gray-600 border">เพิ่มสินค้า</button>
+                    <button type="button" onclick="addForm()"
+                        class="text-white bg-[#2B3843] rounded py-2 m-2 px-6 hover:bg-gray-600 border">เพิ่มภาพ</button>
+                    <button type="submit"
+                        class="text-white bg-[#2B3843] rounded py-2 m-2 px-6 hover:bg-gray-600 border">เพิ่มสินค้า</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+
 <script>
-    function previewImage(event, counter) {
-        var reader = new FileReader();
-        reader.onload = function() {
-            var preview = document.getElementById('preview_image_' + counter);
-            preview.src = reader.result;
-            preview.style.display = 'block';
-        }
-        reader.readAsDataURL(event.target.files[0]);
+    // ลบฟิลด์เมื่อคลิกที่ปุ่ม "ลบภาพ"
+    function removeForm(btn) {
+        var formset = document.getElementById('formset');
+        formset.removeChild(btn.parentElement);
+
+        // อัปเดตค่า TOTAL_FORMS
+        var totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        totalForms.value = parseInt(totalForms.value) - 1;
     }
 
-    // เมื่อเอกสารโหลดเสร็จสมบูรณ์
-    document.addEventListener("DOMContentLoaded", function() {
-        // สำหรับแต่ละฟอร์มใน formset
-        document.querySelectorAll('.formset input[type="file"]').forEach(function(input) {
-            // เมื่อมีการเปลี่ยนแปลงใน input[type="file"]
-            input.addEventListener('change', function(event) {
-                // หากมีการเลือกไฟล์
-                if (event.target.files && event.target.files[0]) {
-                    // แสดงตัวอย่างรูปภาพ
-                    previewImage(event, input.dataset.counter);
-                }
-            });
-        });
-    });
+    // เพิ่มฟอร์มเมื่อคลิกที่ปุ่ม "เพิ่มภาพ"
+    function addForm() {
+        var formset = document.getElementById('formset');
+        var totalForms = document.getElementById('id_form-TOTAL_FORMS').value;
+        var newFormIndex = parseInt(totalForms);  // หมายเลขฟอร์มใหม่
+
+        // สร้าง HTML สำหรับฟอร์มใหม่
+        var newForm = document.createElement('div');
+        newForm.innerHTML = `
+            <div class="formset" id="formset-${newFormIndex}">
+                <input type="file" id="id_form-${newFormIndex}-image" name="form-${newFormIndex}-image" accept="image/*" class="my-2">
+                <button type="button" onclick="removeForm(${newFormIndex})" class="text-white bg-red-600 rounded py-2 m-2 px-4 hover:bg-red-700 border">ลบภาพ</button>
+            </div>
+        `;
+
+
+        // เพิ่มฟอร์มใหม่ลงใน formset
+        formset.appendChild(newForm);
+
+        // อัปเดตค่า TOTAL_FORMS
+        document.getElementById('id_form-TOTAL_FORMS').value = newFormIndex + 1;
+    }
 </script>
+
+
+
+
+<script>
+    // เพิ่มฟอร์มเมื่อคลิกที่ปุ่ม "เพิ่มภาพ"
+    function addForm() {
+    var formset = document.getElementById('formset');
+    var totalForms = document.getElementById('id_form-TOTAL_FORMS').value;
+    var newFormIndex = parseInt(totalForms);  // หมายเลขฟอร์มใหม่
+
+    // สร้าง HTML สำหรับฟอร์มใหม่
+    var newForm = document.createElement('div');
+    newForm.innerHTML = `
+        <div class="formset flex" id="formset-${newFormIndex}">
+            <input type="file" id="id_form-${newFormIndex}-image" name="form-${newFormIndex}-image" accept="image/*" class="my-2">
+            <button type="button" onclick="removeForm(this.parentNode)" class="text-white  rounded my-2 "><i class="fa-solid fa-xmark text-[#2B3843] text-lg"></i></button>
+        </div>
+    `;
+
+    // เพิ่มฟอร์มใหม่ลงใน formset
+    formset.appendChild(newForm);
+
+    // อัปเดตค่า TOTAL_FORMS
+    document.getElementById('id_form-TOTAL_FORMS').value = newFormIndex + 1;
+}
+
+</script>
+
+<script>
+    // ลบฟิลด์เมื่อคลิกที่ปุ่ม "ลบภาพ"
+    function removeForm(btn) {
+    var formset = document.getElementById('formset');
+    formset.removeChild(btn.parentNode); // เปลี่ยนจาก btn.parentElement เป็น btn.parentNode
+
+    // อัปเดตค่า TOTAL_FORMS
+    var totalForms = document.getElementById('id_form-TOTAL_FORMS');
+    totalForms.value = parseInt(totalForms.value) - 1;
+}
+
+</script>
+
 
 
 

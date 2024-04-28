@@ -47,6 +47,7 @@ def create_order(request,id):
     phone_number = request.POST.get('phone_number')
     note = request.POST.get('note')
     delivery_location = request.POST.get('delivery_location')
+    appt_date = request.POST.get('appt_date')
     product = Product.objects.get(pk=id)
     product_category = product.category
     total_price = int(product.price) * int(quantity)
@@ -77,6 +78,7 @@ def create_order(request,id):
         delivery_location=delivery_location,
         first_name=first_name,
         last_name=last_name,
+        appt_date=appt_date,
     )
 
     order.save()
@@ -87,11 +89,11 @@ def create_order(request,id):
         # if data.line_id:
         #     send_line_message(data.line_id, message)
 
-    return redirect(f'/product_detail/{id}/')
+    return redirect(f'orders')
 
 @login_required(login_url='login')
 def order_list(request):
-    order = Order.objects.filter(user=request.user)
+    order = Order.objects.filter(user=request.user).order_by('-order_date')
     return render(request,'members/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
 
 @login_required(login_url='login')
