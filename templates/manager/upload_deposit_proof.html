@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block content %}
+
+
+<div class="flex justify-center items-center mt-32">
+    <div class="w-96 p-6 shadow-lg rounded-md bg-white border border-[#2B3843]">
+
+        <form class="mt-3" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="mt-5 text-center">
+                <button type="submit" class="text-white bg-slate-500 rounded py-2 m-2 px-6 hover:bg-slate-800 border">อัพโหลด</button>
+            </div>
+        </form>
+
+        </div>
+</div>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+{% endblock %}

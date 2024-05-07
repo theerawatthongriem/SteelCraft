@@ -16,5 +16,8 @@ urlpatterns = [
     path('get_size/<int:id>/', get_size, name='get_size'),
     path('delete_size/<int:id>/<int:dlt>/', delete_size, name='delete_size'),
     path('edit_size/<int:id>/<int:dlt>/', edit_size, name='edit_size'),
+    path('update_status/<int:id>/<str:status>/', update_status, name='update_status'),
+    path('upload_deposit/<int:id>/', upload_deposit, name='upload_deposit'),
+    path('upload_payment/<int:id>/', upload_payment, name='upload_payment'),
 
 ]

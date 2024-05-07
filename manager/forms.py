@@ -1,5 +1,6 @@
 from django import forms
 from .models import * 
+from members.models import Order
 from django.forms import formset_factory
 
 
@@ -36,3 +37,15 @@ class MaterialForm(forms.ModelForm):
             'quantity':'จำนวน',
             'image':'รูปภาพ',
         }
+
+class DepositForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['deposit_proof']
+        labels = {'deposit_proof':'ไฟล์'}
+
+class PaymentForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['payment_proof']
+        labels = {'payment_proof':'ไฟล์'}

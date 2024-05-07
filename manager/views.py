@@ -14,6 +14,35 @@ import plotly.graph_objs as go
 
 from .permissions import *
 
+from promptpay import qrcode
+
+
+# import qrcode
+import base64
+from io import BytesIO
+# from django.http import HttpResponse
+
+
+# def generate_promptpay_qr(request):
+#     # สร้างข้อมูล PromptPay
+#     promptpay_id = "0956452530"  # เบอร์โทรศัพท์หรือเลขบัญชี PromptPay
+#     amount = "100"  # จำนวนเงิน
+
+#     # สร้าง URL สำหรับ PromptPay
+#     promptpay_url = f"promptpay://{promptpay_id}?amount={amount}"
+
+#     # สร้าง QR code
+#     qr = qrcode.make(promptpay_url)
+
+#     # แปลง QR code เป็น BytesIO object
+#     qr_bytes = BytesIO()
+#     qr.save(qr_bytes, format='PNG')
+#     qr_bytes.seek(0)
+
+#     # สร้าง HttpResponse สำหรับแสดง QR code บนเว็บ
+#     response = HttpResponse(qr_bytes, content_type='image/png')
+#     return response
+
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def manager_dashboard(request):
@@ -127,8 +156,46 @@ def delete_product(request,id):
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def order_detail(request,id):
+
     order = Order.objects.get(pk=id)
-    return render(request, 'manager/order_detail.html',{'order':order})
+
+    id_or_phone_number = "0956452530"
+    amount = order.total_price
+
+    
+
+    deposit_price = order.total_price * (order.deposit)/100
+    last_price = order.total_price - deposit_price
+
+    payload_with_amount1 = qrcode.generate_payload(id_or_phone_number, deposit_price)
+    qr_img1 = qrcode.to_image(payload_with_amount1)
+
+    qr_img_bytesio1 = BytesIO()
+    qr_img1.save(qr_img_bytesio1, format='PNG')
+    qr_img_base641 = base64.b64encode(qr_img_bytesio1.getvalue()).decode('utf-8')
+
+
+    payload_with_amount = qrcode.generate_payload(id_or_phone_number, last_price)
+    qr_img = qrcode.to_image(payload_with_amount)
+
+    qr_img_bytesio = BytesIO()
+    qr_img.save(qr_img_bytesio, format='PNG')
+    qr_img_base64 = base64.b64encode(qr_img_bytesio.getvalue()).decode('utf-8')
+
+    form = DepositForm(instance=order)
+    form2 = PaymentForm(instance=order)
+
+
+    return render(request, 'manager/order_detail.html',{
+        'order':order,
+        'qr_img_base64':qr_img_base64,
+        'qr_img_base641':qr_img_base641,
+        'deposit_price':int(deposit_price),
+        'last_price':int(last_price),
+        'forms':form,
+        'forms2':form2,
+        })
+
 
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
@@ -216,4 +283,34 @@ def edit_size(request, id,dlt):
             measuresize.d = d
             measuresize.save()
             return redirect(f'/manager/size_save_detail/{id}/')
+
+def update_status(request,id,status):
+    order = Order.objects.get(pk=id)
+    order.status = status
+    order.save()
+    return redirect(f'/manager/order_detail/{id}/')
+    
+
+def upload_deposit(request, id):
+    order = Order.objects.get(pk=id)
+    
+    if request.method == 'POST':
+        form = DepositForm(request.POST, request.FILES, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect(f'/manager/order_detail/{id}/')
+    else:
+        form = DepositForm(instance=order)
+
+def upload_payment(request, id):
+    order = Order.objects.get(pk=id)
+    
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, request.FILES, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect(f'/manager/order_detail/{id}/')
+    else:
+        form = PaymentForm(instance=order)
+
 
