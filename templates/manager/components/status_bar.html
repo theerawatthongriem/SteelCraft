@@ -1,0 +1,159 @@
+
+{% if order.deposit_payment == False and order.status == 'ยืนยันคำสั่งซื้อ' %}
+<div class="flex justify-center my-4">โปรดชำระค่ามัดจำ อัพโหลดหลักฐาน และยืนยันการรับเงินเพื่อดำเนินการต่อ</div>
+{% endif %}
+
+{% if order.payment == False and order.status == 'ติดตั้ง' %}
+<div class="flex justify-center my-4">โปรดชำระค่าสินค้า อัพโหลดหลักฐาน และยืนยันการรับเงินเพื่อดำเนินการต่อ</div>
+{% endif %}
+
+
+{% if user.is_staff %}
+
+<div class="flex justify-center items-center mt-3 mb-5 gap-4">
+    {% if order.status == 'รอดำเนินการ' %}
+    <a href="/manager/update_status/{{order.id}}/ยืนยันคำสั่งซื้อ/"
+        class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ยืนยันคำสั่งซื้อ
+        <i class="fa-solid fa-circle-chevron-right mx-2"></i></a>
+
+    <button type="button" onclick="showModal()"
+        class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
+            class="fa-solid fa-ban mx-2"></i>
+    </button>
+
+    {% elif order.status == 'ยืนยันคำสั่งซื้อ' %}
+    {% if order.deposit_payment == False %}
+    <p class="p-2 border bg-gray-400 text-lg text-white rounded-lg">ดำเนินการ<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i>
+    </p>
+    {% elif order.deposit_proof %}
+    <a href="/manager/update_status/{{order.id}}/ดำเนินการ/"
+        class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ดำเนินการ<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i></a>
+    {% endif %}
+
+
+    {% if order.deposit_payment == True %}
+    {% else %}
+    <button type="button" onclick="showModal()"
+        class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
+            class="fa-solid fa-ban mx-2"></i>
+    </button>
+    {% endif %}
+
+    {% elif order.status == 'ดำเนินการ' %}
+
+    <a href="/manager/update_status/{{order.id}}/ติดตั้ง/"
+        class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ติดตั้ง<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i></a>
+
+    <!-- <button type="button" onclick="showModal()"
+        class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
+            class="fa-solid fa-ban mx-2"></i>
+    </button> -->
+
+    {% elif order.status == 'ติดตั้ง' %}
+    {% if order.payment == False %}
+    <a class="p-2 border bg-gray-400 text-lg text-white rounded-lg">เสร็จสิ้น<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i>
+    </a>
+    {% else %}
+    <a href="/manager/update_status/{{order.id}}/เสร็จสิ้น/"
+        class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">เสร็จสิ้น<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i></a>
+    {% endif %}
+
+    <!-- <button type="button" onclick="showModal()"
+        class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
+            class="fa-solid fa-ban mx-2"></i>
+    </button> -->
+
+    {% elif order.status == 'เสร็จสิ้น' %}
+    <p class="text-2xl p-2 px-4 rounded-md bg-green-400 border"><i
+            class="fa-solid fa-check mx-2"></i>คำสั่งซื้อเสร็จสิ้น</p>
+    {% elif order.status == 'ยกเลิก' %}
+    <p class="text-2xl p-2 px-4 rounded-md bg-red-500 border"><i
+            class="fa-solid fa-xmark mx-2"></i>คำสั่งซื้อลูกยกเลิกแล้ว</p>
+    {% endif %}
+
+</div>
+
+{% endif %}
+
+<div class="flex justify-center items-center mt-5 text-lg md:text-xl gap-4 font-bold">
+    สถานะ
+</div>
+
+<div class="md:flex justify-center items-center mt-5 mb-5 hidden">
+    <div class="md:flex md:items-center space-x-5 justify-center text-center">
+        {% for status,label in order.STATUS_CHOICES %}
+        {% if status == order.status and order.status != 'ยกเลิก' %}
+        <div class="md:grid md:grid-cols-1">
+            <div class="">
+                <i class="fa-solid fa-circle-check text-5xl text-green-600"></i>
+            </div>
+            <div class="mt-1">
+                <div class="whitespace-nowrap">{{ label }}</div>
+            </div>
+        </div>
+        {% elif order.status == 'ยกเลิก' and order.status == status %}
+        <div class="md:grid md:grid-cols-1">
+            <div>
+                <i class="fa-solid fa-circle-check text-5xl text-red-600"></i>
+            </div>
+            <div>
+                <div class="whitespace-nowrap">{{ label }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="md:grid md:grid-cols-1">
+            <div>
+                <i class="fa-regular fa-circle-check text-4xl m-2"></i>
+            </div>
+            <div>
+                <div class="whitespace-nowrap">{{ label }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+</div>
+
+<div class="md:hidden flex justify-center items-center mb-10 ">
+    <div class="text-center">
+        {% for status,label in order.STATUS_CHOICES %}
+        {% if status == order.status and order.status != 'ยกเลิก' %}
+        <div class="flex items-center">
+            <div class="">
+                <i class="fa-solid fa-circle-check m-2 text-xl text-green-600"></i>
+            </div>
+            <div class="">
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% elif status == order.status and order.status == 'เสร็จสิ้น' %}
+  
+        {% elif order.status == 'ยกเลิก' and order.status == status %}
+        <div class="flex items-center">
+            <div>
+                <i class="fa-solid fa-circle-check text-xl m-2 text-red-600"></i>
+            </div>
+            <div>
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="flex items-center">
+            <div>
+                <i class="fa-regular fa-circle-check text-xl m-2"></i>
+            </div>
+            <div>
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+</div>

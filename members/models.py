@@ -48,7 +48,24 @@ class Order(models.Model):
 
 
 class MeasureSize(models.Model):
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name='MeasureSize')
     h = models.FloatField(default=0)
     w = models.FloatField(default=0)
     d = models.FloatField(default=0)
+    image1 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
+    image2 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
+    image3 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
+    image4 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
+    image5 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
+    image6 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
+    note = models.TextField(default='',null=True, blank=True)
+
+
+class CancelOrder(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True, null=True)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    cancellation_reason = models.CharField(max_length=100, blank=True, null=True)  
+
+
+class CancellationReason(models.Model):
+    cancellation_reason = models.CharField(max_length=100, blank=True, null=True)  

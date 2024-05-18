@@ -5,152 +5,194 @@
 
 {% block content %}
 
+<div class="max-w-6xl mx-auto bg-white p-6">
 
-<div class="flex justify-center p-2 mt-16">
-    <div class="w-3/3 md:w-3/5 mx-auto bg-white border rounded-lg overflow-hidden">
-        <div class="bg-slate-800 rounded-t-lg justify-between flex">
-            <p class="text-white text-lg p-4">รายละเอียดคำสั่งซื้อ</p>
-            <p class="text-white text-lg p-4">เลขที่คำสั่งซื้อ : {{ order.id }}</p>
-        </div>
-
-        <div class="mx-auto bg-white p-10 rounded-md md:grid grid-cols-1 gap-8 md:grid-cols-2 justify-center flex m-2">
-
-
-            <div class="col-span-1">
-                <p class="text-lg block font-medium mt-3">วันที่ : {{ order.order_date }}</p>
-
-                <p class="text-xl font-semibold mb-2">ข้อมูลลูกค้า</p>
-                <div class="mt-10 text-lg">
-                    <p><strong>ชื่อลูกค้า :</strong> {{ order.first_name }} {{ order.last_name }}</p>
-                    <p>( {{ order.user }} {{ order.user.first_name }} {{ order.user.last_name }} )</p>
-                    <p><strong>ที่อยู่ : </strong> {{ order.address }}</p>
-                    <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
-                    <p><strong>หมายเหตุ : </strong> {{ order.note }}</p>
-                </div>
-                <div class="mt-5">
-                    <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
-                        class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
-                        <i class="fa-solid fa-location-dot text-4xl"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- <div class="col-span-1">
-                <p class="text-xl font-semibold mb-2">หลักฐานการชำระเงิน</p>
-                <div class="mt-10 border w-60 rounded-md">
-                    <img src="https://www.scb.co.th/content/dam/scb/personal-banking/cards/prepaid-cards/images/how-to/transfer/planet-how-to-transfer-img-07.png"
-                        alt="Payment Proof" class="w-60 p-6">
-                </div>
-            </div> -->
-
-            <div class="col-span-1">
-                <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
-
-                <div class="mt-10 text-lg">
-                    <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
-                    <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
-                    <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
-                    <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
-
-                    <div class="border mt-10 rounded-md w-52 overflow-hidden">
-                        <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}" class=" w-full h-full">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="flex justify-center items-center mt-16 mb-10">
-            <div class="md:flex md:items-center space-x-5 justify-center text-center">
-                {% for status,label in order.STATUS_CHOICES %}
-                {% if status == order.status and order.status != 'ยกเลิก' %}
-                <div class="md:grid md:grid-cols-1">
-                    <div class="">
-                        <i class="fa-solid fa-circle-check text-5xl text-green-600"></i>
-                    </div>
-                    <div class="mt-1">
-                        <div class="whitespace-nowrap">{{ label }}</div>
-                    </div>
-                </div>
-                {% elif order.status == 'ยกเลิก' and order.status == status %}
-                <div class="md:grid md:grid-cols-1">
-                    <div>
-                        <i class="fa-solid fa-circle-check text-5xl text-red-600"></i>
-                    </div>
-                    <div>
-                        <div class="whitespace-nowrap">{{ label }}</div>
-                    </div>
-                </div>
-                {% else %}
-                <div class="md:grid md:grid-cols-1">
-                    <div>
-                        <i class="fa-regular fa-circle-check text-4xl m-2"></i>
-                    </div>
-                    <div>
-                        <div class="whitespace-nowrap">{{ label }}</div>
-                    </div>
-                </div>
-                {% endif %}
-       
-                {% endfor %}
-            </div>
-        </div>
-
-    </div>
+    <p class="text-xl block font-semibold mt-3">เลขที่คำสั่งซื้อ: {{ order.id }}</p>
+    <p class="text-lg block font-medium mt-3">วันที่ : {{ order.order_date.date }}</p>
 
 </div>
 
 
 
 
+<div class="efefef m-1">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2">
 
-<!-- <div class="container mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2">
-
-    <div class="col-span-1">
-        <p class="text-xl font-semibold mb-2">ข้อมูลลูกค้า</p>
-        <div class="mt-10 text-lg">
-            <p><strong>ชื่อลูกค้า :</strong> {{ order.first_name }} {{ order.last_name }}</p>
-            <p>( {{ order.user }} {{ order.user.first_name }} {{ order.user.last_name }} )</p>
-            <p><strong>ที่อยู่ : </strong> {{ order.address }}</p>
-            <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
-            <p><strong>หมายเหตุ : </strong> {{ order.note }}</p>
+        <div class="col-span-1">
+            <p class="text-xl font-semibold mb-2">ข้อมูลลูกค้า</p>
+            <div class="mt-10 text-lg">
+                <p><strong>ชื่อลูกค้า :</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                <p>( {{ order.user }} {{ order.user.first_name }} {{ order.user.last_name }} )</p>
+                <p><strong>ที่อยู่ : </strong> {{ order.address }}</p>
+                <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
+                <p><strong>หมายเหตุ : </strong> {% if order.note == None %} ไม่ระบุ {% else %} {{ order.note }}
+                    {% endif %} </p>
+                <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date.date }}</p>
+                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date.value == None %} รอดำเนินการ {% else %} {{
+                    order.ship_date.date }} {% endif %} </p>
+            </div>
+            <div class="mt-5">
+                <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
+                    class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
+                    <i class="fa-solid fa-location-dot text-4xl"></i>
+                </a>
+            </div>
         </div>
-        <div class="mt-5">
-            <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}" class="py-5 px-5 border border-gray-400 rounded-md bg-green-300 hover:bg-green-500">
-                <i class="fa-solid fa-location-dot text-4xl"></i>    
-            </a>
+
+
+        <div class="col-span-1">
+            <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
+
+            <div class="mt-10 text-lg">
+                <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
+                <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
+                <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
+                <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
+                <!-- Add product image -->
+                <div class="border mt-10 rounded-md w-60 overflow-hidden">
+                    <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}" class=" w-60">
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-span-1">
+            <p class="text-xl font-semibold mb-2">การชำระเงิน</p>
+
+            <p><strong>ค่ามัดจำ : </strong> {{ deposit_price|intcomma }} ( {{order.deposit}} % )</p>
+            <div class="mt-5 mb-5 text-lg">
+
+                {% if order.deposit_proof %}
+                <button onclick="showModal_deposit()"
+                    class="p-2 border rounded-md bg-neutral-500 text-white hover:bg-neutral-700 text-sm"><i
+                        class="fa-solid fa-money-bill-transfer mx-2"></i>ดูหลักฐานการชำระเงินค่ามัดจำ</button>
+                {% if order.deposit_payment == False %}
+                <button type="button" onclick="deposit_edit()"
+                    class="p-2 border rounded-md bg-slate-500 text-sm  text-white hover:bg-slate-800 hover:scale-105">แก้ไข</button>
+                {% else %}
+
+                {% endif %}
+
+                <div>
+                    {% if order.deposit_payment == False %}
+                    <p  class="text-md">รอตรวจสอบ</p>
+                    {% else %}
+                    <p><i class="fa-regular fa-square-check mx-1 text-green-600"></i>รับเงินแล้ว</p>
+                    {% endif %}
+                </div>
+                {% else %}
+                {% if order.status == 'ยืนยันคำสั่งซื้อ' %}
+                <button id="close" onclick="deposit_upload()"
+                    class="bg-green-700 hover:bg-green-800 text-sm text-white font-bold py-2 justify-end px-4 rounded">
+                    ชำระค่ามัดจำ
+                </button>
+                {% else %}
+                <p>รอยืนยันคำสั่งซื้อ</p>
+                <img src="https://icons.veryicon.com/png/o/miscellaneous/decon/wait-4.png" class="w-20" alt="">
+                {% endif %}
+                {% endif %}
+
+            </div>
+
+            <p><strong>ยอดชำระคงเหลือ : </strong> {{ last_price|intcomma }}</p>
+            <div class="mt-5 mb-5 text-lg">
+
+                {% if order.payment_proof %}
+                <button onclick="showModal_payment()"
+                    class="p-2 border rounded-md bg-amber-500 text-white hover:bg-amber-700 text-sm"><i
+                        class="fa-solid fa-credit-card mx-2"></i>ดูหลักฐานการชำระเงินค่าสินค้า</button>
+
+                    {% if order.payment == False %}
+                <button type="button" onclick="payment_edit()"
+                    class="p-2 border rounded-md bg-slate-500 text-sm  text-white hover:bg-slate-800 hover:scale-105">แก้ไข</button>
+                    {% else %}
+                    {% endif %}
+
+                <div>
+                    {% if order.payment == False %}
+                    {% if user.is_staff %}
+                    <a href="{% url 'confirm_payment' order.id %}" class="text-md"><i
+                            class="fa-regular fa-square mx-1"></i>ยืนยันรับเงิน</a>
+                    {% endif %}
+                    {% else %}
+                    <p><i class="fa-regular fa-square-check mx-1 text-green-600"></i>รับเงินแล้ว</p>
+                    {% endif %}
+                </div>
+                {% else %}
+                {% if order.status == 'ติดตั้ง' %}
+                <button id="close" onclick="payment_upload()"
+                    class="bg-green-700 hover:bg-green-800 text-sm text-white font-bold py-2 justify-end px-4 rounded">
+                    ชำระค่าสินค้า
+                </button>
+                {% else %}
+                <p>รอติดตั้ง</p>
+                <img src="https://icons.veryicon.com/png/o/miscellaneous/decon/wait-4.png" class="w-20" alt="">
+                {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="col-span-1">
-        <p class="text-xl font-semibold mb-2">หลักฐานการชำระเงิน</p>
-        <div class="mt-10 border w-60 rounded-md">
-        <img src="https://www.scb.co.th/content/dam/scb/personal-banking/cards/prepaid-cards/images/how-to/transfer/planet-how-to-transfer-img-07.png"
-            alt="Payment Proof" class="w-60 p-6">
+<div class="flex justify-center">
+{% if order.status == 'เสร็จสิ้น' %}
+<p class="text-2xl p-2 px-4 rounded-md bg-green-400 border"><i
+        class="fa-solid fa-check mx-2"></i>คำสั่งซื้อเสร็จสิ้น</p>
+{% elif order.status == 'ยกเลิก' %}
+<p class="text-2xl p-2 px-4 rounded-md bg-red-500 border"><i
+        class="fa-solid fa-xmark mx-2"></i>คำสั่งซื้อลูกยกเลิกแล้ว</p>
+{% endif %}
+</div>
+
+
+
+{% include 'manager/components/status_bar.html' %}
+
+{% include 'manager/components/order_detail_script.html' %}
+
+
+
+{% include 'manager/components/deposit_upload.html' %}
+{% include 'manager/components/deposit_edit.html' %}
+{% include 'manager/components/deposit_proof.html' %}
+
+{% include 'manager/components/payment_upload.html' %}
+{% include 'manager/components/payment_edit.html' %}
+{% include 'manager/components/payment_show.html' %}
+
+
+<div id="myModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
+
+        <div class="flex justify-end">
+            <button id="close" onclick="closeModal()"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold text-sm py-2 justify-end px-4 rounded">
+                ปิด
+            </button>
         </div>
+
+        <form method="post" action="{% url 'cancel_order' order.id %}">
+            {% csrf_token %}
+
+
+            <input type="radio" id="option1" name="choice" value="เปลี่ยนใจ" class="">
+            <label for="option1">เปลี่ยนใจ</label><br>
+            <input type="radio" id="option2" name="choice" value="ไม่ต้องการสินค้าแล้ว">
+            <label for="option2">ไม่ต้องการสินค้าแล้ว</label><br>
+
+            <input type="radio" id="other" name="choice" value="อื่นๆ">
+            <label for="other">อื่นๆ</label><br>
+            <input type="text" id="additional_info" name="additional_info" placeholder="ระบุเพิ่มเติม (ถ้ามี)"
+                class="border rounded w-full p-2 text-gray-800 focus:outline-2 focus:outline-red-500">
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="p-2 px-4 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105 my-2">ยืนยัน</button>
+            </div>
+        </form>
     </div>
-
-    <div class="col-span-1">
-        <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
-
-        <div class="mt-10 text-lg">
-            <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
-            <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
-            <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
-            <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
-
-            <div class="border mt-10 rounded-md w-60">
-            <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="mt-4 p-6 w-60">
-        </div>
-        </div>
-    </div> 
-
-</div> -->
-
-
-
-
+</div>
 
 
 {% endblock %}

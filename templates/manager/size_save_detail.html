@@ -11,96 +11,176 @@
     </div>
 </div>
 
-<div class="flex justify-center mt-4 flex-wrap mx-2">
-    <div class="container border bg-[#1e293b] py-2 rounded-t-lg overflow-hidden flex justify-between justify-items-center text-white">
-        <div class="p-2">{{ orders.product.name }}</div>
-        <div class="p-2">จำนวน : {{ orders.quantity }}</div>
+<div class="flex justify-center mt-4 flex-wrap mx-3">
+    <div
+        class="container bg-[#1e293b] py-2 rounded-t-lg overflow-hidden flex justify-between justify-items-center text-white">
+        <div class="p-4">{{ orders.product.name }}</div>
+        <div class="p-4">จำนวน : {{ orders.quantity }}</div>
     </div>
-    {% for i in MeasureSize %}
-    <div class="container border py-2 flex justify-between justify-items-center {% if forloop.last %} rounded-b-lg{% endif %}">
+</div>
 
-        <div class="p-2">ชิ้นที่ {{ forloop.counter }}</div>
-        <div class="p-2">สูง : {{ i.h}} cm</div>
-        <div class="p-2">กว้าง : {{i.w}} cm</div>
-        <div class="p-2">หนา : {{i.d}} cm</div>
-        <div class="p-2 cursor-pointer hover:scale-105" onclick="openEditModal('{{ orders.id }}', '{{ i.id }}', '{{ forloop.counter }}')">
-            <i class="fa-regular fa-pen-to-square"></i>&nbsp;แก้ไข
+
+{% for i in MeasureSize %}
+<div class="flex justify-center flex-nowrap mx-3 ">
+
+    <div
+        class="grid justify-start w-full md:grid-cols-5 flex-wrap max-w-screen-2xl overflow-auto border border-gray-700 {% if forloop.last %} rounded-b-lg {% endif %}">
+
+        <div class="w-32  p-3 font-bold">ชิ้นที่ : {{ forloop.counter }}</div>
+        <div class="grid grid-cols-3 p-2">
+            <div class="p-2">
+                <p class="font-bold">สูง</p> {{ i.h}} cm
+            </div>
+            <div class="p-2">
+                <p class="font-bold">กว้าง</p> {{i.w}} cm
+            </div>
+            <div class="p-2">
+                <p class="font-bold">หนา</p> {{i.d}} cm
+            </div>
         </div>
-        
 
-        <div class="p-2 px-5 hover:scale-105"><a href="{% url 'delete_size' orders.id i.id %}"
-                class="hover:scale-105"><i class="fa-solid fa-trash-can hover:scale-105"></i>&nbsp;ลบ</a></div>
+
+
+        <!-- {% if i.image1 %}
+        <div class="p-2">รูปภาพ 1 <img src="{{ i.image1.url }}" alt=""
+                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+        {% endif %}
+        {% if i.image2 %}
+        <div class="p-2">รูปภาพ 2 <img src="{{ i.image2.url }}" alt=""
+                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+        {% endif %}
+        {% if i.image3 %}
+        <div class="p-2">รูปภาพ 3 <img src="{{ i.image3.url }}" alt=""
+                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+        {% endif %}
+        {% if i.image4 %}
+        <div class="p-2">รูปภาพ 4 <img src="{{i.image4.url }}" alt=""
+                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+        {% endif %}
+        {% if i.image5 %}
+        <div class="p-2">รูปภาพ 5 <img src="{{ i.image5.url }}" alt=""
+                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+        {% endif %}
+        {% if i.image6 %}
+        <div class="p-2">รูปภาพ 6 <img src="{{ i.image6.url }}" alt=""
+                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+        {% endif %} -->
+
+        <div class="w-full">
+            <p class="p-2 font-bold">หมายเหตุ</p>
+            {% if i.note %}
+            <p class="p-2 text-wrap h-fit">{{i.note}}</p>
+            {% else %}
+            ไม่ระบุ
+            {% endif %}
+        </div>
+
+        <div class="flex justify-center items-center">
+            <button onclick="toggleModal({{forloop.counter}})"
+                class="p-2 border rounded-md bg-amber-400 hover:bg-amber-500">รูปภาพเพิ่มเติม</button>
+        </div>
+
+        <div id="modal{{forloop.counter}}"
+            class="hidden rounded-lg fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center overflow-y-auto">
+
+            <div class="m-4 p-2 border rounded-lg overflow-y-auto bg-white max-w-full max-h-full">
+                <div class="flex justify-end">
+                    <button onclick="toggleModal({{forloop.counter}})"
+                        class="mt-2 p-2 border rounded-md bg-red-400 hover:bg-red-500">ปิด</button>
+                </div>
+                <div class="font-bold text-lg flex justify-center">ชิ้นที่ : {{ forloop.counter }}</div>
+                <div class="m-2 rounded-lg grid md:grid-cols-3">
+
+                    {% if i.image1 %}
+                    <div class="p-2">รูปภาพ 1 <img src="{{ i.image1.url }}" alt=""
+                            class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+                    {% endif %}
+                    {% if i.image2 %}
+                    <div class="p-2">รูปภาพ 2 <img src="{{ i.image2.url }}" alt=""
+                            class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+                    {% endif %}
+                    {% if i.image3 %}
+                    <div class="p-2">รูปภาพ 3 <img src="{{ i.image3.url }}" alt=""
+                            class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+                    {% endif %}
+                    {% if i.image4 %}
+                    <div class="p-2">รูปภาพ 4 <img src="{{i.image4.url }}" alt=""
+                            class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+                    {% endif %}
+                    {% if i.image5 %}
+                    <div class="p-2">รูปภาพ 5 <img src="{{ i.image5.url }}" alt=""
+                            class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+                    {% endif %}
+                    {% if i.image6 %}
+                    <div class="p-2">รูปภาพ 6 <img src="{{ i.image6.url }}" alt=""
+                            class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
+                    {% endif %}
+
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <script>
+            function toggleModal(counter) {
+                var modal = document.getElementById("modal" + counter);
+                if (modal.classList.contains('hidden')) {
+                    modal.classList.remove('hidden');
+                } else {
+                    modal.classList.add('hidden');
+                }
+            }
+        </script>
+
+
+        <div class="justify-around flex w-96 my-4">
+            <div class="p-2 px-5"><a href="/manager/size_save_detail/{{ orders.id }}/{{ i.id }}/edit_size/"
+                    class="hover:scale-105"><i class="fa-regular fa-pen-to-square"></i>&nbsp;แก้ไข</a>
+            </div>
+
+            <div class="p-2 px-5"><a href="{% url 'delete_size' orders.id i.id %}" class="hover:scale-105"><i
+                        class="fa-solid fa-trash-can hover:scale-105"></i>&nbsp;ลบ</a>
+            </div>
+        </div>
 
     </div>
+</div>
+{% endfor %}
 
-    {% endfor %}
 
-    <div class="container justify-between justify-items-center hidden" id="editModal">
+
+
+
+
+<div class="flex justify-center mt-4 flex-wrap mx-2 ">
+    <div class="m-2" x-data="{ open: false }">
         <div class="flex justify-end items-center">
+            {% if MeasureSize.count == orders.quantity %}
+            {% else %}
+            <button @click="open = true" class="p-2 px-8 hover:scale-105 border rounded-md bg-[#47791e] text-white"><i
+                    class="fa-solid fa-plus"></i> &nbsp;&nbsp;เพิ่มบันทึก</button>
+            {% endif %}
 
-            <div class="fixed inset-0 flex items-center justify-center">
-                <div class="bg-white p-2 mx-auto rounded-lg shadow-xl border border-[#2B3843] flex-wrap">
+            <div x-show="open" @click.away="open = false"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white p-2 m-2 rounded-lg shadow-xl border border-[#2B3843]  flex-wrap">
                     <div class="justify-end flex">
-                        <button onclick="closeEditModal()"
+                        <button @click="open = false"
                             class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">ปิด</button>
                     </div>
 
 
-                    <p class="text-xl font-family mb-4 text-center">แก้ไขบันทึก ชิ้นที่ <label id="q"></label></p>
+                    <p class="text-xl font-family mb-4 text-center font-bold">เพิ่มบันทึก</p>
 
-                    <form id="edit_size_form" method="post"
-                        class="text-center container justify-center grid grid-cols-3">
-
+                    <form action="{% url 'add_size' orders.id %}" method="post" enctype="multipart/form-data"
+                        class=" text-sm">
                         {% csrf_token %}
-                        <div>
-                            สูง : <input type="number" step="0.01"  name="h" id="h"
-                                class="p-2 m-2 rounded-md border" placeholder="cm">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {{ form|crispy }}
                         </div>
-                        <div>
-                            กว้าง : <input type="number" step="0.01"  name="w" id="w"
-                                class="p-2 m-2 rounded-md border" placeholder="cm">
-                        </div>
-                        <div>
-                            หนา : <input type="number" step="0.01" name="d" id="d"
-                                class="p-2 m-2 rounded-md border" placeholder="cm">
-                        </div>
-                        <br>
-                        <div>
-                            <button type="submit"
-                                class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container py-2 flex justify-between justify-items-center">
-        <div class="" x-data="{ open: false }">
-            <div class="flex justify-end items-center">
-                <button @click="open = true"
-                    class="p-2 px-8 hover:scale-105 border rounded-md bg-[#47791e] text-white"><i
-                        class="fa-solid fa-plus"></i> &nbsp;&nbsp;เพิ่มบันทึก</button>
-
-                <div x-show="open" @click.away="open = false" class="fixed inset-0 flex items-center justify-center">
-                    <div class="bg-white p-2 mx-auto rounded-lg shadow-xl border border-[#2B3843] flex-wrap">
-                        <div class="justify-end flex">
-                            <button @click="open = false"
-                                class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">ปิด</button>
-                        </div>
-
-
-                        <p class="text-xl font-family mb-4 text-center">เพิ่มบันทึก</p>
-
-                        <form action="{% url 'add_size' orders.id %}" method="post"
-                            class="text-center container justify-center grid grid-cols-3">
-                            {% csrf_token %}
-                            <div>
-                                สูง : <input type="number" step="0.01" value="0" name="h"
-                                    class="p-2 m-2 rounded-md border" placeholder="cm">
-                            </div>
-                            <div>
+                        <!-- <div>
                                 กว้าง : <input type="number" step="0.01" value="0" name="w"
                                     class="p-2 m-2 rounded-md border" placeholder="cm">
                             </div>
@@ -108,50 +188,22 @@
                                 หนา : <input type="number" step="0.01" value="0" name="d"
                                     class="p-2 m-2 rounded-md border" placeholder="cm">
                             </div>
-                            <br>
-                            <div>
-                                <button type="submit"
-                                    class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>
-                            </div>
+                            <br> -->
+                        <div class="flex justify-center">
+                            <button type="submit"
+                                class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>
+                        </div>
 
-                        </form>
-                        <!-- <button @click="open = false" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">ปิด</button> -->
-                    </div>
+                    </form>
+                    <!-- <button @click="open = false" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">ปิด</button> -->
                 </div>
-
             </div>
+
         </div>
     </div>
 </div>
+</div>
 
-<script>
-    function openEditModal(ordersId, iId, q) {
-    var modal = document.getElementById("editModal");
-    modal.style.display = "block";
-
-    // โหลดข้อมูลขนาดปัจจุบันเข้าไปในฟอร์ม Modal ด้วย Ajax
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            var data = JSON.parse(this.responseText);
-            document.getElementById("h").value = data.h;
-            document.getElementById("w").value = data.w;
-            document.getElementById("d").value = data.d;
-            document.getElementById("q").innerText = q;
-            document.getElementById("edit_size_form").action = `/manager/edit_size/${ordersId}/${iId}/`;
-        }
-    };
-    xhr.open("GET", "/manager/get_size/" + iId + "/", true);
-    xhr.send();
-}
-
-
-    // ปิด Modal เมื่อคลิกที่ปุ่มปิดหรือพื้นหลัง
-    function closeEditModal() {
-        var modal = document.getElementById("editModal");
-        modal.style.display = "none";
-    }
-</script>
 
 
 {% endblock %}

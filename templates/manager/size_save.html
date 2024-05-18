@@ -33,6 +33,8 @@
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
                             จำนวน
                         </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                        </th>
               
                     </tr>
                 </thead>
@@ -55,6 +57,12 @@
                  
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.quantity }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if o.MeasureSize.all %}
+                            {% else %}
+                            <div class=text-gray-900">ยังไม่มีบันทึก</div>
+                            {% endif %}
                         </td>
                         
 

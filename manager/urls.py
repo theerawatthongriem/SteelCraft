@@ -19,5 +19,8 @@ urlpatterns = [
     path('update_status/<int:id>/<str:status>/', update_status, name='update_status'),
     path('upload_deposit/<int:id>/', upload_deposit, name='upload_deposit'),
     path('upload_payment/<int:id>/', upload_payment, name='upload_payment'),
-
+    path('confirm_deposit/<int:id>/', confirm_deposit, name='confirm_deposit'),
+    path('confirm_payment/<int:id>/', confirm_payment, name='confirm_payment'),
+    path('cancel_order/<int:id>/', cancel_order, name='cancel_order'),
+    path('size_save_detail/<int:id>/<int:dlt>/edit_size/', edit_size, name='edit_size'),
 ]

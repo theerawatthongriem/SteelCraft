@@ -69,5 +69,52 @@
     </div>
 </div>
 
+<div class="flex justify-center items-center">
+    <div class="p-6 bg-white">
+        {% if m.paginator.num_pages > 1 %}
+        <div class="flex justify-center inset-x-0 bottom-0">
+
+            <nav class="relative z-0 inline-flex flex-wrap -space-x-px rounded-md shadow-md text-lg border">
+                {% if m.has_previous %}
+                <a href="?page={{ m.previous_page_number }}"
+                    class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                    <i class="fa-solid fa-backward"></i>
+                </a>
+                {% else %}
+                <a href="#" aria-disabled="true"
+                    class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                    <i class="fa-solid fa-backward"></i>
+                </a>
+                {% endif %}
+
+
+                {% for i in m.paginator.page_range %}
+                {% if m.number == i %}
+                <a href=""
+                    class="relative inline-flex items-center px-3 p-2 md:px-5 md:py-2 hover:bg-gray-200">{{i}}</a>
+                {% elif m.number > i|add:"-5" and m.number < i|add:"+5" %} <a href="?page={{ i }}"
+                    class="relative inline-flex items-center px-3 p-2 md:px-5 md:py-2 hover:bg-gray-200">{{i}}</a>
+                    {% endif %}
+                    {% endfor %}
+
+
+                    {% if m.has_next %}
+                    <a href="?page={{ m.next_page_number }}"
+                        class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                        <i class="fa-solid fa-forward"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" aria-disabled="true"
+                        class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                        <i class="fa-solid fa-forward"></i>
+                    </a>
+                    {% endif %}
+            </nav>
+
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 
 {% endblock %}

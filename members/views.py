@@ -10,6 +10,13 @@ from base_app.context_processors import favorite_count
 from .permissions import *
 from base_app.views import send_line_message
 
+from promptpay import qrcode
+import base64
+from io import BytesIO
+
+from manager.forms import DepositForm,PaymentForm
+
+
 @login_required(login_url='login')
 def add_favorite(request,id):
     product = Product.objects.get(pk=id)
@@ -96,12 +103,54 @@ def order_list(request):
     order = Order.objects.filter(user=request.user).order_by('-order_date')
     return render(request,'members/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
 
+# def order_detail(request,id):
+#     order = Order.objects.get(pk=id)
+#     return render(request, 'members/order_detail.html',{'order':order})
+
+
 @login_required(login_url='login')
 def order_detail(request,id):
+
     order = Order.objects.get(pk=id)
-    return render(request, 'members/order_detail.html',{'order':order})
+
+    id_or_phone_number = "0956452530"
+    amount = order.total_price
+
+    
+
+    deposit_price = order.total_price * (order.deposit)/100
+    last_price = order.total_price - deposit_price
+
+    payload_with_amount1 = qrcode.generate_payload(id_or_phone_number, deposit_price)
+    qr_img1 = qrcode.to_image(payload_with_amount1)
+
+    qr_img_bytesio1 = BytesIO()
+    qr_img1.save(qr_img_bytesio1, format='PNG')
+    qr_img_base641 = base64.b64encode(qr_img_bytesio1.getvalue()).decode('utf-8')
 
 
+    payload_with_amount = qrcode.generate_payload(id_or_phone_number, last_price)
+    qr_img = qrcode.to_image(payload_with_amount)
+
+    qr_img_bytesio = BytesIO()
+    qr_img.save(qr_img_bytesio, format='PNG')
+    qr_img_base64 = base64.b64encode(qr_img_bytesio.getvalue()).decode('utf-8')
+
+    form = DepositForm(instance=order)
+    form2 = PaymentForm(instance=order)
+
+    print(order.deposit_payment)
+
+
+    return render(request, 'members/order_detail.html',{
+        'order':order,
+        'qr_img_base64':qr_img_base64,
+        'qr_img_base641':qr_img_base641,
+        'deposit_price':int(deposit_price),
+        'last_price':int(last_price),
+        'forms':form,
+        'forms2':form2,
+        })
 
     
 

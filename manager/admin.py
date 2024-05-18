@@ -10,7 +10,10 @@ class ProductAdmin(admin.ModelAdmin):
     #     return format_html('<img src="{}" style="border: #232323 1px solid; border-radius: 5%;"  width="100" height="100" />', img.image.url) if img.image else ''
 
 class MeasureSizeAdmin(admin.ModelAdmin):
-    list_display = ['orders','order_id','h','w','d']
+    list_display = ('order', 'h', 'w', 'd', 'note')
+    search_fields = ('order__first_name', 'order__last_name')  # ค้นหาโดยใช้ชื่อลูกค้า
+    list_filter = ('order__status',) 
+    
 
     def orders(self,order):
         return order.order.user if order.order else ''
@@ -18,6 +21,8 @@ class MeasureSizeAdmin(admin.ModelAdmin):
     def order_id(self,order):
         return order.order.id if order.order else ''
 
+
+    
 
 admin.site.register(Product,ProductAdmin)
 admin.site.register(Category)

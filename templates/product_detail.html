@@ -44,8 +44,13 @@
                         class="w3-content w3-display-container md:max-w-screen-lg w-full h-full relative overflow-hidden border border-[#3b3b3b] rounded-lg">
 
                         {% for c in products.images.all %}
+                        {% if c.image %}
                         <img class="mySlides md:w-full md:h-full object-cover" src="{{ c.image.url }}"
                             alt="Product Image">
+                        {% else %}
+                        <img class="mySlides md:w-full md:h-full object-cover" src="https://masjidthai.com/committee/no-pict.png"
+                            alt="Product Image">
+                        {% endif %}
                         {% endfor %}
 
                         <button
@@ -94,11 +99,11 @@
                         <span class="font-bold text-gray-700 dark:text-gray-300">ราคา:</span>
                         <span class="text-gray-600 dark:text-gray-300">฿ {{products.price|intcomma}}</span>
                     </div>
-                    <div>
+                    <!-- <div>
                         <span class="font-bold text-gray-700 dark:text-gray-300">
                             สภาพพร้อมใช้งาน:</span>
                         <span class="text-gray-600 dark:text-gray-300">อยู่ในคลัง</span>
-                    </div>
+                    </div> -->
                 </div>
 
 
@@ -141,9 +146,16 @@
         <div class="grid grid-cols-2 md:grid-cols-3">
 
             {% for p in products.images.all %}
+            {% if p.image %}
+
             <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
                 <img src="{{ p.image.url }}" alt="Product" class="md:h-full md:w-full object-cover rounded-t" />
             </div>
+            {% else %}
+            <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
+                <img src="https://masjidthai.com/committee/no-pict.png" alt="Product" class="md:h-full md:w-full object-cover rounded-t" />
+            </div>
+            {% endif %}
 
             {% endfor %}
 
@@ -152,44 +164,7 @@
 </section>
 
 
-<!-- <section class="bg-white max-w-screen mt-16">
-    <div class="container mx-auto text-center">
-        <p class="text-xl font-bold mb-10">สินค้าแนะนำ</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 justify-items-stretch">
-
-            {% for p in product %}
-            <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
-                <a href="{% url 'product_detail' p.id %}">
-                    <img src="{{ p.img.url }}" alt="Product" class="h-40 w-80 object-cover rounded-t" />
-                    <div class="px-4 py-3 border-t-2">
-                        <p class="text-lg font-bold text-black truncate block capitalize">{{ p.name }}</p>
-                        <div class="flex items-center">
-                            <p class="text-lg font-semibold text-black cursor-auto my-3">{{ p.price|intcomma }} ฿
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            {% endfor %}
-
-        </div>
-    </div>
-</section> -->
-
-<!-- <div
-    class="w3-content w3-display-container max-w-screen-lg h-96 overflow-hidden relative border-2 border-[#3b3b3b] rounded-lg">
-    {% for c in products.images.all %}
-    <img class="mySlides rounded-lg object-cover h-full absolute inset-0 w-full" src="{{ c.image.url }}"
-        style="width: 100%;">
-    {% endfor %}
-
-    <button class="w3-button w3-black w3-display-left text-white absolute top-1/2 left-0 transform -translate-y-1/2"
-        onclick="plusDivs(-1)">&#10094;</button>
-    <button class="w3-button w3-black w3-display-right text-white absolute top-1/2 right-0 transform -translate-y-1/2"
-        onclick="plusDivs(1)">&#10095;</button>
-</div> -->
 
 <script>
     var slideIndex = 1;

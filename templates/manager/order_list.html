@@ -21,7 +21,7 @@
                 <thead class="bg-[#3E5062] text-white">
                     <tr>
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
-                             เลขที่คำสั่งซื้อ
+                            เลขที่คำสั่งซื้อ
                         </th>
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
                             วันที่สั่งซื้อ
@@ -39,22 +39,23 @@
                             ราคารวม
                         </th>
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
-                           สถานะ
+                            สถานะ
                         </th>
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
-                           
+
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
 
                     {% for o in orders %}
-                    
-                    <tr class="hover:bg-slate-100 cursor-pointer" onclick='window.location="/manager/order_detail/{{ o.id }}/"'>
+
+                    <tr class="hover:bg-slate-100 cursor-pointer"
+                        onclick='window.location="/manager/order_detail/{{ o.id }}/"'>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.id }}</div>
                         </td>
-                        
+
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.order_date }}</div>
                         </td>
@@ -74,11 +75,16 @@
                             <div class=text-gray-900">{{ o.status }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class=text-gray-900"><img src="https://www.aurobindoe.du.ac.in/assets/front/assets/images/new.gif" alt="" class="h-8"></div>
+                            <div class=text-gray-900">
+                                {% if o.status == 'รอดำเนินการ' %}
+                                <img src="https://www.aurobindoe.du.ac.in/assets/front/assets/images/new.gif" alt=""
+                                    class="h-8">
+                                {% endif %}
+                            </div>
                         </td>
-                        
+
                     </tr>
-                    
+
                     {% endfor %}
 
                 </tbody>

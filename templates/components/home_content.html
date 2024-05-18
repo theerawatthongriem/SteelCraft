@@ -1,62 +1,64 @@
-
 <div class="relative bg-[#2B3843] text-white text-center py-16">
-    <!-- ลายน้ำ -->
-    <div class="absolute inset-0 bg-center bg-cover"
-        style="background-image: url('https://www.autoslidedoor.com/wp-content/uploads/2016/07/%E0%B8%A3%E0%B8%B1%E0%B9%89%E0%B8%A7%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B9%87%E0%B8%81%E0%B8%94%E0%B8%B1%E0%B8%947.jpg'); opacity: 0.15;">
-    </div>
-  
-    <p class="relative text-4xl font-bold mb-4">รับทำเหล็กดัดสแตนเลส</p>
-    <p class="relative text-lg mb-2">บริการดัดเหล็กสแตนเลสทุกรูปแบบ</p>
-    <a href="#services" class="mt-6 bg-white text-lg text-black px-4 py-2 rounded-xl inline-block relative">ดูบริการของเรา</a>
+  <!-- ลายน้ำ -->
+  <div class="absolute inset-0 bg-center bg-cover"
+    style="background-image: url('https://www.autoslidedoor.com/wp-content/uploads/2016/07/%E0%B8%A3%E0%B8%B1%E0%B9%89%E0%B8%A7%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B9%87%E0%B8%81%E0%B8%94%E0%B8%B1%E0%B8%947.jpg'); opacity: 0.15;">
   </div>
-  
-  
-  <!-- Services Section -->
-  <div id="services" class="container mx-auto py-12">
-    <p class="text-2xl font-bold mb-2 text-center">บริการของเรา</p>
-  
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-  
-      <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-400 m-2">
-        <p class="text-xl font-bold mb-4">ดัดเหล็กสแตนเลส</p>
-        <p>เรามีความเชี่ยวชาญในการดัดเหล็กสแตนเลสทุกรูปแบบตามความต้องการของลูกค้า</p>
-      </div>
-  
-      <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-400 m-2">
-        <p class="text-xl font-bold mb-4">ตัดเหล็กสแตนเลส</p>
-        <p>บริการตัดเหล็กสแตนเลสด้วยเครื่องจักรทันสมัยและทีมงานมืออาชีพ</p>
-      </div>
-  
-      <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-400 m-2">
-        <p class="text-xl font-bold mb-4">งานเชื่อมเหล็ก</p>
-        <p>ทีมช่างเชี่ยวชาญในการเชื่อมเหล็กทุกรูปแบบด้วยความปลอดภัยและความแม่นยำ</p>
-      </div>
-    </div>
-  </div>
-  
-  <section class="bg-white max-w-screen">
-    <div class="container mx-auto text-center">
-      <p class="text-2xl font-bold mb-4">สินค้าแนะนำ</p>
-  
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-        {% for p in products %}
-        <div class="bg-gray-200 rounded-lg shadow-lg m-2 border border-gray-400">
-          <img src="{{ p.images.first.image.url }}" alt="Product 1"
-            class="w-full h-60 object-cover mb-4 rounded-t-lg">
-          <p class="text-lg font-semibold mb-2">{{ p.name }}</p>
-          <div class="p-4">
+  <p class="relative text-4xl font-bold mb-4">รับทำเหล็กดัดสแตนเลส</p>
+  <p class="relative text-lg mb-2">บริการดัดเหล็กสแตนเลสทุกรูปแบบ</p>
+  <a href="#services"
+    class="mt-6 bg-white text-lg text-black px-4 py-2 rounded-xl inline-block relative">ดูบริการของเรา</a>
+</div>
+
+
+<!-- Services Section -->
+<div id="services" class="container mx-auto py-12">
+  <p class="text-2xl font-bold mb-2 text-center">บริการของเรา</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-400 m-2">
+      <p class="text-xl font-bold mb-4">ดัดเหล็กสแตนเลส</p>
+      <p>เรามีความเชี่ยวชาญในการดัดเหล็กสแตนเลสทุกรูปแบบตามความต้องการของลูกค้า</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-400 m-2">
+      <p class="text-xl font-bold mb-4">ตัดเหล็กสแตนเลส</p>
+      <p>บริการตัดเหล็กสแตนเลสด้วยเครื่องจักรทันสมัยและทีมงานมืออาชีพ</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-400 m-2">
+      <p class="text-xl font-bold mb-4">งานเชื่อมเหล็ก</p>
+      <p>ทีมช่างเชี่ยวชาญในการเชื่อมเหล็กทุกรูปแบบด้วยความปลอดภัยและความแม่นยำ</p>
+    </div>
+  </div>
+</div>
+
+<!-- <section class="bg-white max-w-screen">
+  <div class="container mx-auto text-center">
+    <p class="text-2xl font-bold mb-4">สินค้าแนะนำ</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+      {% for p in products %}
+      <div class="bg-gray-200 rounded-lg shadow-lg m-2 border border-gray-400">
+        {% if p.images.first.image %}
+        <img src="{{ p.images.first.image.url }}" alt="Product 1" class="w-full h-60 object-cover mb-4 rounded-t-lg">
+        {% else %}
+        <img src="https://masjidthai.com/committee/no-pict.png" alt="Product 1" class="w-full h-60 object-cover mb-4 rounded-t-lg">
+        {% endif %}
+        <p class="text-lg font-semibold mb-2">{{ p.name }}</p>
+        <div class="p-4">
           <a href="{% url 'product_detail' p.id %}"
             class="mt-4 mb-4 bg-[#445360] hover:bg-[#2B3843] text-white py-2.5 px-4 rounded-xl">ดูรายละเอียด</a>
-          </div>
         </div>
-        {% endfor %}
-  
-       
-        
-  
-       
       </div>
+      {% endfor %}
+
+
+
+
+
     </div>
-  </section>
-  
+  </div>
+</section> -->

@@ -15,7 +15,9 @@ import plotly.graph_objs as go
 from .permissions import *
 
 from promptpay import qrcode
+from members.models import *
 
+from django.core.paginator import Paginator
 
 # import qrcode
 import base64
@@ -110,6 +112,8 @@ def customer_orders(request):
 
 @login_required(login_url='login')
 def add_product(request):
+    m = Material.objects.all()
+
     ImageFormSet = formset_factory(ProductImageForm, extra=3)  # extra คือจำนวนฟอร์มที่สร้างขึ้นมาเริ่มต้น
     
     if request.method == 'POST':
@@ -127,7 +131,7 @@ def add_product(request):
         product_form = ProductForm()
         formset = ImageFormSet()
     
-    return render(request, 'manager/add_product.html', {'product_form': product_form, 'formset': formset})
+    return render(request, 'manager/add_product.html', {'product_form': product_form, 'formset': formset,'m':m})
 
 
 @login_required(login_url='login')
@@ -185,6 +189,8 @@ def order_detail(request,id):
     form = DepositForm(instance=order)
     form2 = PaymentForm(instance=order)
 
+    print(order.deposit_payment)
+
 
     return render(request, 'manager/order_detail.html',{
         'order':order,
@@ -201,6 +207,9 @@ def order_detail(request,id):
 @user_passes_test(manager_user,login_url='found_page')
 def material_list(request):
     m = Material.objects.all()
+    paginator = Paginator(m, 5)
+    page = request.GET.get('page', 1)  
+    m = paginator.get_page(page)
     return render(request, 'manager/material.html',{'m':m})
 
 
@@ -230,9 +239,19 @@ def size_save(request):
 
 def size_save_detail(request,id):
     order =  Order.objects.get(pk=id)
+    m = MeasureSizeForm()
+    if request.method == 'POST':
+        m = MeasureSizeForm(request.POST, request.FILES)
+        if m.is_valid():
+            m.order = order
+            m.save()
+            return redirect(f'/manager/size_save_detail/{id}/')
+        else:
+            m = MeasureSizeForm(request.POST, request.FILES)
     return render(request,'manager/size_save_detail.html',
     {
         'orders':order,
+        'form':m,
         'MeasureSize':MeasureSize.objects.filter(order=order),
     })
 
@@ -270,19 +289,38 @@ def delete_size(request, id,dlt):
     return redirect(f'/manager/size_save_detail/{id}/')
 
 def edit_size(request, id,dlt):
-    order = get_object_or_404(Order, pk=id)
+    order =  Order.objects.get(pk=id)
+    msz = MeasureSize.objects.get(pk=dlt)
+    m = MeasureSizeForm(instance=msz)
     if request.method == 'POST':
-        h = request.POST.get('h', 0) 
-        w = request.POST.get('w', 0) 
-        d = request.POST.get('d', 0) 
-        
-        if h and w and d:
-            measuresize = MeasureSize.objects.get(order=order,pk=dlt)
-            measuresize.h = h
-            measuresize.w = w
-            measuresize.d = d
-            measuresize.save()
+        m = MeasureSizeForm(request.POST, request.FILES,instance=msz)
+        if m.is_valid():
+            m.save()
             return redirect(f'/manager/size_save_detail/{id}/')
+        else:
+            m = MeasureSizeForm(request.POST, request.FILES, instance=msz)
+    return render(request,'manager/edit_size.html',
+    {
+        'orders':order,
+        'form':m,
+
+    })
+
+    # size_save_detail/25/
+# def edit_size(request, id,dlt):
+#     order = get_object_or_404(Order, pk=id)
+#     if request.method == 'POST':
+#         h = request.POST.get('h', 0) 
+#         w = request.POST.get('w', 0) 
+#         d = request.POST.get('d', 0) 
+        
+#         if h and w and d:
+#             measuresize = MeasureSize.objects.get(order=order,pk=dlt)
+#             measuresize.h = h
+#             measuresize.w = w
+#             measuresize.d = d
+#             measuresize.save()
+#             return redirect(f'/manager/size_save_detail/{id}/')
 
 def update_status(request,id,status):
     order = Order.objects.get(pk=id)
@@ -298,7 +336,11 @@ def upload_deposit(request, id):
         form = DepositForm(request.POST, request.FILES, instance=order)
         if form.is_valid():
             form.save()
-            return redirect(f'/manager/order_detail/{id}/')
+            if request.user.is_staff:
+                return redirect(f'/manager/order_detail/{id}/')
+            else:
+                return redirect(f'/members/order/{id}/')
+
     else:
         form = DepositForm(instance=order)
 
@@ -309,8 +351,33 @@ def upload_payment(request, id):
         form = PaymentForm(request.POST, request.FILES, instance=order)
         if form.is_valid():
             form.save()
-            return redirect(f'/manager/order_detail/{id}/')
+            if request.user.is_staff:
+                return redirect(f'/manager/order_detail/{id}/')
+            else:
+                return redirect(f'/members/order/{id}/')
     else:
         form = PaymentForm(instance=order)
 
+
+def confirm_deposit(request,id):
+    order = Order.objects.get(pk=id)
+    order.deposit_payment = True
+    order.save()
+    return redirect(f'/manager/order_detail/{id}/')
+
+def confirm_payment(request,id):
+    order = Order.objects.get(pk=id)
+    order.payment = True
+    order.save()
+    return redirect(f'/manager/order_detail/{id}/')
+
+def cancel_order(request,id):
+    if request.method == 'POST':
+        choice = request.POST.get('choice')
+        order = Order.objects.get(pk=id)
+        order.status = 'ยกเลิก'
+        order.save()
+        cor = CancelOrder.objects.create(user=request.user,order=order,cancellation_reason=choice)
+        cor.save()
+        return redirect(f'/manager/order_detail/{id}/')
 

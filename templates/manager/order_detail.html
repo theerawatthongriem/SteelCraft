@@ -12,8 +12,10 @@
 
 </div>
 
-<div class="efefef m-1">
 
+
+
+<div class="efefef m-1">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2">
 
         <div class="col-span-1">
@@ -23,7 +25,7 @@
                 <p>( {{ order.user }} {{ order.user.first_name }} {{ order.user.last_name }} )</p>
                 <p><strong>ที่อยู่ : </strong> {{ order.address }}</p>
                 <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
-                <p><strong>หมายเหตุ : </strong> {% if order.note.value == None %} ไม่ระบุ {% else %} {{ order.note }}
+                <p><strong>หมายเหตุ : </strong> {% if order.note == None %} ไม่ระบุ {% else %} {{ order.note }}
                     {% endif %} </p>
                 <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date.date }}</p>
                 <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date.value == None %} รอดำเนินการ {% else %} {{
@@ -40,7 +42,7 @@
 
         <div class="col-span-1">
             <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
-
+            <a href="{% url 'product_detail' order.product.id %}" class="hover:underline">
             <div class="mt-10 text-lg">
                 <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
                 <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
@@ -51,11 +53,8 @@
                     <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}" class=" w-60">
                 </div>
             </div>
+            </a>
         </div>
-
-
-
-
 
 
 
@@ -63,508 +62,124 @@
         <div class="col-span-1">
             <p class="text-xl font-semibold mb-2">การชำระเงิน</p>
 
-            <div class="mt-10 text-lg">
-                {% if order.deposit_proof and order.deposit != 0 %}
+            <p><strong>ค่ามัดจำ : </strong> {{ deposit_price|intcomma }} ( {{order.deposit}} % )</p>
+            <div class="mt-5 mb-5 text-lg">
+
+                {% if order.deposit_proof %}
                 <button onclick="showModal_deposit()"
-                    class="p-2 border rounded-md bg-neutral-500 text-white hover:bg-neutral-700 text-sm"><i class="fa-solid fa-money-bill-transfer mx-2"></i>ดูหลักฐานการชำระเงินค่ามัดจำ</button>
+                    class="p-2 border rounded-md bg-neutral-500 text-white hover:bg-neutral-700 text-sm"><i
+                        class="fa-solid fa-money-bill-transfer mx-2"></i>ดูหลักฐานการชำระเงินค่ามัดจำ</button>
+                {% if order.deposit_payment == False %}
                 <button type="button" onclick="deposit_edit()"
                     class="p-2 border rounded-md bg-slate-500 text-sm  text-white hover:bg-slate-800 hover:scale-105">แก้ไข</button>
-
                 {% else %}
 
+                {% endif %}
 
-                <p><strong>ค่ามัดจำ : </strong> {{ deposit_price|intcomma }} ( {{order.deposit}} % )</p>
+                <div>
+                    {% if order.deposit_payment == False %}
+                    <a href="{% url 'confirm_deposit' order.id %}" class="text-md"><i
+                            class="fa-regular fa-square mx-1"></i>ยืนยันรับเงิน</a>
+                    {% else %}
+                    <p><i class="fa-regular fa-square-check mx-1 text-green-600"></i>รับเงินแล้ว</p>
+                    {% endif %}
+                </div>
+                {% else %}
                 {% if order.status == 'ยืนยันคำสั่งซื้อ' %}
-
                 <button id="close" onclick="deposit_upload()"
                     class="bg-green-700 hover:bg-green-800 text-sm text-white font-bold py-2 justify-end px-4 rounded">
                     ชำระค่ามัดจำ
                 </button>
-
                 {% else %}
-                <p>รอยืนยันคำสั่งซื้อ
-                </p>
+                <p>รอยืนยันคำสั่งซื้อ</p>
                 <img src="https://icons.veryicon.com/png/o/miscellaneous/decon/wait-4.png" class="w-20" alt="">
-
+                {% endif %}
                 {% endif %}
 
+            </div>
 
-                <div id="deposit_upload"
-                    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
+            <p><strong>ยอดชำระคงเหลือ : </strong> {{ last_price|intcomma }}</p>
+            <div class="mt-5 mb-5 text-lg">
 
-                        <div class="flex justify-end">
-                            <button id="close" onclick="closedeposit_upload()"
-                                class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 justify-end px-4 rounded">
-                                ปิด
-                            </button>
-                        </div>
-
-                        <div class="w-64 overflow-hidden flex  justify-center items-center">
-                            <p class="font-bold">ชำระค่ามัดจำ</p>
-                        </div>
-
-                        <div class="border rounded-md w-full overflow-hidden flex justify-center">
-                            <img src="data:image/png;base64,{{ qr_img_base641 }}" alt="PromptPay QR Code" class=" w-56">
-                        </div>
-                        <div class="w-64 overflow-hidden flex items-center justify-center text-sm">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png"
-                                alt="PromptPay QR Code" class=" w-28">
-                            <p class="font-bold">: 0956452530</p>
-                        </div>
-                        <div class="w-64 overflow-hidden flex  justify-center items-center">
-                            <p class="font-bold text-sm">{{ deposit_price|intcomma }} บาท ( {{order.deposit}} % )</p>
-                        </div>
-
-
-                        <div class="w-full mt-3 overflow-hidden flex text-md justify-center items-center">
-                            <p class="font-bold border p-2 rounded-md text-white bg-slate-600">อัพโหลดหลักฐานการชำระเงิน
-                            </p>
-                        </div>
-
-                        <form class="mt-1 p-2 w-full overflow-hidden text-sm"
-                            action="{% url 'upload_deposit' order.id %}" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="flex p-2  justify-center items-center ">
-                                <input type="file" name="deposit_proof">
-                            </div>
-
-                            <div class=" text-center">
-                                <button type="submit"
-                                    class="text-white bg-slate-600 rounded py-2 m-2 px-6 hover:bg-slate-800 border">อัพโหลด</button>
-                            </div>
-                        </form>
-                        {% if order.deposit_proof %}
-                        <img src="{{ order.deposit_proof.url}}" alt="" class="w-80 my-2 h-full">
-                        {% else %}
-                        {% endif %}
-                    </div>
-
-
-                    {% endif %}
-
-                    <div id="deposit"
-                        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
-                            <div class="flex justify-end">
-                                <button id="close" onclick="closeModal_deposit()"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 justify-end px-4 rounded">
-                                    ปิด
-                                </button>
-                            </div>
-                            {% if order.deposit_proof %}
-                            <img src="{{ order.deposit_proof.url}}" alt="" class="w-80 my-2 h-full">
-                            {% else %}
-                            <p>ไม่มีข้อมูล</p>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div id="deposit_edit"
-                        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div id="myModal-content" class="bg-white w-auto p-8 rounded shadow-lg">
-                            <div class="flex justify-end">
-                                <button id="close" onclick="closedeposit_edit()"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold text-sm py-2 justify-end px-4 rounded">
-                                    ปิด
-                                </button>
-                            </div>
-
-                            <div class="w-full mt-3 overflow-hidden flex text-md justify-center items-center">
-                                <p class="font-bold border p-2 rounded-md text-white bg-slate-600">
-                                    แก้ไขหลักฐานการชำระเงิน
-                                </p>
-                            </div>
-
-                            <form class="mt-1 p-2 w-full overflow-hidden text-sm"
-                                action="{% url 'upload_deposit' order.id %}" method="post"
-                                enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="flex p-2  justify-center items-center ">
-                                    <!-- <input type="file" name="deposit_proof"> -->
-
-                                </div>
-
-                                {{ forms|crispy}}
-
-                                <div class=" text-center">
-                                    <button type="submit"
-                                        class="text-white bg-slate-600 rounded py-2 m-2 px-6 hover:bg-slate-800 border">อัพโหลด</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-10 text-lg">
-
-                    {% if order.payment_proof %}
+                {% if order.payment_proof %}
                 <button onclick="showModal_payment()"
-                    class="p-2 border rounded-md bg-amber-500 text-white hover:bg-amber-700 text-sm"><i class="fa-solid fa-credit-card mx-2"></i>ดูหลักฐานการชำระเงินค่าสินค้า</button>
+                    class="p-2 border rounded-md bg-amber-500 text-white hover:bg-amber-700 text-sm"><i
+                        class="fa-solid fa-credit-card mx-2"></i>ดูหลักฐานการชำระเงินค่าสินค้า</button>
+                {% if order.payment == False %}
                 <button type="button" onclick="payment_edit()"
                     class="p-2 border rounded-md bg-slate-500 text-sm  text-white hover:bg-slate-800 hover:scale-105">แก้ไข</button>
-                <!-- <a href="{% url 'upload_deposit' order.id %}"
-                    class="p-2 border rounded-md bg-slate-500 text-sm  text-white hover:bg-slate-800 hover:scale-105">แก้ไข</a> -->
-
-
                 {% else %}
-
-                    <p><strong>ยอดชำระคงเหลือ : </strong> {{ last_price|intcomma }}</p>
-                    {% if order.status == 'ติดตั้ง' %}
-
-                    <button id="close" onclick="amount_upload()"
-                        class="bg-green-700 hover:bg-green-800 text-sm text-white font-bold py-2 justify-end px-4 rounded">
-                        ชำระค่าสินค้า
-                    </button>
-                    {% else %}
-                    <p>รอติดตั้ง
-                    </p>
-                    <img src="https://icons.veryicon.com/png/o/miscellaneous/decon/wait-4.png" class="w-20" alt="">
-                    {% endif %}
-
-                    <div id="amount_upload"
-                        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
-
-                            <div class="flex justify-end">
-                                <button id="close" onclick="closeamount_upload()"
-                                    class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 justify-end px-4 rounded">
-                                    ปิด
-                                </button>
-                            </div>
-
-                            <div class="w-64 overflow-hidden flex  justify-center items-center">
-                                <p class="font-bold">ชำระค่าสินค้าคงเหลือ</p>
-                            </div>
-
-                            <div class="border rounded-md w-full overflow-hidden flex justify-center">
-                                <img src="data:image/png;base64,{{ qr_img_base64 }}" alt="PromptPay QR Code"
-                                    class=" w-56">
-                            </div>
-                            <div class="w-64 overflow-hidden flex items-center justify-center text-sm">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png"
-                                    alt="PromptPay QR Code" class=" w-28">
-                                <p class="font-bold">: 0956452530</p>
-                            </div>
-                            <div class="w-64 overflow-hidden flex  justify-center items-center">
-                                <p class="font-bold text-sm">{{ last_price|intcomma }} บาท
-                                </p>
-                            </div>
-
-
-                            <div class="w-full mt-3 overflow-hidden flex text-md justify-center items-center">
-                                <p class="font-bold border p-2 rounded-md text-white bg-slate-600">
-                                    อัพโหลดหลักฐานการชำระเงิน
-                                </p>
-                            </div>
-
-                            <form class="mt-1 p-2 w-full overflow-hidden text-sm"
-                                action="{% url 'upload_payment' order.id %}" method="post"
-                                enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="flex p-2  justify-center items-center ">
-                                    <input type="file" name="payment_proof">
-                                </div>
-
-                                <div class=" text-center">
-                                    <button type="submit"
-                                        class="text-white bg-slate-600 rounded py-2 m-2 px-6 hover:bg-slate-800 border">อัพโหลด</button>
-                                </div>
-                            </form>
-                            {% if order.payment_proof %}
-                            <img src="{{ order.payment_proof.url}}" alt="" class="w-80 my-2 h-full">
-                            {% else %}
-                            {% endif %}
-                        </div>
-
-                        {% endif %}
-
-                        <div id="payment"
-                        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
-                            <div class="flex justify-end">
-                                <button id="close" onclick="closeModal_payment()"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 justify-end px-4 rounded">
-                                    ปิด
-                                </button>
-                            </div>
-                            {% if order.deposit_proof %}
-                            <img src="{{ order.payment_proof.url}}" alt="" class="w-80 my-2 h-full">
-                            {% else %}
-                            <p>ไม่มีข้อมูล</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    </div>
-
-                    <div id="payment_edit"
-                        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div id="myModal-content" class="bg-white w-auto p-8 rounded shadow-lg">
-                            <div class="flex justify-end">
-                                <button id="close" onclick="closepayment_edit()"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold text-sm py-2 justify-end px-4 rounded">
-                                    ปิด
-                                </button>
-                            </div>
-
-                            <div class="w-full mt-3 overflow-hidden flex text-md justify-center items-center">
-                                <p class="font-bold border p-2 rounded-md text-white bg-slate-600">
-                                    แก้ไขหลักฐานการชำระเงิน
-                                </p>
-                            </div>
-
-                            <form class="mt-1 p-2 w-full overflow-hidden text-sm"
-                                action="{% url 'upload_payment' order.id %}" method="post"
-                                enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="flex p-2  justify-center items-center ">
-                                    <!-- <input type="file" name="deposit_proof"> -->
-
-                                </div>
-
-                                {{ forms2|crispy}}
-
-                                <div class=" text-center">
-                                    <button type="submit"
-                                        class="text-white bg-slate-600 rounded py-2 m-2 px-6 hover:bg-slate-800 border">อัพโหลด</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
-                </div>
-            </div>
-
-
-            <div class="flex justify-center items-center mt-5 mb-5 gap-4">
-                {% if order.status == 'รอดำเนินการ' %}
-                <a href="/manager/update_status/{{order.id}}/ยืนยันคำสั่งซื้อ/"
-                    class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ยืนยังคำสั่งซื้อ
-                    <i class="fa-solid fa-circle-chevron-right mx-2"></i></a>
-        
-                <button type="button" onclick="showModal()"
-                    class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
-                        class="fa-solid fa-ban mx-2"></i>
-                </button>
-        
-        
-                {% elif order.status == 'ยืนยันคำสั่งซื้อ' %}
-                <a href="/manager/update_status/{{order.id}}/ดำเนินการ/"
-                    class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ดำเนินการ<i
-                        class="fa-solid fa-circle-chevron-right mx-2"></i></a>
-        
-                <button type="button" onclick="showModal()"
-                    class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
-                        class="fa-solid fa-ban mx-2"></i>
-                </button>
-        
-                {% elif order.status == 'ดำเนินการ' %}
-                <a href="/manager/update_status/{{order.id}}/ติดตั้ง/"
-                    class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ติดตั้ง<i
-                        class="fa-solid fa-circle-chevron-right mx-2"></i></a>
-        
-                <button type="button" onclick="showModal()"
-                    class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
-                        class="fa-solid fa-ban mx-2"></i>
-                </button>
-        
-                {% elif order.status == 'ติดตั้ง' %}
-                <a href="/manager/update_status/{{order.id}}/เสร็จสิ้น/"
-                    class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">เสร็จสิ้น<i
-                        class="fa-solid fa-circle-chevron-right mx-2"></i></a>
-        
-                <button type="button" onclick="showModal()"
-                    class="p-2 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105">ยกเลิก <i
-                        class="fa-solid fa-ban mx-2"></i>
-                </button>
-        
-                {% elif order.status == 'เสร็จสิ้น' %}
-                <p class="text-2xl p-2 px-4 rounded-md bg-green-400 border"><i
-                        class="fa-solid fa-check mx-2"></i>คำสั่งซื้อเสร็จสิ้น</p>
-                {% elif order.status == 'ยกเลิก' %}
-                <p class="text-2xl p-2 px-4 rounded-md bg-red-500 border"><i
-                        class="fa-solid fa-xmark mx-2"></i>คำสั่งซื้อลูกยกเลิกแล้ว</p>
                 {% endif %}
-        
-            </div>
-        
-            <div class="flex justify-center items-center mt-5 text-lg md:text-xl gap-4 font-bold">
-                สถานะ
-            </div>
-        
-            <div class="md:flex justify-center items-center mt-5 mb-5 hidden">
-                <div class="md:flex md:items-center space-x-5 justify-center text-center">
-                    {% for status,label in order.STATUS_CHOICES %}
-                    {% if status == order.status and order.status != 'ยกเลิก' %}
-                    <div class="md:grid md:grid-cols-1">
-                        <div class="">
-                            <i class="fa-solid fa-circle-check text-5xl text-green-600"></i>
-                        </div>
-                        <div class="mt-1">
-                            <div class="whitespace-nowrap">{{ label }}</div>
-                        </div>
-                    </div>
-                    {% elif order.status == 'ยกเลิก' and order.status == status %}
-                    <div class="md:grid md:grid-cols-1">
-                        <div>
-                            <i class="fa-solid fa-circle-check text-5xl text-red-600"></i>
-                        </div>
-                        <div>
-                            <div class="whitespace-nowrap">{{ label }}</div>
-                        </div>
-                    </div>
+                <div>
+                    {% if order.payment == False %}
+                    <a href="{% url 'confirm_payment' order.id %}" class="text-md"><i
+                            class="fa-regular fa-square mx-1"></i>ยืนยันรับเงิน</a>
                     {% else %}
-                    <div class="md:grid md:grid-cols-1">
-                        <div>
-                            <i class="fa-regular fa-circle-check text-4xl m-2"></i>
-                        </div>
-                        <div>
-                            <div class="whitespace-nowrap">{{ label }}</div>
-                        </div>
-                    </div>
+                    <p><i class="fa-regular fa-square-check mx-1 text-green-600"></i>รับเงินแล้ว</p>
                     {% endif %}
-        
-                    {% endfor %}
                 </div>
+                {% else %}
+                {% if order.status == 'ติดตั้ง' %}
+                <button id="close" onclick="payment_upload()"
+                    class="bg-green-700 hover:bg-green-800 text-sm text-white font-bold py-2 justify-end px-4 rounded">
+                    ชำระค่าสินค้า
+                </button>
+                {% else %}
+                <p>รอติดตั้ง</p>
+                <img src="https://icons.veryicon.com/png/o/miscellaneous/decon/wait-4.png" class="w-20" alt="">
+                {% endif %}
+                {% endif %}
             </div>
-        
-            <div class="md:hidden flex justify-center items-center mb-10 ">
-                <div class="text-center">
-                    {% for status,label in order.STATUS_CHOICES %}
-                    {% if status == order.status and order.status != 'ยกเลิก' %}
-                    <div class="flex items-center">
-                        <div class="">
-                            <i class="fa-solid fa-circle-check m-2 text-xl text-green-600"></i>
-                        </div>
-                        <div class="">
-                            <div class="">{{ label }}</div>
-                        </div>
-                    </div>
-                    {% elif order.status == 'ยกเลิก' and order.status == status %}
-                    <div class="flex items-center">
-                        <div>
-                            <i class="fa-solid fa-circle-check text-xl m-2 text-red-600"></i>
-                        </div>
-                        <div>
-                            <div class="">{{ label }}</div>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="flex items-center">
-                        <div>
-                            <i class="fa-regular fa-circle-check text-xl m-2"></i>
-                        </div>
-                        <div>
-                            <div class="">{{ label }}</div>
-                        </div>
-                    </div>
-                    {% endif %}
-        
-                    {% endfor %}
-                </div>
-            </div>
-            
         </div>
-
     </div>
-
 </div>
 
+
+
+{% include 'manager/components/status_bar.html' %}
+
+{% include 'manager/components/order_detail_script.html' %}
+
+
+
+{% include 'manager/components/deposit_upload.html' %}
+{% include 'manager/components/deposit_edit.html' %}
+{% include 'manager/components/deposit_proof.html' %}
+
+{% include 'manager/components/payment_upload.html' %}
+{% include 'manager/components/payment_edit.html' %}
+{% include 'manager/components/payment_show.html' %}
 
 
 <div id="myModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
     <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
-        <button id="close" onclick="closeModal()"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            แสดง
-        </button>
-        <p>ข้อความที่ต้องการแสดง</p>
+
+        <div class="flex justify-end">
+            <button id="close" onclick="closeModal()"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold text-sm py-2 justify-end px-4 rounded">
+                ปิด
+            </button>
+        </div>
+
+        <form method="post" action="{% url 'cancel_order' order.id %}">
+            {% csrf_token %}
+            <input type="radio" id="option3" name="choice" value="ไม่มีสินค้า">
+            <label for="option3">ไม่มีสินค้า</label><br>
+            <input type="radio" id="option4" name="choice" value="ไม่สามารถทำได้">
+            <label for="option4">ไม่สามารถทำได้</label><br>
+
+
+            <input type="radio" id="other" name="choice" value="อื่นๆ">
+            <label for="other">อื่นๆ</label><br>
+            <input type="text" id="additional_info" name="additional_info" placeholder="ระบุเพิ่มเติม (ถ้ามี)"
+                class="border rounded w-full p-2 text-gray-800 focus:outline-2 focus:outline-red-500">
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="p-2 px-4 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105 my-2">ยืนยัน</button>
+            </div>
+        </form>
     </div>
 </div>
-
-
-
-
-
-<script>
-    function showModal_payment() {
-        document.getElementById("payment").classList.remove('hidden');
-    }
-
-    function closeModal_payment() {
-        document.getElementById("payment").classList.add('hidden');
-    }
-</script>
-
-<script>
-    function payment_edit() {
-        document.getElementById("payment_edit").classList.remove('hidden');
-    }
-
-    function closepayment_edit() {
-        document.getElementById("payment_edit").classList.add('hidden');
-    }
-</script>
-
-
-<script>
-    function amount_upload() {
-        document.getElementById("amount_upload").classList.remove('hidden');
-    }
-
-    function closeamount_upload() {
-        document.getElementById("amount_upload").classList.add('hidden');
-    }
-</script>
-
-
-<script>
-    function showModal_deposit() {
-        document.getElementById("deposit").classList.remove('hidden');
-    }
-
-    function closeModal_deposit() {
-        document.getElementById("deposit").classList.add('hidden');
-    }
-</script>
-
-<script>
-    function deposit_edit() {
-        document.getElementById("deposit_edit").classList.remove('hidden');
-    }
-
-    function closedeposit_edit() {
-        document.getElementById("deposit_edit").classList.add('hidden');
-    }
-</script>
-
-<script>
-    function showModal() {
-        document.getElementById("myModal").classList.remove('hidden');
-    }
-
-    function closeModal() {
-        document.getElementById("myModal").classList.add('hidden');
-    }
-</script>
-
-<script>
-    function deposit_upload() {
-        document.getElementById("deposit_upload").classList.remove('hidden');
-    }
-
-    function closedeposit_upload() {
-        document.getElementById("deposit_upload").classList.add('hidden');
-    }
-</script>
-
-<script>
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-</script>
 
 
 {% endblock %}

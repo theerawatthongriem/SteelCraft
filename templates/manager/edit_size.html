@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="flex justify-center items-center ">
+    <div class="w-96 rounded-md px-6 mt-3">
+        <p class="text-2xl block text-center font-medium mt-4">คำสั่งซื้อที่ {{ orders.id }}</p>
+    </div>
+</div>
+
+<div class="justify-center flex flex-wrap mt-5">
+    <div
+        class="w-full mx-2 md:w-3/6 border border-[#1e293b] bg-[#1e293b] py-2 rounded-t-lg overflow-hidden flex justify-between justify-items-center text-white">
+        <div class="p-2">{{ orders.product.name }}</div>
+        <div class="p-2">จำนวน : {{ orders.quantity }}</div>
+    </div>
+</div>
+
+
+
+<div class="justify-center flex flex-wrap">
+    <div class="w-full mx-2 md:w-3/6 flex  justify-items-center border border-[#1e293b] rounded-b-lg" id="editModal">
+
+
+        <div class="flex justify-end items-center">
+            <form id="edit_size_form" method="post" enctype="multipart/form-data" class="m-4">
+
+                <div class="flex justify-center text-xl font-bold">
+                    5]enecececefceececedeed
+                </div>
+
+
+                {% csrf_token %}
+
+                <div class="grid md:grid-cols-3 gap-2 overflow-hidden">
+                    {{ form|crispy }}
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit"
+                        class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('div_id_image1').classList.add('overflow-hidden', 'text-ellipsis');
+        document.getElementById('div_id_image2').classList.add('overflow-hidden', 'text-ellipsis');
+        document.getElementById('div_id_image3').classList.add('overflow-hidden', 'text-ellipsis');
+        document.getElementById('div_id_image4').classList.add('overflow-hidden', 'text-ellipsis');
+        document.getElementById('div_id_image5').classList.add('overflow-hidden', 'text-ellipsis');
+        document.getElementById('div_id_image6').classList.add('overflow-hidden', 'text-ellipsis');
+    });
+</script>
+
+{% endblock %}

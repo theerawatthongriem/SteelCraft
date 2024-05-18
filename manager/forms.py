@@ -1,6 +1,6 @@
 from django import forms
 from .models import * 
-from members.models import Order
+from members.models import Order,MeasureSize
 from django.forms import formset_factory
 
 
@@ -49,3 +49,22 @@ class PaymentForm(forms.ModelForm):
         model = Order
         fields = ['payment_proof']
         labels = {'payment_proof':'ไฟล์'}
+
+class MeasureSizeForm(forms.ModelForm):
+    class Meta:
+        model = MeasureSize
+        fields = '__all__'
+        exclude = ['order']
+
+        labels = {
+            'h':'สูง' ,
+            'w':'กว้าง' ,
+            'd':'หนา' ,
+            'image1':'รูปภาพ 1 (ถ้ามี)',
+            'image2':'รูปภาพ 2 (ถ้ามี)',
+            'image3':'รูปภาพ 3 (ถ้ามี)',
+            'image4':'รูปภาพ 4 (ถ้ามี)',
+            'image5':'รูปภาพ 5 (ถ้ามี)',
+            'image6':'รูปภาพ 6 (ถ้ามี)',
+            'note':'หมายเหตุ',
+        }
