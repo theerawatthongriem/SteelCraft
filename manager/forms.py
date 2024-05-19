@@ -10,7 +10,9 @@ class ProductForm(forms.ModelForm):
         fields = '__all__'
 
         labels = {
+            
             'name':'ชื่อสินค้า',
+            'product_deposit':'ค่ามัดจำสินค้า ( % )',
             'description':'คำอธิบายสินค้า',
             'price':'ราคา',
             'category':'หมวดหมู่',

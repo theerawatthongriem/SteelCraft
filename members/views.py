@@ -58,6 +58,8 @@ def create_order(request,id):
     product = Product.objects.get(pk=id)
     product_category = product.category
     total_price = int(product.price) * int(quantity)
+    deposit = product.product_deposit
+    total_pay = total_price - deposit
 
     print(
     quantity,
@@ -86,6 +88,8 @@ def create_order(request,id):
         first_name=first_name,
         last_name=last_name,
         appt_date=appt_date,
+        deposit=deposit,
+        total_pay=total_pay,
     )
 
     order.save()

@@ -21,11 +21,17 @@
             class="fa-solid fa-ban mx-2"></i>
     </button>
 
+    
+
     {% elif order.status == 'ยืนยันคำสั่งซื้อ' %}
     {% if order.deposit_payment == False %}
     <p class="p-2 border bg-gray-400 text-lg text-white rounded-lg">ดำเนินการ<i
             class="fa-solid fa-circle-chevron-right mx-2"></i>
     </p>
+
+    <a href=""
+        class="p-2 border bg-amber-600 text-lg text-white rounded-lg hover:bg-amber-700 hover:scale-105">จดบันทึกขนาด<i class="fa-solid fa-ruler-combined mx-2"></i>
+        </a>
     {% elif order.deposit_proof %}
     <a href="/manager/update_status/{{order.id}}/ดำเนินการ/"
         class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ดำเนินการ<i

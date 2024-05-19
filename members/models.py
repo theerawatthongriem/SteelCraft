@@ -42,6 +42,7 @@ class Order(models.Model):
     deposit = models.IntegerField(default=0)
     deposit_payment = models.BooleanField(default=False)
     deposit_proof = models.ImageField(upload_to='deposit_proofs/', blank=True, null=True)
+    total_pay = models.IntegerField(default=0)
     payment = models.BooleanField(default=False)
     payment_proof = models.ImageField(upload_to='payment_proofs/', blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
