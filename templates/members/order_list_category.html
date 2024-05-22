@@ -17,7 +17,7 @@
     <div class="container mx-auto grid grid-cols-3 md:grid-cols-7 gap-1 md:gap-4 px-2">
 
         <a href="{% url 'orders' %}"
-            class="p-2 border text-center text-white hover:bg-emerald-900 border-emerald-700 rounded-md md:rounded-lg bg-emerald-800">ทั้งหมด</a>
+            class="p-2 border text-center text-white hover:bg-emerald-700 border-emerald-600 rounded-md md:rounded-lg bg-emerald-600">ทั้งหมด</a>
 
         {% for i,o in order_status.STATUS_CHOICES %}
         {% if i == status %}
@@ -30,6 +30,7 @@
         {% endfor %}
     </div>
 </div>
+
 
 <div class="container mx-auto py-3">
     <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
@@ -69,7 +70,7 @@
                     {% for o in orders %}
 
                     <tr class="hover:bg-slate-100 cursor-pointer"
-                        onclick='window.location="/members/order/{{ o.id }}/"'>
+                        onclick='window.location="/manager/order_detail/{{ o.id }}/"'>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ o.id }}</div>
                         </td>

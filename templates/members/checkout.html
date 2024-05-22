@@ -24,7 +24,7 @@
         <div class="flex flex-col md:w-full">
             <p class="mb-4 font-semibold text-xl md:text-xl text-heading ">ที่อยู่ลูกค้า
             </p>
-            <form class="justify-center w-full mx-auto" method="post" action="{% url 'create_order' product.id %}">
+            <form class="justify-center w-full mx-auto" method="post" action="{% url 'checkout' product.id %}">
                 {% csrf_token %}
                 <div class="">
                     <div class="space-x-0 lg:flex lg:space-x-4">
