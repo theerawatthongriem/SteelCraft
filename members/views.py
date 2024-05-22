@@ -13,6 +13,9 @@ from base_app.views import send_line_message
 from promptpay import qrcode
 import base64
 from io import BytesIO
+from django.forms import formset_factory
+from .forms import *
+
 
 from manager.forms import DepositForm,PaymentForm
 
@@ -44,6 +47,8 @@ def delete_favorite(request,id):
 def checkout(request,id):
     product = Product.objects.get(pk=id)
     return render(request,'members/checkout.html',{'product':product, 'favorite_count':favorite_count(request)})
+
+
 
 @login_required(login_url='login')
 def create_order(request,id):
@@ -156,7 +161,27 @@ def order_detail(request,id):
         'forms2':form2,
         })
 
+
+def add_product_user(request):
+
+    ImageFormSet = formset_factory(ProductImageForm, extra=3)  # extra คือจำนวนฟอร์มที่สร้างขึ้นมาเริ่มต้น
     
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST)
+        formset = ImageFormSet(request.POST, request.FILES)
+        if product_form.is_valid() and formset.is_valid():
+            product = product_form.save(commit=False)
+            product.user = request.user
+            product.save()
+            for form in formset:
+                image = form.cleaned_data.get('image')
+                ProductImage.objects.create(product=product, image=image)
+            return redirect('product_members')
+    else:
+        product_form = ProductForm()
+        formset = ImageFormSet()
+    
+    return render(request, 'members/add_product_user.html', {'product_form': product_form, 'formset': formset,})
 
 
 

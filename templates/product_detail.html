@@ -96,8 +96,10 @@
 
                 <div class="md:flex mb-4">
                     <div class="mr-4">
+                        {% if products.price != 0 %}
                         <span class="font-bold text-gray-700 dark:text-gray-300">ราคา:</span>
                         <span class="text-gray-600 dark:text-gray-300">฿ {{products.price|intcomma}}</span>
+                        {% endif %}
                     </div>
                     <!-- <div>
                         <span class="font-bold text-gray-700 dark:text-gray-300">

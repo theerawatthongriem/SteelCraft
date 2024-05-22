@@ -5,6 +5,7 @@ from members.models import *
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name','price','category']
+    list_filter = ['category']
 
     # def image_show(self,img):
     #     return format_html('<img src="{}" style="border: #232323 1px solid; border-radius: 5%;"  width="100" height="100" />', img.image.url) if img.image else ''

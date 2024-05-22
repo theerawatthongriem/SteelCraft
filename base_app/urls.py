@@ -24,6 +24,9 @@ urlpatterns = [
     path('webhook/', webhook, name='webhook'),
     path('get_data/', get_data, name='get_data'),
 
+    path('password_reset/', ForgotPasswordView.as_view(), name='password_reset'),
+    path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+
 
     # path('search/results/', search_results_view, name='search_results_view'),
     # path('search/', search_view, name='search'),

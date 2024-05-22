@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from manager.models import Product,Category
+from manager.models import Product,Category,Material
 
 class Favorite(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -60,6 +60,13 @@ class MeasureSize(models.Model):
     image5 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
     image6 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
     note = models.TextField(default='',null=True, blank=True)
+
+
+
+class MeasureSizeMaterial(models.Model):
+    measure_size = models.ForeignKey(MeasureSize, on_delete=models.CASCADE, related_name='measure_size_materials')
+    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='material_measure_sizes')
+    quantity = models.IntegerField()
 
 
 class CancelOrder(models.Model):

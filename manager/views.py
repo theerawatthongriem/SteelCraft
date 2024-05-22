@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test,login_required
 
 from django.db.models import Count, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
 from django.forms import formset_factory
 
 
@@ -91,24 +91,37 @@ def manager_dashboard(request):
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def customer_orders(request):
+
+    order_status = Order.objects.first()
+
+
     order = Order.objects.all().order_by('-order_date')
-    return render(request,'manager/order_list.html',{'orders':order, 'favorite_count':favorite_count(request)})
 
+    paginator = Paginator(order, 8)
+    page = request.GET.get('page', 1)  
+    order = paginator.get_page(page)
+    
+    return render(request,'manager/order_list.html',{'orders':order, 'favorite_count':favorite_count(request),'order_status':order_status})
 
-# @login_required(login_url='login')
-# def add_product(request):
-#     form = ProductForm()
-#     if request.method == 'POST':
-#         form = ProductForm(request.POST,request.FILES)
-#         if form.is_valid():
-#             form.instance.user = request.user
-#             form.save()
-#             return redirect('product_list')
-#         else:
-#             form = ProductForm()
-#     else:
-#         form = ProductForm()
-#     return render(request,'manager/add_product.html',{'form':form})
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
+def customer_orders_category(request,status):
+
+    order_status = Order.objects.first()
+
+    order = Order.objects.filter(status=status).order_by('-order_date')
+
+    paginator = Paginator(order, 8)
+    page = request.GET.get('page', 1)  
+    order = paginator.get_page(page)
+    
+    return render(request,'manager/order_list_category.html',{
+        'orders':order, 
+        'favorite_count':favorite_count(request),
+        'order_status':order_status,
+        'status':status,
+    })
+
 
 @login_required(login_url='login')
 def add_product(request):
@@ -149,6 +162,72 @@ def edit_product(request,id):
         form = ProductForm(instance=product)
     return render(request,'manager/edit_product.html',{'form':form})
 
+@login_required(login_url='login')
+def add_category(request):
+    form = CategoryForm()
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_category')
+        else:
+            form = CategoryForm()
+    else:
+        form = CategoryForm()
+    return render(request,'manager/add_category.html',{'category_form':form,'category':Category.objects.all()})
+
+@login_required(login_url='login')
+def edit_category(request,id,action):
+    category = Category.objects.get(pk=id)
+    if action == 'delete':
+        category.delete()
+        return redirect('add_category')
+    elif action == 'update':
+        form = CategoryForm()
+        if request.method == 'POST':
+            form = CategoryForm(request.POST,instance=category)
+            if form.is_valid():
+                form.save()
+                return redirect('add_category')
+            else:
+                form = CategoryForm(instance=category)
+        else:
+            form = CategoryForm(instance=category)
+    return render(request,'manager/add_category.html',{'category_form':form,'category':Category.objects.all(),'action':action})
+
+@login_required(login_url='login')
+def update_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    ImageFormSet = formset_factory(ProductImageForm, extra=3)
+
+    if request.method == 'POST':
+        product_form = ProductForm(request.POST, instance=product)
+        formset = ImageFormSet(request.POST, request.FILES)
+        if product_form.is_valid() and formset.is_valid():
+            product_form.save()
+            for form in formset:
+                image = form.cleaned_data.get('image')
+                if image:
+                    ProductImage.objects.create(product=product, image=image)
+            return redirect('product_list')
+    else:
+        product_form = ProductForm(instance=product)
+        formset = ImageFormSet()
+
+    existing_images = ProductImage.objects.filter(product=product)
+
+    return render(request, 'manager/update_product.html', {
+        'product_form': product_form,
+        'formset': formset,
+        'product': product,
+        'existing_images': existing_images,
+    })
+
+def delete_image(request, image_id):
+    image = get_object_or_404(ProductImage, id=image_id)
+    product_id = image.product.id
+    image.delete()
+    return redirect('update_product', product_id=product_id)
 
 
 @login_required(login_url='login')
@@ -162,6 +241,7 @@ def delete_product(request,id):
 def order_detail(request,id):
 
     order = Order.objects.get(pk=id)
+    form3 = OrderForm(instance=order)
 
     id_or_phone_number = "0956452530"
     amount = order.total_price
@@ -170,6 +250,8 @@ def order_detail(request,id):
 
     deposit_price = order.total_price * (order.deposit)/100
     last_price = order.total_price - deposit_price
+    order.total_pay = last_price
+    order.save()
 
     payload_with_amount1 = qrcode.generate_payload(id_or_phone_number, deposit_price)
     qr_img1 = qrcode.to_image(payload_with_amount1)
@@ -197,10 +279,25 @@ def order_detail(request,id):
         'qr_img_base64':qr_img_base64,
         'qr_img_base641':qr_img_base641,
         'deposit_price':int(deposit_price),
-        'last_price':int(last_price),
+        'last_price':int(order.total_pay),
         'forms':form,
         'forms2':form2,
+        'forms3':form3,
         })
+
+def edit_order(request,id):
+    order = Order.objects.get(pk=id)
+    if request.method == 'POST':
+        forms3 = OrderForm(request.POST,instance=order)
+        if forms3.is_valid():
+            forms3.save()
+            return redirect(f'/manager/order_detail/{id}/')
+        else:
+            forms3 = OrderForm(instance=order)
+    else:
+        forms3 = OrderForm(instance=order)
+
+
 
 
 @login_required(login_url='login')
@@ -216,6 +313,7 @@ def material_list(request):
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def add_material(request):
+    
     form = MaterialForm()
     if request.method == 'POST':
         form = MaterialForm(request.POST,request.FILES)
@@ -228,6 +326,33 @@ def add_material(request):
     else:
         form = MaterialForm()
     return render(request,'manager/add_material.html',{'form':form})
+
+def update_material(request,id,action):
+    m = Material.objects.get(pk=id)
+
+    if action == 'delete':
+        m.delete()
+        return redirect('material_list')
+        
+        
+    elif action == 'update':
+        form = MaterialForm(instance=m)
+        if request.method == 'POST':
+            form = MaterialForm(request.POST,request.FILES,instance=m)
+            form.instance.user = request.user
+            if form.is_valid():
+                form.save()
+                return redirect('material_list')
+            else:
+                form = ProductForm(instance=m)
+        else:
+            form = MaterialForm(instance=m)
+    
+    return render(request,'manager/update_material.html',{'form':form})
+
+
+
+
 
 
 def size_save(request):
@@ -254,6 +379,7 @@ def size_save_detail(request,id):
         'form':m,
         'MeasureSize':MeasureSize.objects.filter(order=order),
     })
+
 
 def add_size(request, id):
     order = get_object_or_404(Order, pk=id)
@@ -288,7 +414,7 @@ def delete_size(request, id,dlt):
 
     return redirect(f'/manager/size_save_detail/{id}/')
 
-def edit_size(request, id,dlt):
+def edit_size(request, id,dlt,q):
     order =  Order.objects.get(pk=id)
     msz = MeasureSize.objects.get(pk=dlt)
     m = MeasureSizeForm(instance=msz)
@@ -303,32 +429,61 @@ def edit_size(request, id,dlt):
     {
         'orders':order,
         'form':m,
+        'q':q,
 
     })
 
-    # size_save_detail/25/
-# def edit_size(request, id,dlt):
-#     order = get_object_or_404(Order, pk=id)
-#     if request.method == 'POST':
-#         h = request.POST.get('h', 0) 
-#         w = request.POST.get('w', 0) 
-#         d = request.POST.get('d', 0) 
-        
-#         if h and w and d:
-#             measuresize = MeasureSize.objects.get(order=order,pk=dlt)
-#             measuresize.h = h
-#             measuresize.w = w
-#             measuresize.d = d
-#             measuresize.save()
-#             return redirect(f'/manager/size_save_detail/{id}/')
+def measure_size_detail(request, measure_size_id, q):
+    measure_size = get_object_or_404(MeasureSize, pk=measure_size_id)
+    
+    if request.method == 'POST':
+        material_form = MeasureSizeMaterialForm(request.POST)
+        if material_form.is_valid():
+            # Check if material already exists for the given measure size
+            material_data = material_form.cleaned_data
+            if not MeasureSizeMaterial.objects.filter(measure_size=measure_size, material=material_data['material']).exists():
+                measure_size_material = material_form.save(commit=False)
+                measure_size_material.measure_size = measure_size
+                measure_size_material.save()
+                material_form = MeasureSizeMaterialForm()  # Reset form after successful save
+                return HttpResponseRedirect(request.path)  # Redirect back to the same page after successful save
+            else:
+                # Material already exists, redirect back to the same page with an error message
+                return HttpResponseRedirect(request.path)  # Redirect back to the same page
+    else:
+        material_form = MeasureSizeMaterialForm()
+    
+    return render(request, 'manager/measure_size_detail.html', {
+        'measure_size': measure_size,
+        'form': material_form,
+        'q': q,
+    })
 
 def update_status(request,id,status):
     order = Order.objects.get(pk=id)
     order.status = status
+    
+    if status == 'ดำเนินการ':
+        material_stock(request,order=order)
+
     order.save()
     return redirect(f'/manager/order_detail/{id}/')
     
+def material_stock(request, order):
+    materials = Material.objects.all()
+    measure_sizes = MeasureSize.objects.filter(order=order)
 
+    for measure_size in measure_sizes:
+        measure_size_materials = MeasureSizeMaterial.objects.filter(measure_size=measure_size)
+        for measure_size_material in measure_size_materials:
+            material = measure_size_material.material
+            quantity = measure_size_material.quantity
+
+            # Update material stock
+            material.quantity -= quantity
+            material.save()
+
+ 
 def upload_deposit(request, id):
     order = Order.objects.get(pk=id)
     

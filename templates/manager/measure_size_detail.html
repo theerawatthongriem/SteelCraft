@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+
+{% block content %}
+
+<div class="flex justify-center items-center">
+    <div class="w-96 rounded-md p-6">
+        <p class="text-2xl block text-center font-medium mt-2">จัดการวัสดุ</p>
+    </div>
+</div>
+
+<div class="flex justify-center">
+    <div class="mx-2 md:w-3/4 shadow-lg rounded-md bg-white border border-[#2B3843]">
+
+        <div class="p-6">
+            <div class="flex justify-between">
+                <p class="mb-2 text-lg font-bold">ชิ้นที่ : {{ q }}</p>
+                <p class="mb-2">เลขที่คำสั่งซื้อ : {{ measure_size.order.id }}</p>
+            </div>
+        </div>
+        <div class="p-6">
+            <div class="flex-row justify-start">
+                <p class="mb-2">สินค้า : {{measure_size.order.product}}</p>
+                <p class="mb-2">ขนาด : {{ measure_size.h }} x {{ measure_size.w }} x {{ measure_size.d }}</p>
+            </div>
+        </div>
+
+        <!-- <div>
+        
+        <div class="grid grid-cols-6">
+            {% for p in measure_size.order.product.images.all %}
+
+            {% if p.image %}
+
+            <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
+                <img src="{{ p.image.url }}" alt="Product" class="md:h-full md:w-full object-cover rounded-t" />
+            </div>
+            {% else %}
+            <div class="bg-white shadow-md rounded duration-500 hover:scale-104 hover:shadow-2xl border m-2">
+                <img src="https://masjidthai.com/committee/no-pict.png" alt="Product"
+                    class="md:h-full md:w-full object-cover rounded-t" />
+            </div>
+            {% endif %}
+
+            {% endfor %}
+        </div> 
+
+    </div>-->
+
+        <div class="flex justify-center">
+            <p class="text-xl font-semibold mt-4 mb-2">วัสดุ</p>
+        </div>
+
+        
+
+        <div class="flex justify-center p-2 md:p-6">
+
+            <form method="post" class="bg-white border p-4 rounded-lg shadow-md drop-shadow-lg md:w-4/5  text-center">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="mt-4">
+                    <button type="submit"
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded">
+                        บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <p class="text-lg text-center font-semibold mt-6 mb-2">รายการวัสดุที่ต้องใช้</p>
+
+        <div class="p-4  flex justify-center mb-10">
+
+
+            <div class="flex justify-center overflow-hidden rounded-lg border border-[#3E5062] md:w-4/5  m-1 ">
+                <table class="overflow-hidden table-auto divide-y divide-slate-300 w-full ">
+                    <thead class="bg-[#3E5062] border border-[#3E5062]  text-white ">
+                        <tr>
+
+                            <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                                ชื่อ
+                            </th>
+                            <th scope="col" class="px-6  py-5 text-left font-medium whitespace-nowrap">
+                                จำนวน
+                            </th>
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+
+                        {% for msm in measure_size.measure_size_materials.all %}
+                        <tr class="hover:bg-gray-100">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class=text-gray-900">{{ msm.material.name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class=text-gray-900">{{ msm.quantity }}</div>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+{% endblock %}

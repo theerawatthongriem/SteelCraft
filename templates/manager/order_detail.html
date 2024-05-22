@@ -16,6 +16,12 @@
 
 
 <div class="efefef m-1">
+    <div class="max-w-6xl mx-auto rounded-md justify-end flex">
+        <button type="button" onclick="edit_order()"
+            class="p-2 border text-white hover:bg-lime-700 border-lime-600 rounded-lg bg-lime-600"><i
+                class="fa-regular fa-pen-to-square"></i>&nbsp;&nbsp;แก้ไขคำสั่งซื้อ</button>
+    </div>
+
     <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2">
 
         <div class="col-span-1">
@@ -28,8 +34,11 @@
                 <p><strong>หมายเหตุ : </strong> {% if order.note == None %} ไม่ระบุ {% else %} {{ order.note }}
                     {% endif %} </p>
                 <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date.date }}</p>
-                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date.value == None %} รอดำเนินการ {% else %} {{
-                    order.ship_date.date }} {% endif %} </p>
+                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>
+                    {% if order.ship_date == None %} รอดำเนินการ {% else %}
+                    {{order.ship_date.date }}
+                    {% endif %}
+                </p>
             </div>
             <div class="mt-5">
                 <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
@@ -43,16 +52,17 @@
         <div class="col-span-1">
             <p class="text-xl font-semibold mb-2">ข้อมูลสินค้า</p>
             <a href="{% url 'product_detail' order.product.id %}" class="hover:underline">
-            <div class="mt-10 text-lg">
-                <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
-                <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
-                <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
-                <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
-                <!-- Add product image -->
-                <div class="border mt-10 rounded-md w-60 overflow-hidden">
-                    <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}" class=" w-60">
+                <div class="mt-10 text-lg">
+                    <p><strong>สินค้า : </strong> {{ order.product.name }}</p>
+                    <p><strong>ราคา : </strong> {{ order.price|intcomma }}</p>
+                    <p><strong>จำนวน : </strong> {{ order.quantity|intcomma }}</p>
+                    <p><strong>ราคารวม : </strong> {{ order.total_price|intcomma }}</p>
+                    <!-- Add product image -->
+                    <div class="border mt-10 rounded-md w-60 overflow-hidden">
+                        <img src="{{ order.product.images.first.image.url }}" alt="{{ order.product.name }}"
+                            class=" w-60">
+                    </div>
                 </div>
-            </div>
             </a>
         </div>
 
@@ -167,6 +177,8 @@
             <label for="option3">ไม่มีสินค้า</label><br>
             <input type="radio" id="option4" name="choice" value="ไม่สามารถทำได้">
             <label for="option4">ไม่สามารถทำได้</label><br>
+            <input type="radio" id="option5" name="choice" value="ไม่อยู่ในพื้นที่บริการ">
+            <label for="option4">ไม่อยู่ในพื้นที่บริการ</label><br>
 
 
             <input type="radio" id="other" name="choice" value="อื่นๆ">
@@ -176,6 +188,30 @@
             <div class="flex justify-center">
                 <button type="submit"
                     class="p-2 px-4 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105 my-2">ยืนยัน</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="edit_order" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="myModal-content" class="bg-white w-fit h-fit p-8 rounded shadow-lg">
+
+        <div class="flex justify-end">
+            <button id="close" onclick="close_edit_order()"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold text-sm py-2 justify-end px-4 rounded">
+                ปิด
+            </button>
+        </div>
+
+        <form method="post" action="{% url 'edit_order' order.id %}">
+            {% csrf_token %}
+            <div class="grid grid-cols-2 gap-2">
+                {{ forms3|crispy }}
+            </div>
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="p-2 px-4 border bg-red-600 text-lg text-white rounded-lg hover:bg-red-700 hover:scale-105 my-2">บันทึก</button>
             </div>
         </form>
     </div>

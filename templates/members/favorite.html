@@ -19,7 +19,7 @@
             {% for f in fav %}
 
             <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:shadow-lg border border-gray-400 flex flex-wrap">
-                <img src="{{ f.product.image.url }}" alt="Product"
+                <img src="{{ f.product.images.first.image.url }}" alt="Product"
                     class="h-40 w-40 md:h-40 lg:w-40 object-cover rounded-l-xl" />
                 <div class="flex-1 p-4">
                     <a href="{% url 'product_detail' f.product.id %}" class="">

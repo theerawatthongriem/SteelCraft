@@ -32,6 +32,18 @@ from django.http import JsonResponse
 import requests
 
 
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.urls import reverse_lazy
+
+class ForgotPasswordView(PasswordResetView):
+    template_name = 'forgot_password.html'
+    email_template_name = 'forgot_password_email.html'
+    success_url = reverse_lazy('login')  
+
+class PasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'reset_password_confirm.html'
+    success_url = reverse_lazy('login') 
+
 
 LINE_CHANNEL_SECRET = 'c1d5e281953c8e81cf8b80c4c0230f1a'
 LINE_ACCESS_TOKEN = '6heBocJbWYV6wSyCfNuoO57PPhLeCOBbgV2GGZY1ta5LDqveoj/R+nGoSMViOWBJpMYxZMTrE6IvfdCHMyzYZfQwUkuWf0ILXs3MrLmuKHyYFOex7B77oGMFl1h8jRwfuL3ug5E1t+SvlyIaKgts7AdB04t89/1O/w1cDnyilFU='
@@ -70,8 +82,8 @@ def handle_message(event):
         print(order_status)
 
         for i in order_status:
-            img_url = f'https://55a9-49-229-22-10.ngrok-free.app'+i.product.image.url 
-            text_msg = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}' + f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}' + '\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://2736-202-176-131-45.ngrok-free.app/members/order_detail/{i.id}/'
+             
+            text_msg = f'คำสั่งซื้อที่ {i.id} ผู้ใช้ {i.user} \n คุณ {i.first_name} {i.last_name}' + f'\n\n {i.product.name} ราคา {i.product.price} จำนวน {i.quantity} รายการ \n ราคารวม {float(i.total_price)} \n\n สถานะ : {i.status}' + '\n\n' 'ดูเพิ่มเติม คลิก : ' + f'https://neatly-sunny-skylark.ngrok-free.app/members/order_detail/{i.id}/'
             send_line_message(user_id, message=text_msg)
 
 # def send_line_message(user_id, message):
@@ -157,29 +169,29 @@ def line(request):
 
 def home(request):
 
-    products = Product.objects.all()
+    users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+    products = Product.objects.filter(user__in=users)
+
+    # products = Product.objects.all()
     return render(request,'home.html',{'products':products,'favorite_count':favorite_count(request)})
 
 def register(request):
-    form = RegisterForm()
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         profile_form = UserProfileForm(request.POST)
         if form.is_valid() and profile_form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.save()
             return redirect('login')
-        else:
-            form = RegisterForm()
-            profile_form = UserProfileForm()
-
     else:
         form = RegisterForm()
         profile_form = UserProfileForm()
 
-    return render(request,'register.html',{'form':form,'profile_form':profile_form })
+    return render(request, 'register.html', {'form': form, 'profile_form': profile_form})
 
 
 def sign_in(request):
@@ -220,18 +232,25 @@ def profile(request):
 
 @login_required(login_url='login')
 def editprofile(request):
+    user = UserProfile.objects.get(user=request.user)
+    userprofile = UserProfileForm(instance=user)
     form = EditForm(instance=request.user)
     if request.method == 'POST':
-        form = EditForm(request.POST,instance=request.user)
-        if form.is_valid():
+        form = EditForm(request.POST, instance=request.user)
+        userprofile = UserProfileForm(request.POST, instance=user)
+
+        if form.is_valid() and userprofile.is_valid():
+            userprofile.save()
             form.save()
             return redirect('profile')
         else:
             form = EditForm()
+            userprofile = UserProfileForm(instance=user)
     else:
         form = EditForm(instance=request.user)
+        userprofile = UserProfileForm(instance=user)
 
-    return render(request,'editprofile.html',{'form':form ,'favorite_count':favorite_count(request)})
+    return render(request,'editprofile.html',{'form':form ,'userprofile':userprofile ,'favorite_count':favorite_count(request)})
 
 
 @login_required(login_url='login')
@@ -281,6 +300,7 @@ def product_category(request,cate):
     return render(request, 'product_category.html', {'products': products ,'favorite_count':favorite_count(request),'cate':category})
 
 def product_members(request):
+    
     products = Product.objects.filter(user=request.user)
     paginator = Paginator(products, 8)
     page = request.GET.get('page', 1)  

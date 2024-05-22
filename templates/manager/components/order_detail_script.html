@@ -71,6 +71,16 @@
 </script>
 
 <script>
+    function edit_order() {
+        document.getElementById("edit_order").classList.remove('hidden');
+    }
+
+    function close_edit_order() {
+        document.getElementById("edit_order").classList.add('hidden');
+    }
+</script>
+
+<script>
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }

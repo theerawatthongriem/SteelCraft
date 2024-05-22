@@ -37,34 +37,9 @@
             <div class="p-2">
                 <p class="font-bold">หนา</p> {{i.d}} cm
             </div>
+
         </div>
 
-
-
-        <!-- {% if i.image1 %}
-        <div class="p-2">รูปภาพ 1 <img src="{{ i.image1.url }}" alt=""
-                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
-        {% endif %}
-        {% if i.image2 %}
-        <div class="p-2">รูปภาพ 2 <img src="{{ i.image2.url }}" alt=""
-                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
-        {% endif %}
-        {% if i.image3 %}
-        <div class="p-2">รูปภาพ 3 <img src="{{ i.image3.url }}" alt=""
-                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
-        {% endif %}
-        {% if i.image4 %}
-        <div class="p-2">รูปภาพ 4 <img src="{{i.image4.url }}" alt=""
-                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
-        {% endif %}
-        {% if i.image5 %}
-        <div class="p-2">รูปภาพ 5 <img src="{{ i.image5.url }}" alt=""
-                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
-        {% endif %}
-        {% if i.image6 %}
-        <div class="p-2">รูปภาพ 6 <img src="{{ i.image6.url }}" alt=""
-                class="h-52 w-full overflow-hidden object-cover my-2 rounded-md"></div>
-        {% endif %} -->
 
         <div class="w-full">
             <p class="p-2 font-bold">หมายเหตุ</p>
@@ -75,9 +50,16 @@
             {% endif %}
         </div>
 
-        <div class="flex justify-center items-center">
-            <button onclick="toggleModal({{forloop.counter}})"
-                class="p-2 border rounded-md bg-amber-400 hover:bg-amber-500">รูปภาพเพิ่มเติม</button>
+        <div class="grid grid-cols-2 gap-2">
+            <div class="flex justify-center items-center">
+                <button onclick="toggleModal({{forloop.counter}})"
+                    class="p-2 border rounded-md bg-amber-400 hover:bg-amber-500">รูปภาพเพิ่มเติม</button>
+            </div>
+
+            <div class="flex justify-center items-center">
+                <a href="{% url 'measure_size_detail' i.id forloop.counter %}"
+                    class="p-2 border rounded-md bg-stone-500 hover:bg-stone-700 text-white">จัดการวัสดุ</a>
+            </div>
         </div>
 
         <div id="modal{{forloop.counter}}"
@@ -136,7 +118,8 @@
 
 
         <div class="justify-around flex w-96 my-4">
-            <div class="p-2 px-5"><a href="/manager/size_save_detail/{{ orders.id }}/{{ i.id }}/edit_size/"
+            <div class="p-2 px-5"><a
+                    href="/manager/size_save_detail/{{ orders.id }}/{{ i.id }}/edit_size/{{ forloop.counter }}/"
                     class="hover:scale-105"><i class="fa-regular fa-pen-to-square"></i>&nbsp;แก้ไข</a>
             </div>
 
@@ -180,15 +163,8 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {{ form|crispy }}
                         </div>
-                        <!-- <div>
-                                กว้าง : <input type="number" step="0.01" value="0" name="w"
-                                    class="p-2 m-2 rounded-md border" placeholder="cm">
-                            </div>
-                            <div>
-                                หนา : <input type="number" step="0.01" value="0" name="d"
-                                    class="p-2 m-2 rounded-md border" placeholder="cm">
-                            </div>
-                            <br> -->
+
+
                         <div class="flex justify-center">
                             <button type="submit"
                                 class="my-4 bg-[#39144b] hover:bg-[#5e3075] text-white px-5 py-2.5 rounded">บันทึก</button>

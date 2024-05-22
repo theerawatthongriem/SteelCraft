@@ -14,7 +14,9 @@
 
 <div class="container mx-auto">
     <div class="flex justify-end items-center">
-        <a href="{% url 'add_material' %}" class="mx-3 p-2 px-8 hover:scale-105 border rounded-md bg-gray-500 hover:bg-gray-600 text-white"><i class="fa-solid fa-plus"></i> &nbsp;&nbsp;เพิ่มวัสดุ</a>
+        <a href="{% url 'add_material' %}"
+            class="mx-3 p-2 px-8 hover:scale-105 border rounded-md bg-gray-500 hover:bg-gray-600 text-white"><i
+                class="fa-solid fa-plus"></i> &nbsp;&nbsp;เพิ่มวัสดุ</a>
     </div>
 </div>
 
@@ -33,12 +35,16 @@
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
                             ชื่อ
                         </th>
-                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                        <th scope="col" class="px-6  py-5 text-left font-medium whitespace-nowrap">
                             จำนวน
                         </th>
                         <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
                             รูปภาพ
                         </th>
+                        <th scope="col" class="px-6 py-5 text-left font-medium whitespace-nowrap">
+                            จัดการวัสดุ
+                        </th>
+           
 
                     </tr>
                 </thead>
@@ -52,12 +58,27 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class=text-gray-900">{{ mtr.name }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4  whitespace-nowrap">
                             <div class=text-gray-900">{{ mtr.quantity }}</div>
                         </td>
-                        <td class=" py-2 whitespace-nowrap">
+                        <td class="px-6 py-2 whitespace-nowrap">
                             <img src="{{ mtr.image.url }}" alt="" class="h-20 w-20 object-cover rounded-md">
                         </td>
+
+                        <td class="px-6  py-4 whitespace-nowrap">
+                            <a href="/manager/update_material/{{mtr.id}}/update/"
+
+                                class="text-white bg-slate-700 rounded-md py-2 w-full md:m-2 px-2 hover:bg-slate-900 border">
+                                <i class="fa-solid fa-pen-to-square"></i> &nbsp;&nbsp; แก้ไข
+                            </a>
+
+                            <a href="/manager/update_material/{{mtr.id}}/delete/"
+                                class="text-white rounded-md py-2 w-full md:m-2 px-2 bg-red-600 hover:bg-red-700 border">
+                                <i class="fa-solid fa-trash"></i> &nbsp;&nbsp; ลบ
+                            </a>
+                        </td>
+              
+
                     </tr>
                     {% endfor %}
 

@@ -46,7 +46,7 @@
 
         <div class="container mt-6 mx-auto">
             <div class="">
-                <a href="{% url 'add_product' %}"
+                <a href="{% url 'add_product_user' %}"
                     class="text-white bg-[#2B3843] px-2 rounded-md py-2 hover:bg-gray-600">
                     <i class="fa-solid fa-plus"></i> &nbsp;&nbsp; เพิ่มรายการสินค้า
                 </a>
@@ -64,13 +64,12 @@
             <div
                 class="bg-white w-full md:w-78 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl border border-gray-400">
                 <a href="{% url 'product_detail' p.id %}">
-                    <img src="{{ p.image.url }}" alt="Product"
+                    <img src="{{ p.images.first.image.url }}" alt="Product"
                         class="h-40 w-full md:h-72 md:w-78 object-cover rounded-t-xl" />
                     <div class="px-4 py-3 border-t-2">
                         <p class="text-lg font-bold text-black truncate block capitalize">{{ p.name }}</p>
                         <div class="flex items-center">
-                            <p class="text-lg font-medium text-black cursor-auto mt-2">{{ p.price|intcomma }} ฿
-                            </p>
+                      
                         </div>
                     </div>
                 </a>
@@ -140,6 +139,10 @@
         </div>
         {% endif %}
     </div>
+</div>
+<div class="max-w-screen-xl mx-auto p-2 bg-white mb-10 rounded-lg">
+    <li class=""> เพิ่มสินค้า และแบบ ตามที่ต้องการ</li>
+    <li class=""> หากต้องการสั่งซื้อสินค้าตามแบบของคุณ ให้กดไปที่สินค้าและสั่งซื้อ และรอร้านค้าติดต่อกลับ</li>
 </div>
 
 

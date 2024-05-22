@@ -3,9 +3,15 @@ from .views import *
 
 urlpatterns = [
     path('dashboard/',manager_dashboard, name="manager_dashboard"),
+
     path('customer_orders/',customer_orders, name="customer_orders"),
+    path('customer_orders_category/<str:status>/',customer_orders_category, name="customer_orders_category"),
+
+    
     path('add_product/',add_product, name="add_product"),
     path('edit_product/<int:id>/',edit_product, name="edit_product"),
+    path('update_product/<int:product_id>/',update_product, name="update_product"),
+    path('product/delete_image/<int:image_id>/', delete_image, name='delete_image'),
     path('delete_product/<int:id>/',delete_product, name="delete_product"),
     path('order_detail/<int:id>/',order_detail, name="order_detail"),
     path('material_list/',material_list, name="material_list"),
@@ -22,5 +28,12 @@ urlpatterns = [
     path('confirm_deposit/<int:id>/', confirm_deposit, name='confirm_deposit'),
     path('confirm_payment/<int:id>/', confirm_payment, name='confirm_payment'),
     path('cancel_order/<int:id>/', cancel_order, name='cancel_order'),
-    path('size_save_detail/<int:id>/<int:dlt>/edit_size/', edit_size, name='edit_size'),
+    path('size_save_detail/<int:id>/<int:dlt>/edit_size/<int:q>/', edit_size, name='edit_size'),
+    path('measure_size_detail/<int:measure_size_id>/<int:q>/', measure_size_detail, name='measure_size_detail'),
+    path('update_material/<int:id>/<str:action>/', update_material, name='update_material'),
+
+    path('add_category/',add_category, name='add_category'),
+    path('edit_category/<int:id>/<str:action>/',edit_category, name='edit_category'),
+    path('edit_order/<int:id>/',edit_order, name='edit_order'),
+
 ]

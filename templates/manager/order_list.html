@@ -13,7 +13,25 @@
 </div>
 
 
-<div class="container mx-auto py-8">
+<div class="flex justify-start items-center ">
+    <div class="container mx-auto grid grid-cols-3 md:grid-cols-7 gap-1 md:gap-4 px-2">
+
+        <a href="{% url 'customer_orders' %}"
+            class="p-2 border text-center text-white hover:bg-emerald-900 border-emerald-700 rounded-md md:rounded-lg bg-emerald-800">ทั้งหมด</a>
+
+        {% for i,o in order_status.STATUS_CHOICES %}
+        {% if i == status %}
+        <a href="{% url 'customer_orders_category' i %}"
+        class="p-2 border text-center text-white hover:bg-emerald-900 border-emerald-700 rounded-md md:rounded-lg bg-emerald-800">{{ i }}</a>
+        {% else %}
+        <a href="{% url 'customer_orders_category' i %}"
+            class="p-2 border text-center text-white hover:bg-emerald-700 border-emerald-600 rounded-md md:rounded-lg bg-emerald-600">{{ i }}</a>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mx-auto py-3">
     <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
 
         <div class="overflow-x-auto rounded-lg border  border-slate-300 overflow-hidden m-1">
@@ -93,40 +111,53 @@
 
 
 
-        <!-- {% for o in orders %}
+    </div>
+</div>
 
-        <a href="{% url 'order_detail' o.id %}">
-        <div class="bg-white shadow-xl rounded-md p-4 border">
-            <p class="text-lg font-semibold mb-2">เลขคำสั่งซื้อ : {{ o.id }}</p>
-            <p class="text-gray-500 mb-2">วันที่สั่งซื้อ : {{ o.order_date }}</p>
-            <p class="text-gray-500 mb-2">ลูกค้า : {{ o.user }}  {{ o.user.first_name }}  {{ o.user.last_name }}</p>
-            <ul>
-                <li class="flex justify-between">
-                    <span>สินค้า {{ o.product.name }}</span>
-                    <span>ราคา  {{ o.product.price|intcomma }}</span>
-                </li>
-                <li class="flex justify-between">
-                    <span>จำนวน  {{ o.quantity }}</span>
-                </li>
+<div class="flex justify-center items-center">
+    <div class="p-6 bg-white">
+        {% if orders.paginator.num_pages > 1 %}
+        <div class="flex justify-center inset-x-0 bottom-0">
 
-            </ul>
-            <hr class="my-2">
-            <div class="flex justify-between">
-                <span class="font-semibold">ราคารวม :</span>
-                <span>฿ {{ o.total_price|intcomma }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="font-semibold">สถานะ :</span>
-                <span>{{ o.status }}</span>
-            </div>
+            <nav class="relative z-0 inline-flex flex-wrap -space-x-px rounded-md shadow-md text-lg border">
+                {% if orders.has_previous %}
+                <a href="?page={{ orders.previous_page_number }}"
+                    class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                    <i class="fa-solid fa-backward"></i>
+                </a>
+                {% else %}
+                <a href="#" aria-disabled="true"
+                    class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                    <i class="fa-solid fa-backward"></i>
+                </a>
+                {% endif %}
+
+
+                {% for i in orders.paginator.page_range %}
+                {% if orders.number == i %}
+                <a href=""
+                    class="relative inline-flex items-center px-3 p-2 md:px-5 md:py-2 hover:bg-gray-200">{{i}}</a>
+                {% elif orders.number > i|add:"-5" and orders.number < i|add:"+5" %} <a href="?page={{ i }}"
+                    class="relative inline-flex items-center px-3 p-2 md:px-5 md:py-2 hover:bg-gray-200">{{i}}</a>
+                    {% endif %}
+                    {% endfor %}
+
+
+                    {% if orders.has_next %}
+                    <a href="?page={{ orders.next_page_number }}"
+                        class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                        <i class="fa-solid fa-forward"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" aria-disabled="true"
+                        class="relative inline-flex items-center rounded-l-md p-2 px-5 hover:bg-gray-200">
+                        <i class="fa-solid fa-forward"></i>
+                    </a>
+                    {% endif %}
+            </nav>
+
         </div>
-        </a>
-
-        {% endfor %} -->
-
-
-
-
+        {% endif %}
     </div>
 </div>
 

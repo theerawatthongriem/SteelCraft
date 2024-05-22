@@ -1,7 +1,12 @@
 from django import forms
 from .models import * 
-from members.models import Order,MeasureSize
+from members.models import Order,MeasureSize,MeasureSizeMaterial
 from django.forms import formset_factory
+
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit
+from django.utils.dateformat import format
 
 
 class ProductForm(forms.ModelForm):
@@ -19,6 +24,17 @@ class ProductForm(forms.ModelForm):
         }
 
         exclude = ['user']
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model =  Category
+        fields = '__all__'
+
+        labels = {
+            
+            'name':'ชื่อหมวดหมู่',
+        }
+
 
 class ProductImageForm(forms.ModelForm):
     class Meta:
@@ -59,9 +75,9 @@ class MeasureSizeForm(forms.ModelForm):
         exclude = ['order']
 
         labels = {
-            'h':'สูง' ,
-            'w':'กว้าง' ,
-            'd':'หนา' ,
+            'h':'สูง (ซม.)' ,
+            'w':'กว้าง (ซม.)' ,
+            'd':'หนา (ซม.)' ,
             'image1':'รูปภาพ 1 (ถ้ามี)',
             'image2':'รูปภาพ 2 (ถ้ามี)',
             'image3':'รูปภาพ 3 (ถ้ามี)',
@@ -70,3 +86,34 @@ class MeasureSizeForm(forms.ModelForm):
             'image6':'รูปภาพ 6 (ถ้ามี)',
             'note':'หมายเหตุ',
         }
+
+class MeasureSizeMaterialForm(forms.ModelForm):
+    class Meta:
+        model = MeasureSizeMaterial
+        fields = ['material', 'quantity']
+
+        labels = {
+            'material':'วัสดุ' ,
+            'quantity':'จำนวน',
+            }
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['price', 'total_price', 'deposit', 'total_pay', 'appt_date', 'ship_date']
+        labels = {
+            'price': 'ราคา',
+            'total_price': 'ราคารวม',
+            'deposit': 'ค่ามัดจำ ( % )',
+            'total_pay': 'ยอดชำระคงเหลือ',
+            'appt_date': 'วันนัดวัดขนาด',
+            'ship_date': 'วันจัดส่ง/ติดตั้ง',
+        }
+        widgets = {
+            'ship_date': forms.DateTimeInput(attrs={'class': 'my-2 block w-full border rounded-md py-2 px-3', 'type': 'datetime-local'}),
+            'appt_date': forms.DateTimeInput(attrs={'class': 'my-2 block w-full border rounded-md py-2 px-3', 'type': 'datetime-local'}),
+        }
+
+
+
+        # exclude = ['user','product','status','product_category']

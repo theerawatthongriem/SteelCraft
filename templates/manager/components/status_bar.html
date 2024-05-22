@@ -1,10 +1,10 @@
 
 {% if order.deposit_payment == False and order.status == 'ยืนยันคำสั่งซื้อ' %}
-<div class="flex justify-center my-4">โปรดชำระค่ามัดจำ อัพโหลดหลักฐาน และยืนยันการรับเงินเพื่อดำเนินการต่อ</div>
+<div class="flex justify-center my-4">โปรดชำระค่ามัดจำ อัพโหลดหลักฐาน {% if user.is_staff %}และยืนยันการรับเงิน{% endif %}เพื่อดำเนินการต่อ</div>
 {% endif %}
 
 {% if order.payment == False and order.status == 'ติดตั้ง' %}
-<div class="flex justify-center my-4">โปรดชำระค่าสินค้า อัพโหลดหลักฐาน และยืนยันการรับเงินเพื่อดำเนินการต่อ</div>
+<div class="flex justify-center my-4">โปรดชำระค่าสินค้า อัพโหลดหลักฐาน {% if user.is_staff %}และยืนยันการรับเงิน{% endif %}เพื่อดำเนินการต่อ</div>
 {% endif %}
 
 
@@ -29,7 +29,7 @@
             class="fa-solid fa-circle-chevron-right mx-2"></i>
     </p>
 
-    <a href=""
+    <a href="/manager/size_save_detail/{{order.id}}/"
         class="p-2 border bg-amber-600 text-lg text-white rounded-lg hover:bg-amber-700 hover:scale-105">จดบันทึกขนาด<i class="fa-solid fa-ruler-combined mx-2"></i>
         </a>
     {% elif order.deposit_proof %}
