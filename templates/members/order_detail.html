@@ -27,9 +27,9 @@
                 <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
                 <p><strong>หมายเหตุ : </strong> {% if order.note == None %} ไม่ระบุ {% else %} {{ order.note }}
                     {% endif %} </p>
-                <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date.date }}</p>
-                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date.value == None %} รอดำเนินการ {% else %} {{
-                    order.ship_date.date }} {% endif %} </p>
+                <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date }}</p>
+                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date == None %} รอดำเนินการ {% else %} 
+                    {{order.ship_date }} {% endif %} </p>
             </div>
             <div class="mt-5">
                 <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
@@ -200,6 +200,34 @@
         </form>
     </div>
 </div>
+
+<div class="efefef m-1">
+    <div class="max-w-6xl mx-auto rounded-md justify-center flex">
+        <p class="text-lg">ภาพการติดตั้ง/จัดส่ง</p>
+        <!-- <button type="button" onclick="edit_order()"
+            class="p-2 border text-white hover:bg-lime-700 border-lime-600 rounded-lg bg-lime-600"><i
+                class="fa-regular fa-pen-to-square"></i>&nbsp;&nbsp;แก้ไขคำสั่งซื้อ</button> -->
+    </div>
+
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-4 m-2 items-start">
+        {% if order.image1 %}
+        <img src="{{ order.image1.url }}" class="rounded-lg" alt="">
+        {% endif %}
+
+        {% if order.image2 %}
+        <img src="{{ order.image2.url }}" class="rounded-lg" alt="">
+        {% endif %}
+
+        {% if order.image3 %}
+        <img src="{{ order.image3.url }}" class="rounded-lg" alt="">
+        {% endif %}
+
+        {% if order.image4 %}
+        <img src="{{ order.image4.url }}" class="rounded-lg" alt="">
+        {% endif %}
+    </div>
+</div>
+
 
 
 {% endblock %}

@@ -1,1 +1,1 @@
-ngrok http --domain=neatly-sunny-skylark.ngrok-free.app 8000
+ngrok http --domain=586485bea01e-17076610223505492659.ngrok-free.app 8000

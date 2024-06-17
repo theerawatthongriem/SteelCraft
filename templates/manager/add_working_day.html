@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="max-w-5xl p-6 mx-auto mt-10">
+    <p class="text-2xl font-semibold mb-4 text-center">เพิ่มวันปิดทำการ</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="flex justify-center">
+        <button type="submit" class="bg-blue-500 text-white px-20 py-2 rounded hover:bg-blue-800">บันทึก</button>
+        </div>
+    </form>
+
+    <p class="text-xl font-semibold mt-6 text-center">วันทำการทั้งหมด</p>
+    <div class="flex items-center justify-between mb-2 mt-10">
+        <button id="prev-month" class="px-4 py-2 bg-amber-600 text-white rounded">เดือนก่อนหน้า</button>
+        <span id="current-month-year" class="text-lg font-medium"></span>
+        <button id="next-month" class="px-4 py-2 bg-amber-600 text-white rounded">เดือนถัดไป</button>
+    </div>
+    <div class="border-[#52504a] border-2 rounded-lg overflow-scroll">
+        <table class="md:w-full">
+            <thead class="rounded-lg">
+                <tr>
+                    <th class="border p-2">จันทร์</th>
+                    <th class="border p-2">อังคาร</th>
+                    <th class="border p-2">พุธ</th>
+                    <th class="border p-2">พฤหัส</th>
+                    <th class="border p-2">ศุกร์</th>
+                    <th class="border p-2">เสาร์</th>
+                    <th class="border p-2">อาทิตย์</th>
+                </tr>
+            </thead>
+            <tbody id="calendar-body">
+                <!-- JavaScript will populate the calendar here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg">
+        <p>คุณต้องการลบวันปิดทำการนี้หรือไม่?</p>
+        <div class="flex justify-end mt-4">
+            <button id="confirmDelete" class="bg-red-500 text-white px-4 py-2 rounded mr-2">ลบ</button>
+            <button id="cancelDelete" class="bg-gray-500 text-white px-4 py-2 rounded">ยกเลิก</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarBody = document.getElementById('calendar-body');
+        const currentMonthYear = document.getElementById('current-month-year');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const deleteModal = document.getElementById('deleteModal');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const dateInput = document.querySelector('input[name="date_work"]'); // Assuming you have an input for date_work
+        let dateToDelete = null;
+        const workingDays = {{ working_days|safe }};  // รับข้อมูลวันที่จาก Django
+
+        let today = new Date();
+        let currentYear = today.getFullYear();
+        let currentMonth = today.getMonth();
+
+        function createCalendar(year, month) {
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            let date = 1;
+            let calendarHTML = '';
+
+            for (let i = 0; i < 6; i++) {
+                let rowHTML = '<tr>';
+                let rowHasDate = false;
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDay) {
+                        rowHTML += '<td class="border px-4 py-2"></td>';
+                    } else if (date > lastDate) {
+                        rowHTML += '<td class="border px-4 py-2"></td>';
+                    } else {
+                        const currentDate = new Date(Date.UTC(year, month, date)).toISOString().split('T')[0];
+                        const isClosed = workingDays.some(d => d.date_work === currentDate);
+                        const dayClass = isClosed ? 'closed-day' : 'open-day';
+                        rowHTML += `<td class="border px-4 py-2 ${dayClass}" data-date="${currentDate}">${date}</td>`;
+                        date++;
+                        rowHasDate = true;
+                    }
+                }
+                rowHTML += '</tr>';
+                if (rowHasDate) {
+                    calendarHTML += rowHTML;
+                }
+            }
+
+            calendarBody.innerHTML = calendarHTML;
+            currentMonthYear.textContent = `${getMonthName(month)} ${year}`;
+
+            document.querySelectorAll('.closed-day').forEach(day => {
+                day.classList.add('bg-red-400', 'text-white');
+                day.style.cursor = 'pointer';  // Change cursor to pointer
+                day.addEventListener('click', function () {
+                    dateToDelete = this.getAttribute('data-date');
+                    deleteModal.classList.remove('hidden');
+                });
+            });
+
+            document.querySelectorAll('.open-day').forEach(day => {
+                day.classList.add('cursor-pointer','hover:bg-blue-700','hover:text-white');  // Add pointer cursor
+                day.addEventListener('click', function () {
+                    const selectedDate = this.getAttribute('data-date');
+                    dateInput.value = selectedDate;  // Set the value of the input field
+                });
+            });
+        }
+
+        function getMonthName(month) {
+            const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            return monthNames[month];
+        }
+
+        prevMonthBtn.addEventListener('click', function () {
+            if (currentMonth === 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else {
+                currentMonth--;
+            }
+            createCalendar(currentYear, currentMonth);
+        });
+
+        nextMonthBtn.addEventListener('click', function () {
+            if (currentMonth === 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else {
+                currentMonth++;
+            }
+            createCalendar(currentYear, currentMonth);
+        });
+
+        confirmDelete.addEventListener('click', function () {
+            window.location.href = `/manager/delete-working-day/${dateToDelete}/`;
+        });
+
+        cancelDelete.addEventListener('click', function () {
+            deleteModal.classList.add('hidden');
+        });
+
+        createCalendar(currentYear, currentMonth);
+    });
+</script>
+
+{% endblock %}

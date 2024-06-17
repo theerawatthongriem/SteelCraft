@@ -124,3 +124,28 @@
     </div>
     {% endfor %}
 </div>
+
+
+
+# from django.http import HttpResponse
+
+
+# def generate_promptpay_qr(request):
+#     # สร้างข้อมูล PromptPay
+#     promptpay_id = "0956452530"  # เบอร์โทรศัพท์หรือเลขบัญชี PromptPay
+#     amount = "100"  # จำนวนเงิน
+
+#     # สร้าง URL สำหรับ PromptPay
+#     promptpay_url = f"promptpay://{promptpay_id}?amount={amount}"
+
+#     # สร้าง QR code
+#     qr = qrcode.make(promptpay_url)
+
+#     # แปลง QR code เป็น BytesIO object
+#     qr_bytes = BytesIO()
+#     qr.save(qr_bytes, format='PNG')
+#     qr_bytes.seek(0)
+
+#     # สร้าง HttpResponse สำหรับแสดง QR code บนเว็บ
+#     response = HttpResponse(qr_bytes, content_type='image/png')
+#     return response

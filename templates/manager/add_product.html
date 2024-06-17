@@ -42,7 +42,7 @@
 </div>
 
 
-
+<!-- 
 <script>
     // ลบฟิลด์เมื่อคลิกที่ปุ่ม "ลบภาพ"
     function removeForm(btn) {
@@ -64,7 +64,7 @@
         var newForm = document.createElement('div');
         newForm.innerHTML = `
             <div class="formset" id="formset-${newFormIndex}">
-                <input type="file" id="id_form-${newFormIndex}-image" name="form-${newFormIndex}-image" accept="image/*" class="my-2">
+                <input type="file" required id="id_form-${newFormIndex}-image" name="form-${newFormIndex}-image" accept="image/*" class="my-2">
                 <button type="button" onclick="removeForm(${newFormIndex})" class="text-white bg-red-600 rounded py-2 m-2 px-4 hover:bg-red-700 border">ลบภาพ</button>
             </div>
         `;
@@ -76,7 +76,7 @@
         // อัปเดตค่า TOTAL_FORMS
         document.getElementById('id_form-TOTAL_FORMS').value = newFormIndex + 1;
     }
-</script>
+</script> -->
 
 
 
@@ -92,7 +92,7 @@
     var newForm = document.createElement('div');
     newForm.innerHTML = `
         <div class="formset flex" id="formset-${newFormIndex}">
-            <input type="file" id="id_form-${newFormIndex}-image" name="form-${newFormIndex}-image" accept="image/*" class="my-2">
+            <input type="file" required id="id_form-${newFormIndex}-image" name="form-${newFormIndex}-image" accept="image/*" class="my-2">
             <button type="button" onclick="removeForm(this.parentNode)" class="text-white  rounded my-2 "><i class="fa-solid fa-xmark text-[#2B3843] text-lg"></i></button>
         </div>
     `;

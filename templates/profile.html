@@ -34,12 +34,12 @@
             </div>
 
 
-            <p class="text-xl text-center mt-10">{{user}}</p>
+            <p class="text-xl text-center mt-16">{{user}}</p>
             <p class="text-xl text-center mt-5">{{user.first_name}} {{user.last_name}}</p>
             <!-- <p class="text-center font-light">Art Director | Creative & Art Direction</p> -->
 
 
-            
+
 
             <p class="text-xl font-bold mt-10 text-center uppercase">ข้อมูลติตต่อ</p>
 
@@ -47,87 +47,86 @@
 
             <div class="m-5">
                 {% if user.email %}
-                <div class="my-2 flex h-12 items-center justify-center rounded-xl bg-green-400 m-5">
-                    <div class="flex items-center">
-                        <div class="ml-2">
-                            <div class="">Email : {{user.email}}</div>
-                        </div>
-                    </div>
+                <div class="my-2 flex   items-center justify-center rounded-xl bg-green-400">
+                    <p class="flex p-2 w-full">Email : {{user.email}}</p>
                 </div>
-                {% endif %}
-
-
-                {% if user.profile.address %}
-                <div class="my-2 flex h-12 items-center justify-center rounded-xl bg-green-400 m-5">
-                    <div class="flex items-center">
-                        <div class="ml-2 ">
-                            <div class="">ที่อยู่ : {{user.profile.address}}</div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if user.profile.phone_number %}
-                <div class="my-2 flex h-12 items-center justify-center rounded-xl bg-green-400 m-5">
-                    <div class="flex items-center">
-                        <div class="ml-2 ">
-                            <div class="">เบอร์ : {{user.profile.phone_number}}</div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-
-
             </div>
-            <div class="m-5">
-                <a href="{% url 'editprofile' %}">
-                    <div
-                        class="my-2 flex h-12 items-center justify-center rounded-lg text-white bg-slate-700 hover:bg-slate-900 m-20">
-                        <div class="flex items-center">
-                            <div class="ml-2 ">
-                                <div class=""><i class="fa-solid fa-user-pen"></i>&nbsp;&nbsp;แก้ไขโปรไฟล์</div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            {% endif %}
 
-            <div class="m-5">
-                <a href="{% url 'change_password' %}">
-                    <div
-                        class="my-2 flex h-12 items-center justify-center rounded-lg text-white bg-lime-600	 hover:bg-lime-700 m-20">
-                        <div class="flex items-center">
-                            <div class="ml-2 ">
-                                <div class=""><i class="fa-solid fa-key"></i>&nbsp;&nbsp;เปลี่ยนรหัสผ่าน</div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
 
-            <div x-data="{ open: false }" class="text-center mt-10 mb-10">
-                <button @click="open = true" class="my-2 h-12 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded items-center justify-center"><i class="fa-solid fa-user-xmark"></i>&nbsp;&nbsp;ลบบัญชีผู้ใช้</button>
-            
-                <div x-show="open" @click.away="open = false" class="fixed inset-0 flex items-center">
-                    <div class="bg-white p-6 w-72 max-w-lg mx-auto rounded shadow-xl border border-[#2B3843] text-center">
-            
-                        <p class="text-xl font-family mb-4">ลบบัญชีผู้ใช้</p>
-                        <p>ยืนยันการลบบัญชีผู้ใช้หรือไม่</p>
-                        <div class="text-center">
-                            <a href="{% url 'delete_user' %}"
-                                class="mt-4 bg-[#E81C03] hover:bg-cover text-white px-4 py-2.5 rounded mr-5">ยืนยัน</a>
-                            <button @click="open = false" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">ปิด</button>
-                        </div>
+            {% if user.profile.address %}
+            <div class="my-2 flex h-12 items-center justify-center rounded-xl bg-green-400 m-5">
+                <div class="flex items-center">
+                    <div class="ml-2 ">
+                        <div class="">ที่อยู่ : {{user.profile.address}}</div>
                     </div>
                 </div>
             </div>
-            
+            {% endif %}
+
+            {% if user.profile.phone_number %}
+            <div class="my-2 flex h-12 items-center justify-center rounded-xl bg-green-400 m-5">
+                <div class="flex items-center">
+                    <div class="ml-2 ">
+                        <div class="">เบอร์ : {{user.profile.phone_number}}</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
 
 
 
         </div>
+        <div class="m-5">
+            <a href="{% url 'editprofile' %}">
+                <div
+                    class="my-2 flex h-12 items-center justify-center rounded-lg text-white bg-slate-700 hover:bg-slate-900 m-20">
+                    <div class="flex items-center">
+                        <div class="ml-2 ">
+                            <div class=""><i class="fa-solid fa-user-pen"></i>&nbsp;&nbsp;แก้ไขโปรไฟล์</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="m-5">
+            <a href="{% url 'change_password' %}">
+                <div
+                    class="my-2 flex h-12 items-center justify-center rounded-lg text-white bg-lime-600	 hover:bg-lime-700 m-20">
+                    <div class="flex items-center">
+                        <div class="ml-2 ">
+                            <div class=""><i class="fa-solid fa-key"></i>&nbsp;&nbsp;เปลี่ยนรหัสผ่าน</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div x-data="{ open: false }" class="text-center mt-10 mb-10">
+            <button @click="open = true"
+                class="my-2 h-12 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded items-center justify-center"><i
+                    class="fa-solid fa-user-xmark"></i>&nbsp;&nbsp;ลบบัญชีผู้ใช้</button>
+
+            <div x-show="open" @click.away="open = false" class="fixed inset-0 flex items-center">
+                <div class="bg-white p-6 w-72 max-w-lg mx-auto rounded shadow-xl border border-[#2B3843] text-center">
+
+                    <p class="text-xl font-family mb-4">ลบบัญชีผู้ใช้</p>
+                    <p>ยืนยันการลบบัญชีผู้ใช้หรือไม่</p>
+                    <div class="text-center">
+                        <a href="{% url 'delete_user' %}"
+                            class="mt-4 bg-[#E81C03] hover:bg-cover text-white px-4 py-2.5 rounded mr-5">ยืนยัน</a>
+                        <button @click="open = false" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">ปิด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
     </div>
+</div>
 </div>
 
 

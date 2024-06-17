@@ -81,6 +81,16 @@
 </script>
 
 <script>
+    function order_install_proofs() {
+        document.getElementById("order_install_proofs").classList.remove('hidden');
+    }
+
+    function close_order_install_proofs() {
+        document.getElementById("order_install_proofs").classList.add('hidden');
+    }
+</script>
+
+<script>
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }

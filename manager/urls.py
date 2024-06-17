@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('dashboard/',manager_dashboard, name="manager_dashboard"),
+    path('overwiew/',overwiew, name="overwiew"),
 
     path('customer_orders/',customer_orders, name="customer_orders"),
     path('customer_orders_category/<str:status>/',customer_orders_category, name="customer_orders_category"),
@@ -35,5 +36,14 @@ urlpatterns = [
     path('add_category/',add_category, name='add_category'),
     path('edit_category/<int:id>/<str:action>/',edit_category, name='edit_category'),
     path('edit_order/<int:id>/',edit_order, name='edit_order'),
+
+    path('material_order/',material_order, name='material_order'),
+    path('staff_manager/',staff_manager, name='staff_manager'),
+    path('edit_staff_manager/<int:id>/',edit_staff_manager, name='edit_staff_manager'),
+    path('delete_staff/<int:id>/',delete_staff, name='delete_staff'),
+    path('order_install_proofs/<int:id>/',order_install_proofs, name='order_install_proofs'),
+
+    path('add_working_day/',add_working_day, name='add_working_day'),
+    path('delete-working-day/<str:date_work>/', delete_working_day, name='delete_working_day'),
 
 ]

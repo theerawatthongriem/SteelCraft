@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','https://neatly-sunny-skylark.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000','https://586485bea01e-17076610223505492659.ngrok-free.app']
 
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_SAMESITE = None
@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'base_app',
     'members',
     'manager',
+    'staff',
+
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
@@ -57,6 +59,14 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'theerawatthongriem@gmail.com'
 EMAIL_HOST_PASSWORD = 'vplusdvesrybfsyd'
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+PLOTLY_DASH = {
+    'ws_route': 'dpd/ws/route/',
+    'http_route': 'dpd/views',
+    'cache_timeout_initial_arguments': 60,
+    'serve_locally': True,
+}
 
 # from_email = 'theerawatthongriem@gmail.com'
 
@@ -83,6 +93,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 

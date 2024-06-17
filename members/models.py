@@ -24,7 +24,8 @@ class Order(models.Model):
         (CANCELLED, 'ยกเลิก'),
     ]
 
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    staff = models.ForeignKey(User,on_delete=models.SET_NULL,limit_choices_to={'is_staff':True,'is_active':True,'is_superuser':False},null=True,blank=True)
+    user = models.ForeignKey(User,on_delete=models.SET_NULL,related_name='customer',null=True,blank=True)
     first_name = models.CharField(max_length=500)
     last_name = models.CharField(max_length=500)
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
@@ -36,9 +37,9 @@ class Order(models.Model):
     delivery_location = models.CharField(max_length=500 ,null=True, blank=True)
     phone_number = models.CharField(max_length=15,default='')
     note = models.TextField(default='',null=True, blank=True)
-    appt_date = models.DateTimeField(null=True, blank=True)
+    appt_date = models.DateField(null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True)
-    ship_date = models.DateTimeField(null=True, blank=True)
+    ship_date = models.DateField(null=True, blank=True)
     deposit = models.IntegerField(default=0)
     deposit_payment = models.BooleanField(default=False)
     deposit_proof = models.ImageField(upload_to='deposit_proofs/', blank=True, null=True)
@@ -46,6 +47,11 @@ class Order(models.Model):
     payment = models.BooleanField(default=False)
     payment_proof = models.ImageField(upload_to='payment_proofs/', blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+
+    image1 = models.ImageField(upload_to='install_proofs/',blank=True, null=True)
+    image2 = models.ImageField(upload_to='install_proofs/',blank=True, null=True)
+    image3 = models.ImageField(upload_to='install_proofs/',blank=True, null=True)
+    image4 = models.ImageField(upload_to='install_proofs/',blank=True, null=True)
 
 
 class MeasureSize(models.Model):

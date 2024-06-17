@@ -199,24 +199,24 @@ def sign_in(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
 
-            user = authenticate(username=username,password=password)
+            user = authenticate(username=username, password=password)
             if user:
-                if user.is_superuser or user.is_staff and not user.is_active:
+                if user.is_superuser:
                     login(request, user)
                     return redirect('manager_dashboard') 
+                elif user.is_staff:
+                    login(request, user)
+                    return redirect('staff_dashboard') 
                 else:
                     login(request, user)
                     return redirect('dashboard')  
-
-        else:
-            form = LoginForm()
-    else:
-        form = LoginForm()
-
-    return render(request,'login.html',{'form':form })
+            else:
+                form.add_error(None, 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
+    
+    return render(request, 'login.html', {'form': form})
 
 
 @login_required(login_url='login')

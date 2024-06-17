@@ -62,7 +62,17 @@
 
                     </div>
                 </div>
-
+                
+                {% if user.is_staff %}
+                <div class="flex -mx-2 mb-4">
+                    <div class="w-1/2 px-2">
+                        <a href="{% url 'checkout' products.id %}">
+                            <button
+                                class="w-full md:w-full bg-gray-900 dark:bg-gray-600 text-white py-2 px-4 rounded-2xl font-bold hover:bg-gray-800 dark:hover:bg-gray-700">สร้างรายการสั่งซื้อ</button>
+                        </a>
+                    </div>
+                </div>
+                {% else %}
                 <div class="flex -mx-2 mb-4">
                     <div class="w-1/2 px-2">
                         <a href="{% url 'checkout' products.id %}">
@@ -89,6 +99,7 @@
 
                     {% endif %}
                 </div>
+                {% endif %}
             </div>
 
             <div class="md:flex-1 px-4">

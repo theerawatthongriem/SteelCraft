@@ -21,6 +21,19 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
+        widgets = {
+            'username':forms.TextInput(attrs={'placeholder':'กรอกชื่อผู้ใช้','class':''}),
+            'first_name':forms.TextInput(attrs={'placeholder':'ชื่อจริง','class':'','required':True}),
+            'last_name':forms.TextInput(attrs={'placeholder':'นามสกุล','class':'','required':True}),
+            'email':forms.EmailInput(attrs={'placeholder':'อีเมล','class':'','required':True}),
+
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            self.fields[field_name].help_text = None
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
@@ -34,6 +47,13 @@ class UserProfileForm(forms.ModelForm):
         labels = {
             'address': 'ที่อยู่',
             'phone_number': 'เบอร์โทร',
+        }
+
+        widgets = {
+            'phone_number':forms.TextInput(attrs={'placeholder':'กรอกเบอร์โทร','class':''}),
+
+            'address':forms.Textarea(attrs={'placeholder':'กรอกที่อยู่','class':'h-24 '}),
+            'phone_number':forms.TextInput(attrs={'placeholder':'กรอกเบอร์โทร','class':''}),
         }
 
 class ChangePasswordForm(PasswordChangeForm):

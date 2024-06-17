@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import *
-from manager.models import Product
+from manager.models import Product,WorkingDay
 from django.contrib import messages
 from base_app.models import UserMessage
 
@@ -21,7 +21,11 @@ from manager.forms import DepositForm,PaymentForm
 from django.core.paginator import Paginator
 
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta,datetime
+
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 
 
@@ -50,119 +54,65 @@ def delete_favorite(request,id):
 
 @login_required(login_url='login')
 def checkout(request, id):
+
+
+    working_days = list(WorkingDay.objects.all().values('date_work'))
+
+    for day in working_days:
+        day['date_work'] = day['date_work'].strftime('%Y-%m-%d')
+
+   
+
     product = get_object_or_404(Product, pk=id)
     error_message = None
 
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        quantity = request.POST.get('quantity')
-        address = request.POST.get('address')
-        phone_number = request.POST.get('phone_number')
-        note = request.POST.get('note')
-        delivery_location = request.POST.get('delivery_location')
-        appt_date = request.POST.get('appt_date')
-        product_category = product.category
-        total_price = int(product.price) * int(quantity)
-        deposit = product.product_deposit
-        total_pay = total_price - deposit
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            if request.user.is_staff or request.user.is_superuser:
+                order.user = None
+                order.staff = request.user
+            else:
+                order.user = request.user
 
-        tomorrow = timezone.now() + timedelta(days=1)
-        try:
-            appt_date_parsed = timezone.datetime.strptime(appt_date, '%Y-%m-%d')
-            appt_date_parsed = timezone.make_aware(appt_date_parsed, timezone.get_default_timezone())
-        except ValueError:
-            error_message = 'รูปแบบวันที่ไม่ถูกต้อง'
-            appt_date_parsed = None
+            order.user = request.user
+            order.product = product
+            order.product_category = product.category
+            order.price = product.price
+            order.total_price = int(product.price) * int(form.cleaned_data['quantity'])
+            order.deposit = product.product_deposit
+            order.total_pay = order.total_price - order.deposit
 
-        if appt_date_parsed and appt_date_parsed < tomorrow:
-            error_message = 'วันนัดวัดขนาดต้องไม่เร็วกว่าวันพรุ่งนี้'
+
+            ship_date = product.production_time * int(form.cleaned_data['quantity'])
+
+
+            tomorrow = timezone.now().date() + timedelta(days=1)
+            appt_date_parsed = form.cleaned_data['appt_date']
+            if appt_date_parsed and appt_date_parsed < tomorrow:
+                error_message = 'วันนัดวัดขนาดต้องเลือกวันถัดไป และไม่ตรงกับวันหยุดทำการ'
+            else:
+                order.appt_date = timezone.make_aware(timezone.datetime.combine(appt_date_parsed, timezone.datetime.min.time()))
+                order.ship_date = timezone.make_aware(timezone.datetime.combine(appt_date_parsed, timezone.datetime.min.time())) + timedelta(days=ship_date)  # เพิ่ม 5 วันให้กับ appt_date
+                order.save()
+                if request.user.is_superuser:
+                    return redirect('customer_orders')
+                elif request.user.is_staff:
+                    return redirect('staff_order_list')
+                else:
+                    return redirect('orders')
         else:
-            order = Order.objects.create(
-                user=request.user,
-                product=product,
-                price=product.price,
-                quantity=quantity,
-                total_price=total_price,
-                address=address,
-                phone_number=phone_number,
-                note=note,
-                product_category=product_category,
-                delivery_location=delivery_location,
-                first_name=first_name,
-                last_name=last_name,
-                appt_date=appt_date_parsed,
-                deposit=deposit,
-                total_pay=total_pay,
-            )
-            order.save()
-            user_order = Order.objects.filter(user=request.user).order_by('-id').first()
-            data = UserMessage.objects.filter(user=request.user).first()
-            if data:
-                message = (f'คำสั่งซื้อ : {user_order.id}  {user_order.product.name} \n จำนวน {user_order.quantity} รายการ ราคารวม {user_order.total_price} บาท \n - การจัดส่ง \n คุณ {user_order.first_name} {user_order.last_name} \n{user_order.address} \n {user_order.phone_number}')
-                # if data.line_id:
-                #     send_line_message(data.line_id, message)
-
-            return redirect('orders')
+            error_message = 'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง'
+    else:
+        form = CheckoutForm()
 
     return render(request, 'members/checkout.html', {
         'product': product,
+        'form': form,
         'error_message': error_message,
-        'form_data': request.POST if request.method == 'POST' else None,
+        'working_days': json.dumps(working_days),
     })
-
-
-
-# @login_required(login_url='login')
-# def create_order(request,id):
-#     if request.method == 'POST':
-#         first_name = request.POST.get('first_name')
-#         last_name = request.POST.get('last_name')
-#         quantity = request.POST.get('quantity')
-#         address = request.POST.get('address')
-#         phone_number = request.POST.get('phone_number')
-#         note = request.POST.get('note')
-#         delivery_location = request.POST.get('delivery_location')
-#         appt_date = request.POST.get('appt_date')
-#         product = Product.objects.get(pk=id)
-#         product_category = product.category
-#         total_price = int(product.price) * int(quantity)
-#         deposit = product.product_deposit
-#         total_pay = total_price - deposit
-
-#         error_message = None
-#         tomorrow = timezone.now() + timedelta(days=1)
-#         if appt_date and appt_date < tomorrow:
-#             error_message = 'วันนัดวัดขนาดต้องไม่เร็วกว่าวันพรุ่งนี้'
-#             return redirect(f'/members/checkout/product/{id}/')
-#         else:
-#             order = Order.objects.create(
-#             user=request.user,
-#             product=product,
-#             price=product.price,
-#             quantity=quantity,
-#             total_price=total_price,
-#             address=address,
-#             phone_number=phone_number,
-#             note=note,
-#             product_category=product_category,
-#             delivery_location=delivery_location,
-#             first_name=first_name,
-#             last_name=last_name,
-#             appt_date=appt_date,
-#             deposit=deposit,
-#             total_pay=total_pay,
-#         )
-
-#             order.save()
-#             user_order = Order.objects.filter(user=request.user).order_by('-id').first()
-#             data = UserMessage.objects.filter(user=request.user).first()
-#             if data:
-#                 message = (f'คำสั่งซื้อ : {user_order.id}  {user_order.product.name} \n จำนวน {user_order.quantity} รายการ ราคารวม {user_order.total_price} บาท \n - การจัดส่ง \n คุณ {user_order.first_name} {user_order.last_name} \n{user_order.address} \n {user_order.phone_number}')
-#                 # if data.line_id:
-#                 #     send_line_message(data.line_id, message)
-
-#             return redirect(f'orders')
 
 
 
@@ -198,7 +148,7 @@ def customer_orders_category(request,status):
         'status':status,
     })
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def order_detail(request,id):
 
     order = Order.objects.get(pk=id)

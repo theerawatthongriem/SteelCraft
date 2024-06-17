@@ -22,11 +22,16 @@ class MeasureSizeAdmin(admin.ModelAdmin):
     def order_id(self,order):
         return order.order.id if order.order else ''
 
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ['id','image']
+    ordering = ['id']
 
-    
+class WorkingDayAdmin(admin.ModelAdmin):
+    list_display = ['date_work']    
 
 admin.site.register(Product,ProductAdmin)
 admin.site.register(Category)
 admin.site.register(Material)
 admin.site.register(MeasureSize,MeasureSizeAdmin)
-admin.site.register(ProductImage)
+admin.site.register(ProductImage,ProductImageAdmin)
+admin.site.register(WorkingDay,WorkingDayAdmin)

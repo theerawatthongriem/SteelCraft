@@ -22,7 +22,7 @@
                 class="fa-regular fa-pen-to-square"></i>&nbsp;&nbsp;แก้ไขคำสั่งซื้อ</button>
     </div>
 
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2">
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-3 m-2 items-start">
 
         <div class="col-span-1">
             <p class="text-xl font-semibold mb-2">ข้อมูลลูกค้า</p>
@@ -33,12 +33,14 @@
                 <p><strong>เบอร์โทรศัพท์ : </strong> {{ order.phone_number }}</p>
                 <p><strong>หมายเหตุ : </strong> {% if order.note == None %} ไม่ระบุ {% else %} {{ order.note }}
                     {% endif %} </p>
-                <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date.date }}</p>
+                <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date }}</p>
                 <p><strong>วันจัดส่ง/ติดตั้ง : </strong>
                     {% if order.ship_date == None %} รอดำเนินการ {% else %}
-                    {{order.ship_date.date }}
+                    {{order.ship_date }}
                     {% endif %}
                 </p>
+
+
             </div>
             <div class="mt-5">
                 <a href="https://www.google.com/maps/search/?api=1&query={{order.delivery_location}}"
@@ -46,6 +48,8 @@
                     <i class="fa-solid fa-location-dot text-4xl"></i>
                 </a>
             </div>
+
+
         </div>
 
 
@@ -64,6 +68,7 @@
                     </div>
                 </div>
             </a>
+
         </div>
 
 
@@ -140,7 +145,23 @@
                 {% endif %}
                 {% endif %}
             </div>
+
         </div>
+
+        <div class="">
+            <a href="/manager/size_save_detail/{{order.id}}/"
+                class="p-2 border bg-amber-600 text-lg text-white w-fit rounded-lg hover:bg-amber-700 hover:scale-105 mt-5">จดบันทึกขนาด<i
+                    class="fa-solid fa-ruler-combined mx-2"></i>
+            </a>
+
+        </div>
+        <div class="bg-slate-400">
+            
+        </div>
+
+
+        <p class="text-lg"><strong>พนักงาน ที่รับผิดชอบ : </strong>{% if order.staff %}{{ order.staff.first_name }}  {{ order.staff.last_name }}{% else %} ยังไม่ได้มอบหมาย {% endif %}</p>
+
     </div>
 </div>
 
@@ -195,7 +216,7 @@
 
 
 <div id="edit_order" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div id="myModal-content" class="bg-white w-fit h-fit p-8 rounded shadow-lg">
+    <div id="myModal-content" class="bg-white w-fit h-fit p-8 rounded shadow-lg m-2">
 
         <div class="flex justify-end">
             <button id="close" onclick="close_edit_order()"
@@ -207,7 +228,35 @@
         <form method="post" action="{% url 'edit_order' order.id %}">
             {% csrf_token %}
             <div class="grid grid-cols-2 gap-2">
-                {{ forms3|crispy }}
+                <!-- {{ forms3|crispy }} -->
+                <div>
+                    <label for="" class="font-bold text-sm">{{ forms3.price.label }}</label>
+                {{ forms3.price }}
+                </div>
+                <div>
+                    <label for="" class="font-bold text-sm">{{ forms3.total_price.label }}</label>
+                {{ forms3.total_price }}
+                </div>
+                <div>
+                    <label for="" class="font-bold text-sm">{{ forms3.deposit.label }}</label>
+                {{ forms3.deposit }}
+                </div>
+                <div>
+                    <label for="" class="font-bold text-sm">{{ forms3.total_pay.label }}</label>
+                {{ forms3.total_pay }}
+                </div>
+                <div>
+                    <label for="" class="font-bold text-sm">{{ forms3.appt_date.label }}</label>
+                {{ forms3.appt_date }}
+                </div>
+                <div>
+                    <label for="" class="font-bold text-sm">{{ forms3.ship_date.label }}</label>
+                {{ forms3.ship_date }}
+                </div>
+            </div>
+            <div class="">
+                <label for="" class="font-bold text-sm">{{ forms3.staff.label }}</label>
+                {{ forms3.staff }}
             </div>
             <div class="flex justify-center">
                 <button type="submit"
@@ -216,6 +265,70 @@
         </form>
     </div>
 </div>
+
+<div id="order_install_proofs" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
+    <div id="myModal-content" class="bg-white w-fit h-fit p-8 rounded shadow-lg m-2">
+
+        <div class="flex justify-end">
+            <button id="close" onclick="close_order_install_proofs()"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold text-sm py-2 justify-end px-4 rounded">
+                ปิด
+            </button>
+        </div>
+
+        <form method="post" action="{% url 'order_install_proofs' order.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 gap-2">
+                {{ forms4|crispy }}
+            </div>
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="p-2 px-4 border bg-blue-600 text-lg text-white rounded-lg hover:bg-blue-700 hover:scale-105 my-2">บันทึก</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if user.is_superuser %}
+
+{% else %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select the element by id
+        var staffSelect = document.getElementById("div_id_staff");
+        staffSelect.classList.add('hidden');
+    });
+</script>
+{% endif %}
+
+<div class="efefef m-1">
+    <div class="max-w-6xl mx-auto rounded-md justify-center flex">
+        <p class="text-lg">ภาพการติดตั้ง/จัดส่ง</p>
+        <!-- <button type="button" onclick="edit_order()"
+            class="p-2 border text-white hover:bg-lime-700 border-lime-600 rounded-lg bg-lime-600"><i
+                class="fa-regular fa-pen-to-square"></i>&nbsp;&nbsp;แก้ไขคำสั่งซื้อ</button> -->
+    </div>
+
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-4 m-2 items-start">
+        {% if order.image1 %}
+        <img src="{{ order.image1.url }}" class="rounded-lg" alt="">
+        {% endif %}
+
+        {% if order.image2 %}
+        <img src="{{ order.image2.url }}" class="rounded-lg" alt="">
+        {% endif %}
+
+        {% if order.image3 %}
+        <img src="{{ order.image3.url }}" class="rounded-lg" alt="">
+        {% endif %}
+
+        {% if order.image4 %}
+        <img src="{{ order.image4.url }}" class="rounded-lg" alt="">
+        {% endif %}
+    </div>
+</div>
+
 
 
 {% endblock %}

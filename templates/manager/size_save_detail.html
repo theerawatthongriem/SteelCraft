@@ -13,7 +13,7 @@
 
 <div class="flex justify-center mt-4 flex-wrap mx-3">
     <div
-        class="container bg-[#1e293b] py-2 rounded-t-lg overflow-hidden flex justify-between justify-items-center text-white">
+        class="container bg-[#1e293b] py-2 {% if MeasureSize %} rounded-t-lg {% else %} rounded-lg {% endif %} overflow-hidden flex justify-between justify-items-center text-white">
         <div class="p-4">{{ orders.product.name }}</div>
         <div class="p-4">จำนวน : {{ orders.quantity }}</div>
     </div>

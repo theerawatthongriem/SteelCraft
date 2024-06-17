@@ -1,16 +1,21 @@
-
 {% if order.deposit_payment == False and order.status == 'ยืนยันคำสั่งซื้อ' %}
-<div class="flex justify-center my-4">โปรดชำระค่ามัดจำ อัพโหลดหลักฐาน {% if user.is_staff %}และยืนยันการรับเงิน{% endif %}เพื่อดำเนินการต่อ</div>
+<div class="flex justify-center my-4">โปรดชำระค่ามัดจำ อัพโหลดหลักฐาน {% if user.is_staff %}และยืนยันการรับเงิน\
+    {% endif %}
+    เพื่อดำเนินการต่อ</div>
 {% endif %}
 
 {% if order.payment == False and order.status == 'ติดตั้ง' %}
-<div class="flex justify-center my-4">โปรดชำระค่าสินค้า อัพโหลดหลักฐาน {% if user.is_staff %}และยืนยันการรับเงิน{% endif %}เพื่อดำเนินการต่อ</div>
+<div class="flex justify-center my-4">โปรดชำระค่าสินค้า อัพโหลดหลักฐาน {% if user.is_staff %}
+    และยืนยันการรับเงิน
+    {% endif %}
+    เพื่อดำเนินการต่อ</div>
 {% endif %}
 
 
 {% if user.is_staff %}
 
 <div class="flex justify-center items-center mt-3 mb-5 gap-4">
+
     {% if order.status == 'รอดำเนินการ' %}
     <a href="/manager/update_status/{{order.id}}/ยืนยันคำสั่งซื้อ/"
         class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ยืนยันคำสั่งซื้อ
@@ -21,7 +26,7 @@
             class="fa-solid fa-ban mx-2"></i>
     </button>
 
-    
+
 
     {% elif order.status == 'ยืนยันคำสั่งซื้อ' %}
     {% if order.deposit_payment == False %}
@@ -29,9 +34,7 @@
             class="fa-solid fa-circle-chevron-right mx-2"></i>
     </p>
 
-    <a href="/manager/size_save_detail/{{order.id}}/"
-        class="p-2 border bg-amber-600 text-lg text-white rounded-lg hover:bg-amber-700 hover:scale-105">จดบันทึกขนาด<i class="fa-solid fa-ruler-combined mx-2"></i>
-        </a>
+
     {% elif order.deposit_proof %}
     <a href="/manager/update_status/{{order.id}}/ดำเนินการ/"
         class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">ดำเนินการ<i
@@ -63,6 +66,23 @@
     <a class="p-2 border bg-gray-400 text-lg text-white rounded-lg">เสร็จสิ้น<i
             class="fa-solid fa-circle-chevron-right mx-2"></i>
     </a>
+    <button type="button" onclick="order_install_proofs()" class="p-2 border bg-blue-400 hover:bg-blue-600 text-lg text-white rounded-lg">อัพโหลดภาพการติดตั้ง</button>
+
+    {% elif order.payment == True %}
+    <button type="button" onclick="order_install_proofs()" class="p-2 border bg-blue-400 hover:bg-blue-600 text-lg text-white rounded-lg">อัพโหลดภาพการติดตั้ง</button>
+
+    {% if order.image1 or order.image2 or order.image3 or order.image4 %}
+    <a href="/manager/update_status/{{order.id}}/เสร็จสิ้น/"
+        class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">เสร็จสิ้น<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i>
+    </a>
+
+    {% else %}
+    <button type="button" onclick="order_install_proofs()" class="p-2 border bg-blue-400 hover:bg-blue-600 text-lg text-white rounded-lg">อัพโหลดภาพการติดตั้ง</button>
+    <a class="p-2 border bg-gray-400 text-lg text-white rounded-lg">เสร็จสิ้น<i
+            class="fa-solid fa-circle-chevron-right mx-2"></i>
+    </a>
+    {% endif %}
     {% else %}
     <a href="/manager/update_status/{{order.id}}/เสร็จสิ้น/"
         class="p-2 border bg-green-600 text-lg text-white rounded-lg hover:bg-green-700 hover:scale-105">เสร็จสิ้น<i
@@ -90,6 +110,8 @@
     สถานะ
 </div>
 
+
+{% if order.status == 'ยกเลิก' %}
 <div class="md:flex justify-center items-center mt-5 mb-5 hidden">
     <div class="md:flex md:items-center space-x-5 justify-center text-center">
         {% for status,label in order.STATUS_CHOICES %}
@@ -125,7 +147,46 @@
         {% endfor %}
     </div>
 </div>
+{% else %}
+<div class="md:flex justify-center items-center mt-5 mb-5 hidden">
+    <div class="md:flex md:items-center space-x-5 justify-center text-center">
+        {% for status,label in order.STATUS_CHOICES %}
+        {% if not forloop.last %}
+        {% if status == order.status and order.status != 'ยกเลิก' %}
+        <div class="md:grid md:grid-cols-1">
+            <div class="">
+                <i class="fa-solid fa-circle-check text-5xl text-green-600"></i>
+            </div>
+            <div class="mt-1">
+                <div class="whitespace-nowrap">{{ label }}</div>
+            </div>
+        </div>
+        {% elif order.status == 'ยกเลิก' and order.status == status %}
+        <div class="md:grid md:grid-cols-1">
+            <div>
+                <i class="fa-solid fa-circle-check text-5xl text-red-600"></i>
+            </div>
+            <div>
+                <div class="whitespace-nowrap">{{ label }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="md:grid md:grid-cols-1">
+            <div>
+                <i class="fa-regular fa-circle-check text-4xl m-2"></i>
+            </div>
+            <div>
+                <div class="whitespace-nowrap">{{ label }}</div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
 
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<!-- 
 <div class="md:hidden flex justify-center items-center mb-10 ">
     <div class="text-center">
         {% for status,label in order.STATUS_CHOICES %}
@@ -139,7 +200,44 @@
             </div>
         </div>
         {% elif status == order.status and order.status == 'เสร็จสิ้น' %}
-  
+
+        {% elif order.status == 'ยกเลิก' and order.status == status %}
+        <div class="flex items-center">
+            <div>
+                <i class="fa-solid fa-circle-check text-xl m-2 text-red-600"></i>
+            </div>
+            <div>
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="flex items-center">
+            <div>
+                <i class="fa-regular fa-circle-check text-xl m-2"></i>
+            </div>
+            <div>
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+</div> -->
+
+{% if order.status == 'ยกเลิก' %}
+<div class="md:hidden justify-center items-center mt-5 mb-5 flex">
+    <div class="text-center">
+        {% for status,label in order.STATUS_CHOICES %}
+        {% if status == order.status and order.status != 'ยกเลิก' %}
+        <div class="flex items-center">
+            <div class="">
+                <i class="fa-solid fa-circle-check m-2 text-xl text-green-600"></i>
+            </div>
+            <div class="">
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
         {% elif order.status == 'ยกเลิก' and order.status == status %}
         <div class="flex items-center">
             <div>
@@ -163,3 +261,42 @@
         {% endfor %}
     </div>
 </div>
+{% else %}
+<div class="md:hidden justify-center items-center mt-5 mb-5 flex">
+    <div class="text-center">
+        {% for status,label in order.STATUS_CHOICES %}
+        {% if not forloop.last %}
+        {% if status == order.status and order.status != 'ยกเลิก' %}
+        <div class="flex items-center">
+            <div class="">
+                <i class="fa-solid fa-circle-check m-2 text-xl text-green-600"></i>
+            </div>
+            <div class="">
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% elif order.status == 'ยกเลิก' and order.status == status %}
+        <div class="flex items-center">
+            <div>
+                <i class="fa-solid fa-circle-check text-xl m-2 text-red-600"></i>
+            </div>
+            <div>
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="flex items-center">
+            <div>
+                <i class="fa-regular fa-circle-check text-xl m-2"></i>
+            </div>
+            <div>
+                <div class="">{{ label }}</div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
