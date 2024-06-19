@@ -268,110 +268,110 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const apptDateInput = document.getElementById('appt_date');
-        const calendarBody = document.getElementById('calendar-body');
-        const currentMonthYear = document.getElementById('current-month-year');
-        const prevMonthBtn = document.getElementById('prev-month');
-        const nextMonthBtn = document.getElementById('next-month');
-        const workingDays = {{ working_days|safe }};  // รับข้อมูลวันที่จาก Django
+    const apptDateInput = document.getElementById('appt_date');
+    const calendarBody = document.getElementById('calendar-body');
+    const currentMonthYear = document.getElementById('current-month-year');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const workingDays = {{ working_days|safe }};  // รับข้อมูลวันที่จาก Django
 
-        let today = new Date();
-        let currentYear = today.getFullYear();
-        let currentMonth = today.getMonth();
+    let today = new Date();
+    let currentYear = today.getFullYear();
+    let currentMonth = today.getMonth();
 
-        function createCalendar(year, month) {
-            const firstDay = new Date(year, month, 1).getDay();
-            const lastDate = new Date(year, month + 1, 0).getDate();
-            let date = 1;
-            let calendarHTML = '';
+    function createCalendar(year, month) {
+        const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;  // Adjust to make Monday = 0
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        let date = 1;
+        let calendarHTML = '';
 
-            for (let i = 0; i < 6; i++) {
-                let rowHTML = '<tr>';
-                let rowHasDate = false;
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < firstDay) {
-                        rowHTML += '<td class="border px-4 py-2 hover:scale-105"></td>';
-                    } else if (date > lastDate) {
-                        rowHTML += '<td class="border px-4 py-2 hover:scale-105"></td>';
-                    } else {
-                        const currentDate = new Date(Date.UTC(year, month, date)).toISOString().split('T')[0];
-                        const workingDay = workingDays.find(d => d.date_work === currentDate);
-                        const dayClass = workingDay ? (workingDay.is_open ? 'open-day' : 'closed-day') : 'no-data-day';
-                        rowHTML += `<td class="border px-4 py-2 ${dayClass}" data-date="${currentDate}">${date}</td>`;
-                        date++;
-                        rowHasDate = true;
-                    }
-                }
-                rowHTML += '</tr>';
-                if (rowHasDate) {
-                    calendarHTML += rowHTML;
+        for (let i = 0; i < 6; i++) {
+            let rowHTML = '<tr>';
+            let rowHasDate = false;
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < firstDay) {
+                    rowHTML += '<td class="border px-4 py-2 hover:scale-105"></td>';
+                } else if (date > lastDate) {
+                    rowHTML += '<td class="border px-4 py-2 hover:scale-105"></td>';
+                } else {
+                    const currentDate = new Date(Date.UTC(year, month, date)).toISOString().split('T')[0];
+                    const workingDay = workingDays.find(d => d.date_work === currentDate);
+                    const dayClass = workingDay ? (workingDay.is_open ? 'open-day' : 'closed-day') : 'no-data-day';
+                    rowHTML += `<td class="border px-4 py-2 ${dayClass}" data-date="${currentDate}">${date}</td>`;
+                    date++;
+                    rowHasDate = true;
                 }
             }
-
-            calendarBody.innerHTML = calendarHTML;
-            currentMonthYear.textContent = `${getMonthName(month)} ${year}`;
-
-            document.querySelectorAll('.closed-day').forEach(day => {
-                day.classList.add('bg-red-700', 'text-white','text-center');
-                day.style.cursor = 'not-allowed';  // Change cursor to not-allowed
-                day.addEventListener('click', function () {
-                    alert('วันที่เลือกเป็นวันปิดทำการ กรุณาเลือกวันอื่น');
-                });
-            });
-
-            document.querySelectorAll('.open-day').forEach(day => {
-                day.classList.add('bg-green-300', 'hover:bg-blue-600', 'cursor-pointer','text-center','hover:shadow-lg','hover:text-white');
-                day.addEventListener('click', function () {
-                    const selectedDate = this.getAttribute('data-date');
-                    apptDateInput.value = selectedDate;
-                });
-            });
-
-            document.querySelectorAll('.no-data-day').forEach(day => {
-                day.classList.add('bg-white', 'hover:bg-blue-600', 'cursor-pointer','text-center','hover:shadow-lg','hover:text-white');
-                day.addEventListener('click', function () {
-                    const selectedDate = this.getAttribute('data-date');
-                    apptDateInput.value = selectedDate;
-                });
-            });
+            rowHTML += '</tr>';
+            if (rowHasDate) {
+                calendarHTML += rowHTML;
+            }
         }
 
-        function getMonthName(month) {
-            const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-            return monthNames[month];
-        }
+        calendarBody.innerHTML = calendarHTML;
+        currentMonthYear.textContent = `${getMonthName(month)} ${year}`;
 
-        prevMonthBtn.addEventListener('click', function () {
-            if (currentMonth === 0) {
-                currentMonth = 11;
-                currentYear--;
-            } else {
-                currentMonth--;
-            }
-            createCalendar(currentYear, currentMonth);
-        });
-
-        nextMonthBtn.addEventListener('click', function () {
-            if (currentMonth === 11) {
-                currentMonth = 0;
-                currentYear++;
-            } else {
-                currentMonth++;
-            }
-            createCalendar(currentYear, currentMonth);
-        });
-
-        apptDateInput.addEventListener('change', function () {
-            const selectedDate = this.value;
-            const workingDay = workingDays.find(d => d.date_work === selectedDate);
-            if (workingDay && !workingDay.is_open) {
+        document.querySelectorAll('.closed-day').forEach(day => {
+            day.classList.add('bg-red-700', 'text-white','text-center');
+            day.style.cursor = 'not-allowed';  // Change cursor to not-allowed
+            day.addEventListener('click', function () {
                 alert('วันที่เลือกเป็นวันปิดทำการ กรุณาเลือกวันอื่น');
-                this.value = '';  // Clear the input value
-            }
+            });
         });
 
+        document.querySelectorAll('.open-day').forEach(day => {
+            day.classList.add('bg-green-300', 'hover:bg-blue-600', 'cursor-pointer','text-center','hover:shadow-lg','hover:text-white');
+            day.addEventListener('click', function () {
+                const selectedDate = this.getAttribute('data-date');
+                apptDateInput.value = selectedDate;
+            });
+        });
+
+        document.querySelectorAll('.no-data-day').forEach(day => {
+            day.classList.add('bg-white', 'hover:bg-blue-600', 'cursor-pointer','text-center','hover:shadow-lg','hover:text-white');
+            day.addEventListener('click', function () {
+                const selectedDate = this.getAttribute('data-date');
+                apptDateInput.value = selectedDate;
+            });
+        });
+    }
+
+    function getMonthName(month) {
+        const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        return monthNames[month];
+    }
+
+    prevMonthBtn.addEventListener('click', function () {
+        if (currentMonth === 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else {
+            currentMonth--;
+        }
         createCalendar(currentYear, currentMonth);
     });
+
+    nextMonthBtn.addEventListener('click', function () {
+        if (currentMonth === 11) {
+            currentMonth = 0;
+            currentYear++;
+        } else {
+            currentMonth++;
+        }
+        createCalendar(currentYear, currentMonth);
+    });
+
+    apptDateInput.addEventListener('change', function () {
+        const selectedDate = this.value;
+        const workingDay = workingDays.find(d => d.date_work === selectedDate);
+        if (workingDay && !workingDay.is_open) {
+            alert('วันที่เลือกเป็นวันปิดทำการ กรุณาเลือกวันอื่น');
+            this.value = '';  // Clear the input value
+        }
+    });
+
+    createCalendar(currentYear, currentMonth);
+});
 </script>
 
 

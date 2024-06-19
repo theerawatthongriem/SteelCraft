@@ -2,10 +2,16 @@ from django.shortcuts import render
 from members.models import Order
 from django.core.paginator import Paginator
 from .forms import OrderForm
+from datetime import date
+
 
 # Create your views here.
 def staff_dashboard(request):
-    return render(request,'staff/dashboard.html')
+    orders = Order.objects.filter(staff=request.user).exclude(status__in=['เสร็จสิ้น', 'ยกเลิก'])
+
+    for order in orders:
+        order.days_until_ship = (order.ship_date - date.today()).days
+    return render(request,'staff/dashboard.html',{'orders':orders})
 
 def staff_order_list(request):
 

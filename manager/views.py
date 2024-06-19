@@ -671,7 +671,7 @@ def add_working_day(request):
     return render(request, 'manager/add_working_day.html', context)
 
 def delete_working_day(request, date_work):
-    date = get_object_or_404(WorkingDay, date_work=date_work)
+    date = WorkingDay.objects.filter(date_work=date_work)
     date.delete()
     return redirect('add_working_day')
     

@@ -254,7 +254,7 @@
                 {{ forms3.ship_date }}
                 </div>
             </div>
-            <div class="">
+            <div class="" id="is_self">
                 <label for="" class="font-bold text-sm">{{ forms3.staff.label }}</label>
                 {{ forms3.staff }}
             </div>
@@ -292,11 +292,10 @@
 {% if user.is_superuser %}
 
 {% else %}
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Select the element by id
-        var staffSelect = document.getElementById("div_id_staff");
+        var staffSelect = document.getElementById("is_self");
         staffSelect.classList.add('hidden');
     });
 </script>
