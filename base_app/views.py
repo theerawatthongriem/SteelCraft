@@ -27,7 +27,6 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage,ImageSendMessage
 
-from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import requests
 
@@ -167,7 +166,11 @@ def connect_line_user(request):
 def line(request):
     return render(request,'line.html')
 
+@csrf_exempt
 def home(request):
+
+    if request.method == 'POST':
+        print(request.POST.get('name'))
 
     users = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
     products = Product.objects.filter(user__in=users)
@@ -371,3 +374,4 @@ def get_data(request):
     # ส่งผลลัพธ์กลับเป็น HTTP response
     return HttpResponse(total_quantity_by_category.to_string())
     # return JsonResponse(dataframe, safe=False)
+

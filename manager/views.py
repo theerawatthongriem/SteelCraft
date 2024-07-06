@@ -33,13 +33,19 @@ from django.core.paginator import Paginator
 import base64,urllib
 from io import BytesIO
 
+from datetime import date
+
 import json
 
 
 @login_required(login_url='login')
 @user_passes_test(manager_user,login_url='found_page')
 def manager_dashboard(request):
-    return render(request, 'manager/dashboard.html', {})
+    orders = Order.objects.all().exclude(status__in=['เสร็จสิ้น', 'ยกเลิก'])
+
+    for order in orders:
+        order.days_until_ship = (order.ship_date - date.today()).days
+    return render(request, 'manager/dashboard.html', {'orders':orders})
 
 
 def overwiew(request):

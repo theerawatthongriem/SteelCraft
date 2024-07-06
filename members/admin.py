@@ -10,7 +10,6 @@ class CancellationReasonAdmin(admin.ModelAdmin):
     list_display = ['cancellation_reason']
 
 admin.site.register(Order, OrderAdmin)
-admin.site.register(CancellationReason, CancellationReasonAdmin)
 admin.site.register(CancelOrder)
 admin.site.register(MeasureSizeMaterial)
 # admin.site.register(UserMessage)

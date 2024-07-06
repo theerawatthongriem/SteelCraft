@@ -81,5 +81,4 @@ class CancelOrder(models.Model):
     cancellation_reason = models.CharField(max_length=100, blank=True, null=True)  
 
 
-class CancellationReason(models.Model):
-    cancellation_reason = models.CharField(max_length=100, blank=True, null=True)  
+

@@ -182,6 +182,10 @@
 {% include 'manager/components/payment_show.html' %}
 
 
+{% include 'manager/components/deposit_bill.html' %}
+
+
+
 <div id="myModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
     <div id="myModal-content" class="bg-white w-80 p-8 rounded shadow-lg">
 
@@ -213,6 +217,38 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const otherRadio = document.getElementById('other');
+        const additionalInfoInput = document.getElementById('additional_info');
+
+        // เมื่อคลิกที่ radio button "อื่นๆ"
+        otherRadio.addEventListener('change', function () {
+            if (otherRadio.checked) {
+                additionalInfoInput.disabled = false;
+            }
+        });
+
+        // เมื่อเปลี่ยนแปลงข้อความใน input field
+        additionalInfoInput.addEventListener('input', function () {
+            if (otherRadio.checked) {
+                otherRadio.value = additionalInfoInput.value;
+            }
+        });
+
+        // ปิดการใช้งาน input field ถ้าไม่เลือก "อื่นๆ"
+        additionalInfoInput.disabled = !otherRadio.checked;
+
+        // ตรวจสอบว่ามีการเลือก "อื่นๆ" อยู่แล้วหรือไม่เมื่อโหลดหน้าเว็บ
+        otherRadio.addEventListener('change', function () {
+            additionalInfoInput.disabled = !otherRadio.checked;
+            if (!otherRadio.checked) {
+                otherRadio.value = 'อื่นๆ';
+            }
+        });
+    });
+</script>
 
 
 <div id="edit_order" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

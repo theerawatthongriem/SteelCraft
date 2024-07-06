@@ -13,68 +13,114 @@
     </div>
 </div>
 
-<div class="max-w-screen mx-auto p-4 bg-white mt-5 mb-10 rounded-lg h-screen">
+<div class="max-w-screen mx-auto p-4 bg-white mt-5 mb-5 rounded-lg">
     <div class="container mx-auto">
 
-        <div class="border rounded-lg border-gray-400 mb-5 grid grid-cols-4 justify-around items-center overflow-hidden">
+        <div class="border rounded-lg border-gray-400 grid grid-cols-4 justify-around items-center overflow-hidden">
 
             <a href="{% url 'customer_orders' %}"
-                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i class="fa-solid fa-list mr-2"></i> ดูรายการสั่งซื้อ
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i
+                    class="fa-solid fa-list mr-2"></i> ดูรายการสั่งซื้อ
             </a>
 
             <a href="{% url 'product_list' %}"
-                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6   h-full w-full border text-center"><i class="fa-solid fa-rectangle-list mr-2"></i>ดูรายการสินค้า
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6   h-full w-full border text-center"><i
+                    class="fa-solid fa-rectangle-list mr-2"></i>ดูรายการสินค้า
             </a>
 
             <a href="{% url 'material_list' %}"
-                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i class="fa-solid fa-warehouse mr-2"></i>คลังวัสดุ
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i
+                    class="fa-solid fa-warehouse mr-2"></i>คลังวัสดุ
             </a>
 
             <a href="{% url 'size_save' %}"
-                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6 h-full w-full border text-center"><i class="fa-solid fa-floppy-disk mr-2"></i>รายการจดบันทึก
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6 h-full w-full border text-center"><i
+                    class="fa-solid fa-floppy-disk mr-2"></i>รายการจดบันทึก
             </a>
 
             <a href="{% url 'material_order' %}"
-                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i class="fa-solid fa-shop mr-2"></i>สรุปการซื้อวัสดุ
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i
+                    class="fa-solid fa-shop mr-2"></i>สรุปการซื้อวัสดุ
             </a>
 
             <a href="{% url 'staff_manager' %}"
-                 class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i class="fa-solid fa-people-roof mr-2"></i>จัดการพนักงาน
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i
+                    class="fa-solid fa-people-roof mr-2"></i>จัดการพนักงาน
             </a>
 
             <a href="{%  url 'overwiew' %}"
-                 class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i class="fa-solid fa-chart-simple mr-4"></i>ภาพรวม
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i
+                    class="fa-solid fa-chart-simple mr-4"></i>ภาพรวม
             </a>
 
             <a href="{%  url 'add_working_day' %}"
-                 class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i class="fa-solid fa-calendar-days mr-4"></i>วันทำการ
+                class="text-lg font-bold hover:bg-[#2B3843] hover:text-white p-6  h-full w-full border text-center"><i
+                    class="fa-solid fa-calendar-days mr-4"></i>วันทำการ
             </a>
 
         </div>
+    </div>
+</div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<div class="max-w-screen mx-auto px-6 bg-white rounded-lg">
+    <div class="container mx-auto">
+        <p class="text-xl flex items-center">
+            <i class="fa-solid fa-screwdriver-wrench mr-4 text-3xl text-emerald-700"></i>งานที่มอบหมาย
+        </p>
+    </div>
+</div>
 
-
-
-            <!-- <div class="bg-yellow-100 p-5 rounded-lg border border-gray-400">
-                <p class="text-lg font-bold mb-2">เชื่อมต่อไลน์</p>
-                <p class="text-gray-600">เชื่อมต่อไลน์เพื่ออัพเดทข่าวสาร และสถานะคำสั่งซื้อ</p>
-                <div class="mt-2">
-                    <a id="" href="{% url 'line' %}"
-                        class="bg-yellow-500 hover:bg-yellow-700 text-white px-10 py-1.5 rounded border border-yellow-600">
-                        Connect with LINE
-                    </a>
+<div class="max-w-screen mx-auto p-4 bg-white mb-10 rounded-lg h-screen">
+    <div class="container mx-auto">
+        {% if orders %}
+        {% for o in orders %}
+        <div class="w-full border border-gray-300 shadow rounded-md h-full m-2">
+            <div class="p-4 px-10 text-lg md:flex md:justify-between md:items-center">
+                <div>
+                    <p class="font-bold text-xl">เลขคำสั่งซื้อ : {{ o.id }}</p>
+                    <div class="flex gap-4">
+                        <p>สินค้า : {{ o.product }}</p>
+                        <p>จำนวน : {{ o.quantity }}</p>
+                    </div>
+                    <p>สถานะ : {{ o.status }}</p>
+                    <div class="my-2">
+                        <a href="{% url 'order_detail' o.id %}" class="border p-2 rounded-lg bg-amber-300 hover:bg-amber-500">ดูรายละเอียด</a>
+                    </div>
                 </div>
 
-            </div> -->
+                <div>
 
+
+                    {% if o.staff %}
+                    <p class="font-bold">ช่าง : {{ o.staff }} {{ o.staff.first_name }} {{ o.staff.last_name }}</p>
+                    {% else %}
+                    <p class="font-bold">ช่าง : ยังไม่ได้มอบหมาย</p>
+                    {% endif %}
+
+
+                    {% if o.days_until_ship == 0 %}
+                    <p class="text-xl"><i
+                            class="fa-solid fa-calendar-day mr-4 text-2xl text-emerald-500"></i>ครบกำหนดในอีกวันนี้</p>
+                    {% elif o.days_until_ship < 0 %} <p class="text-xl"><i
+                            class="fa-solid fa-calendar-day mr-4 text-2xl text-red-500"></i>เลยกำหนด {{o.days_until_ship }} วัน</p>
+                    {% else %}
+                        <p class="text-xl"><i class="fa-solid fa-calendar-day mr-4 text-2xl text-emerald-500"></i>ครบกำหนดในอีก {{o.days_until_ship }} วัน</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-
+        {% endfor %}
+        {% else %}
+        <div class="w-full border border-gray-300 shadow rounded-md h-full m-2">
+            <div class="p-4 px-10 text-lg md:flex md:justify-between items-center">
+                <div>
+                    <p class="text-lg">ยังไม่มีรายการ</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
+</div>
 
 
-
-
-
-
-    {% endblock %}
+{% endblock %}

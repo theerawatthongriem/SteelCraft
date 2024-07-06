@@ -28,7 +28,7 @@
                 <p><strong>หมายเหตุ : </strong> {% if order.note == None %} ไม่ระบุ {% else %} {{ order.note }}
                     {% endif %} </p>
                 <p><strong>วันนัดวัดขนาด : </strong> {{ order.appt_date }}</p>
-                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date == None %} รอดำเนินการ {% else %} 
+                <p><strong>วันจัดส่ง/ติดตั้ง : </strong>{% if order.ship_date == None %} รอดำเนินการ {% else %}
                     {{order.ship_date }} {% endif %} </p>
             </div>
             <div class="mt-5">
@@ -77,7 +77,7 @@
 
                 <div>
                     {% if order.deposit_payment == False %}
-                    <p  class="text-md">รอตรวจสอบ</p>
+                    <p class="text-md">รอตรวจสอบ</p>
                     {% else %}
                     <p><i class="fa-regular fa-square-check mx-1 text-green-600"></i>รับเงินแล้ว</p>
                     {% endif %}
@@ -104,11 +104,11 @@
                     class="p-2 border rounded-md bg-amber-500 text-white hover:bg-amber-700 text-sm"><i
                         class="fa-solid fa-credit-card mx-2"></i>ดูหลักฐานการชำระเงินค่าสินค้า</button>
 
-                    {% if order.payment == False %}
+                {% if order.payment == False %}
                 <button type="button" onclick="payment_edit()"
                     class="p-2 border rounded-md bg-slate-500 text-sm  text-white hover:bg-slate-800 hover:scale-105">แก้ไข</button>
-                    {% else %}
-                    {% endif %}
+                {% else %}
+                {% endif %}
 
                 <div>
                     {% if order.payment == False %}
@@ -132,23 +132,28 @@
                 {% endif %}
                 {% endif %}
             </div>
+
+            
         </div>
     </div>
 </div>
 
 
-<div class="flex justify-center">
-{% if order.status == 'เสร็จสิ้น' %}
-<p class="text-2xl p-2 px-4 rounded-md bg-green-400 border"><i
-        class="fa-solid fa-check mx-2"></i>คำสั่งซื้อเสร็จสิ้น</p>
-{% elif order.status == 'ยกเลิก' %}
-<p class="text-2xl p-2 px-4 rounded-md bg-red-500 border"><i
-        class="fa-solid fa-xmark mx-2"></i>คำสั่งซื้อลูกยกเลิกแล้ว</p>
-{% endif %}
+{% include 'manager/components/deposit_bill.html' %}
 
-{% if order.deposit_payment == False and order.status == 'รอดำเนินการ' %}
-<div class="flex justify-center my-4">กำลังรอการตรวจสอบคำสั่งซื้อของคุณ เจ้าหน้าที่จะตอบกลับภายใน 24 ชั่วโมง</div>
-{% endif %}
+
+<div class="flex justify-center">
+    {% if order.status == 'เสร็จสิ้น' %}
+    <p class="text-2xl p-2 px-4 rounded-md bg-green-400 border"><i
+            class="fa-solid fa-check mx-2"></i>คำสั่งซื้อเสร็จสิ้น</p>
+    {% elif order.status == 'ยกเลิก' %}
+    <p class="text-2xl p-2 px-4 rounded-md bg-red-500 border"><i
+            class="fa-solid fa-xmark mx-2"></i>คำสั่งซื้อลูกยกเลิกแล้ว</p>
+    {% endif %}
+
+    {% if order.deposit_payment == False and order.status == 'รอดำเนินการ' %}
+    <div class="flex justify-center my-4">กำลังรอการตรวจสอบคำสั่งซื้อของคุณ เจ้าหน้าที่จะตอบกลับภายใน 24 ชั่วโมง</div>
+    {% endif %}
 
 
 </div>
@@ -201,6 +206,38 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const otherRadio = document.getElementById('other');
+        const additionalInfoInput = document.getElementById('additional_info');
+
+        // เมื่อคลิกที่ radio button "อื่นๆ"
+        otherRadio.addEventListener('change', function () {
+            if (otherRadio.checked) {
+                additionalInfoInput.disabled = false;
+            }
+        });
+
+        // เมื่อเปลี่ยนแปลงข้อความใน input field
+        additionalInfoInput.addEventListener('input', function () {
+            if (otherRadio.checked) {
+                otherRadio.value = additionalInfoInput.value;
+            }
+        });
+
+        // ปิดการใช้งาน input field ถ้าไม่เลือก "อื่นๆ"
+        additionalInfoInput.disabled = !otherRadio.checked;
+
+        // ตรวจสอบว่ามีการเลือก "อื่นๆ" อยู่แล้วหรือไม่เมื่อโหลดหน้าเว็บ
+        otherRadio.addEventListener('change', function () {
+            additionalInfoInput.disabled = !otherRadio.checked;
+            if (!otherRadio.checked) {
+                otherRadio.value = 'อื่นๆ';
+            }
+        });
+    });
+</script>
+
 <div class="efefef m-1">
     <div class="max-w-6xl mx-auto rounded-md justify-center flex">
         <p class="text-lg">ภาพการติดตั้ง/จัดส่ง</p>
@@ -209,7 +246,8 @@
                 class="fa-regular fa-pen-to-square"></i>&nbsp;&nbsp;แก้ไขคำสั่งซื้อ</button> -->
     </div>
 
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-4 m-2 items-start">
+    <div
+        class="max-w-6xl mx-auto bg-white p-6 rounded-md shadow-md grid grid-cols-1 gap-8 border md:grid-cols-4 m-2 items-start">
         {% if order.image1 %}
         <img src="{{ order.image1.url }}" class="rounded-lg" alt="">
         {% endif %}

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'crispy_forms',
     'crispy_tailwind',
+    'django_extensions',
     'base_app',
     'members',
     'manager',
