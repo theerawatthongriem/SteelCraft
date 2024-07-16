@@ -56,11 +56,10 @@ class UserProfileForm(forms.ModelForm):
             'phone_number':forms.TextInput(attrs={'placeholder':'กรอกเบอร์โทร','class':''}),
         }
 
-class ChangePasswordForm(PasswordChangeForm):
-    pass
-
-
 class EditForm(UserChangeForm):
     class Meta:
         model = User
         fields = ['first_name','last_name','email']
+        
+class ChangePasswordForm(PasswordChangeForm):
+    pass

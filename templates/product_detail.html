@@ -10,7 +10,7 @@
 {% if messages %}
 {% for message in messages %}
 
-<div class="= dark:bg-gray-800 mt-2">
+<div class="bg-white mt-2">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div x-data="{ open: true }" x-show="open" id="alert-1"
             class="flex items-center p-4 mb-4 rounded-lg bg-yellow-500" role="alert">
@@ -35,11 +35,11 @@
 
 
 
-<div class="= dark:bg-gray-800 py-8 mt-10">
+<div class="bg-white py-8 mt-10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row -mx-4">
             <div class="md:flex-1 px-2 md:px-4">
-                <div class="h-72 md:h-[512px] md:w-[540px] rounded-lg bg-gray-300 mb-4">
+                <div class="h-72 md:h-[512px] md:w-[540px] rounded-lg mb-4">
                     <div
                         class="w3-content w3-display-container md:max-w-screen-lg w-full h-full relative overflow-hidden border border-[#3b3b3b] rounded-lg">
 
@@ -103,13 +103,13 @@
             </div>
 
             <div class="md:flex-1 px-4">
-                <p class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ products.name }}</p>
+                <p class="text-2xl font-bold text-gray-800 mb-2">{{ products.name }}</p>
 
                 <div class="md:flex mb-4">
                     <div class="mr-4">
                         {% if products.price != 0 %}
-                        <span class="font-bold text-gray-700 dark:text-gray-300">ราคา:</span>
-                        <span class="text-gray-600 dark:text-gray-300">฿ {{products.price|intcomma}}</span>
+                        <span class="font-bold text-gray-700">ราคา:</span>
+                        <span class="text-gray-600">฿ {{products.price|intcomma}}</span>
                         {% endif %}
                     </div>
                     <!-- <div>
@@ -142,8 +142,8 @@
                 </div> -->
 
                 <div>
-                    <span class="font-bold text-gray-700 dark:text-gray-300">รายละเอียดสินค้า:</span>
-                    <p class="text-gray-600 dark:text-gray-300 text-sm mt-2">
+                    <span class="font-bold text-gray-700">รายละเอียดสินค้า:</span>
+                    <p class="text-gray-600 text-sm mt-2">
                         {{ products.description }}
                     </p>
                 </div>

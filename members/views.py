@@ -54,14 +54,10 @@ def delete_favorite(request,id):
 
 @login_required(login_url='login')
 def checkout(request, id):
-
-
     working_days = list(WorkingDay.objects.all().values('date_work'))
 
     for day in working_days:
         day['date_work'] = day['date_work'].strftime('%Y-%m-%d')
-
-   
 
     product = get_object_or_404(Product, pk=id)
     error_message = None
@@ -84,17 +80,17 @@ def checkout(request, id):
             order.deposit = product.product_deposit
             order.total_pay = order.total_price - order.deposit
 
-
             ship_date = product.production_time * int(form.cleaned_data['quantity'])
-
 
             tomorrow = timezone.now().date() + timedelta(days=1)
             appt_date_parsed = form.cleaned_data['appt_date']
             if appt_date_parsed and appt_date_parsed < tomorrow:
                 error_message = 'วันนัดวัดขนาดต้องเลือกวันถัดไป และไม่ตรงกับวันหยุดทำการ'
             else:
-                order.appt_date = timezone.make_aware(timezone.datetime.combine(appt_date_parsed, timezone.datetime.min.time()))
-                order.ship_date = timezone.make_aware(timezone.datetime.combine(appt_date_parsed, timezone.datetime.min.time())) + timedelta(days=ship_date)  # เพิ่ม 5 วันให้กับ appt_date
+                order.appt_date = timezone.make_aware(timezone.datetime.combine(appt_date_parsed, 
+                timezone.datetime.min.time()))
+                order.ship_date = timezone.make_aware(timezone.datetime.combine(appt_date_parsed, 
+                timezone.datetime.min.time())) + timedelta(days=ship_date) 
                 order.save()
                 if request.user.is_superuser:
                     return redirect('customer_orders')
@@ -156,8 +152,6 @@ def order_detail(request,id):
     id_or_phone_number = "0956452530"
     amount = order.total_price
 
-    
-
     deposit_price = order.total_price * (order.deposit)/100
     last_price = order.total_price - deposit_price
 
@@ -192,10 +186,10 @@ def order_detail(request,id):
         'forms2':form2,
         })
 
-
+@login_required(login_url='login')
 def add_product_user(request):
 
-    ImageFormSet = formset_factory(ProductImageForm, extra=3)  # extra คือจำนวนฟอร์มที่สร้างขึ้นมาเริ่มต้น
+    ImageFormSet = formset_factory(ProductImageForm, extra=3)  
     
     if request.method == 'POST':
         product_form = ProductForm(request.POST)
@@ -212,7 +206,10 @@ def add_product_user(request):
         product_form = ProductForm()
         formset = ImageFormSet()
     
-    return render(request, 'members/add_product_user.html', {'product_form': product_form, 'formset': formset,})
+    return render(request, 'members/add_product_user.html', {
+        'product_form': product_form,
+        'formset': formset
+        })
 
 
 

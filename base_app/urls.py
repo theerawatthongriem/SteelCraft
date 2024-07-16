@@ -22,7 +22,6 @@ urlpatterns = [
     
     path('connect_line_user/', connect_line_user, name='connect_line_user'),
     path('webhook/', webhook, name='webhook'),
-    path('get_data/', get_data, name='get_data'),
 
     path('password_reset/', ForgotPasswordView.as_view(), name='password_reset'),
     path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),

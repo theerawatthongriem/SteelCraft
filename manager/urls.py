@@ -20,7 +20,9 @@ urlpatterns = [
     path('size_save/',size_save, name="size_save"),
     path('size_save_detail/<int:id>/',size_save_detail, name="size_save_detail"),
     path('add_size/<int:id>/',add_size, name="add_size"),
-    path('get_size/<int:id>/', get_size, name='get_size'),
+
+    # path('get_size/<int:id>/', get_size, name='get_size'),
+
     path('delete_size/<int:id>/<int:dlt>/', delete_size, name='delete_size'),
     path('edit_size/<int:id>/<int:dlt>/', edit_size, name='edit_size'),
     path('update_status/<int:id>/<str:status>/', update_status, name='update_status'),

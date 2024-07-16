@@ -24,8 +24,6 @@ class Product(models.Model):
     product_deposit = models.IntegerField(default=50)
     production_time = models.IntegerField(default=5)
 
-    # material = models.ForeignKey(Material,on_delete=models.DO_NOTHING, null=True ,blank=True)
-
     def __str__(self):
         return self.name
 

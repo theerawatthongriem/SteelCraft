@@ -29,7 +29,6 @@ from members.models import *
 
 from django.core.paginator import Paginator
 
-# import qrcode
 import base64,urllib
 from io import BytesIO
 
@@ -48,6 +47,8 @@ def manager_dashboard(request):
     return render(request, 'manager/dashboard.html', {'orders':orders})
 
 
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def overwiew(request):
 
     month_names = {
@@ -342,6 +343,7 @@ def order_detail(request,id):
         'forms4':form4,
         })
 
+@login_required(login_url='login')
 def edit_order(request,id):
     order = Order.objects.get(pk=id)
     if request.method == 'POST':
@@ -364,9 +366,6 @@ def order_install_proofs(request,id):
             return redirect(f'/manager/order_detail/{id}/')
     else:
         form4 = OrderInstallProofsForm(instance=order)
-
-
-
 
 
 @login_required(login_url='login')
@@ -396,6 +395,8 @@ def add_material(request):
         form = MaterialForm()
     return render(request,'manager/add_material.html',{'form':form})
 
+@login_required(login_url='login')
+@user_passes_test(manager_user,login_url='found_page')
 def update_material(request,id,action):
     m = Material.objects.get(pk=id)
 
@@ -463,16 +464,6 @@ def add_size(request, id):
             measuresize.save()
             return redirect(f'/manager/size_save_detail/{id}/')
 
-def get_size(request, id):
-    measure_size = get_object_or_404(MeasureSize, pk=id)
-    data = {
-        'h': measure_size.h,
-        'w': measure_size.w,
-        'd': measure_size.d,
-        'id':measure_size.id
-    }
-    return JsonResponse(data)
-
 def delete_size(request, id,dlt):
     order = get_object_or_404(Order, pk=id)
     MeasureSize.objects.get(pk=dlt).delete()
@@ -498,6 +489,7 @@ def edit_size(request, id,dlt,q):
 
     })
 
+@login_required(login_url='login')
 def measure_size_detail(request, measure_size_id, q):
     measure_size = get_object_or_404(MeasureSize, pk=measure_size_id)
     
@@ -548,7 +540,7 @@ def material_stock(request, order):
             material.quantity -= quantity
             material.save()
 
- 
+@login_required(login_url='login')
 def upload_deposit(request, id):
     order = Order.objects.get(pk=id)
     
@@ -564,6 +556,7 @@ def upload_deposit(request, id):
     else:
         form = DepositForm(instance=order)
 
+@login_required(login_url='login')
 def upload_payment(request, id):
     order = Order.objects.get(pk=id)
     
@@ -597,7 +590,9 @@ def cancel_order(request,id):
         order = Order.objects.get(pk=id)
         order.status = 'ยกเลิก'
         order.save()
-        cor = CancelOrder.objects.create(user=request.user,order=order,cancellation_reason=choice)
+        cor = CancelOrder.objects.create(user=request.user,
+        order=order,
+        cancellation_reason=choice)
         cor.save()
         return redirect(f'/manager/order_detail/{id}/')
 
@@ -613,6 +608,7 @@ def material_order(request):
 
     return render(request,'manager/material_order.html',{'order':order})
 
+@login_required(login_url='login')
 def staff_manager(request):
     user = User.objects.filter(is_staff=True,is_superuser=False,is_active=True)
 
@@ -633,8 +629,11 @@ def staff_manager(request):
     else:
         form = AddStaffForm()
         
-    return render(request,'manager/staff_manager.html',{'staff':user,'form':form})
+    return render(request,'manager/staff_manager.html',{
+        'staff':user,'form':form
+        })
 
+@login_required(login_url='login')
 def edit_staff_manager(request,id):
 
     user = User.objects.get(pk=id)
@@ -650,8 +649,11 @@ def edit_staff_manager(request,id):
     else:
         form = EditStaffForm(instance=user)
         
-    return render(request,'manager/edit_staff_manager.html',{'form':form})
+    return render(request,'manager/edit_staff_manager.html',{
+        'form':form
+        })
 
+@login_required(login_url='login')
 def delete_staff(request,id):
     user = User.objects.get(pk=id).delete()
     return redirect('staff_manager')

@@ -6,7 +6,6 @@ class Favorite(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
 
-
 class Order(models.Model):
     PENDING = 'รอดำเนินการ'
     CONFIRM = 'ยืนยันคำสั่งซื้อ'
@@ -66,7 +65,6 @@ class MeasureSize(models.Model):
     image5 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
     image6 = models.ImageField(upload_to='MeasureSize/', blank=True, null=True)
     note = models.TextField(default='',null=True, blank=True)
-
 
 
 class MeasureSizeMaterial(models.Model):
