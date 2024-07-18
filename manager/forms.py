@@ -24,6 +24,7 @@ class ProductForm(forms.ModelForm):
             'description':'คำอธิบายสินค้า',
             'price':'ราคา',
             'category':'หมวดหมู่',
+            'production_time':'ระยะเวลาผลิต(วัน)',
         }
 
         exclude = ['user']
