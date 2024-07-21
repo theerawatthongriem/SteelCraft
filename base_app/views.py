@@ -115,8 +115,6 @@ def connect_line_user(request):
         data = request.POST.get('userId')
         check = UserMessage.objects.filter(user=request.user)
         if check is not None:
-        #     message = f'{request.user} {request.user.first_name} {request.user.last_name} \n ผูกบัญชีไว้แล้ว ครับ/ค่ะ'
-        # else:
             UserMessage.objects.create(user=request.user, line_id=data)
             message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เชื่อมต่อบัญชีไลน์เรียบร้อย ครับ/ค่ะ'
         url = 'https://api.line.me/v2/bot/message/push'
@@ -161,7 +159,6 @@ def register(request):
         profile_form = UserProfileForm(request.POST)
         if form.is_valid() and profile_form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password1'])
             user.save()
             profile = profile_form.save(commit=False)
             profile.user = user

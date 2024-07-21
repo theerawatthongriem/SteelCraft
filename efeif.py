@@ -1,54 +1,67 @@
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    address = models.TextField()
-    phone_number = models.CharField(max_length=10)
+# Redefine the function and create the table again for D8
+import pandas as pd
 
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ['address', 'phone_number']
-        labels = {
-            'address': 'ที่อยู่',
-            'phone_number': 'เบอร์โทร',
-        }
+import docx
+from docx import Document
+from docx.shared import Pt
 
-        widgets = {
-            'phone_number':forms.TextInput(attrs={'placeholder':'กรอกเบอร์โทร','class':''}),
+# Function to create a Word document from DataFrame
+def create_word_table(data, title, file_path):
+    doc = Document()
+    doc.add_heading(title, level=1)
+    table = doc.add_table(rows=1, cols=len(data.columns))
+    
+    # Add header rows
+    hdr_cells = table.rows[0].cells
+    for i, column_name in enumerate(data.columns):
+        hdr_cells[i].text = column_name
+    
+    # Add data rows
+    for index, row in data.iterrows():
+        row_cells = table.add_row().cells
+        for i, item in enumerate(row):
+            row_cells[i].text = str(item)
+    
+    # Style the table
+    style = doc.styles['Normal']
+    font = style.font
+    font.name = 'Arial'
+    font.size = Pt(12)
+    
+    # Save the document
+    doc.save(file_path)
 
-            'address':forms.Textarea(attrs={'placeholder':'กรอกที่อยู่','class':'h-24 '}),
-            'phone_number':forms.TextInput(attrs={'placeholder':'กรอกเบอร์โทร','class':''}),
-        }
-
-class EditForm(UserChangeForm):
-    class Meta:
-        model = User
-        fields = ['first_name','last_name','email']
 
 
-@login_required(login_url='login')
-def editprofile(request):
-    user = UserProfile.objects.get(user=request.user)
-    userprofile = UserProfileForm(instance=user)
-    form = EditForm(instance=request.user)
-    if request.method == 'POST':
-        form = EditForm(request.POST, instance=request.user)
-        userprofile = UserProfileForm(request.POST, instance=user)
+import pandas as pd
 
-        if form.is_valid() and userprofile.is_valid():
-            userprofile.save()
-            form.save()
-            return redirect('profile')
-        else:
-            form = EditForm()
-            userprofile = UserProfileForm(instance=user)
-    else:
-        form = EditForm(instance=request.user)
-        userprofile = UserProfileForm(instance=user)
+# Data for D10
+data_d13 = {
+    "Data Item": [
+        "id", "date_work"
+    ],
+    "Data Type": [
+        "int", "datetime"
+    ],
+    "Number of Bytes for Storage": [
+        "", ""
+    ],
+    "PK": [
+        "✓", "-"
+    ],
+    "FK": [
+        "-", "-"
+    ],
+    "คำอธิบาย": [
+        "ลำดับวันทำงาน", "วันที่ทำงาน"
+    ]
+}
 
-    return render(request,'editprofile.html',{
-        'form':form ,'userprofile':userprofile ,
-        'favorite_count':favorite_count(request)})
+# Create DataFrame for D13
+df_d13 = pd.DataFrame(data_d13)
 
-path('editprofile/',editprofile,name='editprofile'),
+file_path_d13 = "พจนานุกรมตาราง_วันทำงาน_D13.docx"
+create_word_table(df_d13, "พจนานุกรมตาราง วันทำงาน (D13)", file_path_d13)
+
+file_path_d13
