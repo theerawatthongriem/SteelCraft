@@ -385,12 +385,11 @@ def add_material(request):
     form = MaterialForm()
     if request.method == 'POST':
         form = MaterialForm(request.POST,request.FILES)
-        form.instance.user = request.user
         if form.is_valid():
             form.save()
             return redirect('material_list')
         else:
-            form = ProductForm()
+            form = MaterialForm()
     else:
         form = MaterialForm()
     return render(request,'manager/add_material.html',{'form':form})
@@ -431,6 +430,7 @@ def size_save(request):
 def size_save_detail(request,id):
     order =  Order.objects.get(pk=id)
     m = MeasureSizeForm()
+    measuresize = MeasureSize.objects.filter(order=order)
     if request.method == 'POST':
         m = MeasureSizeForm(request.POST, request.FILES)
         if m.is_valid():
@@ -443,7 +443,7 @@ def size_save_detail(request,id):
     {
         'orders':order,
         'form':m,
-        'MeasureSize':MeasureSize.objects.filter(order=order),
+        'MeasureSize':measuresize,
     })
 
 
@@ -455,14 +455,11 @@ def add_size(request, id):
         d = request.POST.get('d', 0) 
         
         if h and w and d:
-            measuresize = MeasureSize.objects.create(
-                order=order,
-                h=h,
-                w=w,
-                d=d,
-            )
-            measuresize.save()
-            return redirect(f'/manager/size_save_detail/{id}/')
+            measuresize = MeasureSizeForm(request.POST, request.FILES)
+            if measuresize.is_valid():
+                measuresize.save(commit=False).order = order
+                measuresize.save()
+                return redirect(f'/manager/size_save_detail/{id}/')
 
 def delete_size(request, id,dlt):
     order = get_object_or_404(Order, pk=id)
@@ -520,8 +517,8 @@ def update_status(request,id,status):
     order = Order.objects.get(pk=id)
     order.status = status
     
-    if status == 'ดำเนินการ':
-        material_stock(request,order=order)
+    # if status == 'ดำเนินการ':
+    #     material_stock(request,order=order)
 
     order.save()
     return redirect(f'/manager/order_detail/{id}/')
@@ -594,7 +591,11 @@ def cancel_order(request,id):
         order=order,
         cancellation_reason=choice)
         cor.save()
-        return redirect(f'/manager/order_detail/{id}/')
+        if request.user.is_staff:
+            return redirect(f'/manager/order_detail/{id}/')
+        else:
+            return redirect(f'/members/order/{id}/')
+    
 
 
 def material_order(request):

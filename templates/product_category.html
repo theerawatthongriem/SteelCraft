@@ -26,6 +26,7 @@
         </div>
 
         {% if user.is_authenticated %}
+        {% if user.is_staff %}
 
         <div class="container mt-6 mx-auto">
             <div class="">
@@ -37,6 +38,7 @@
         </div>
 
 
+        {% endif %}
         {% endif %}
 
         <section id="Projects"

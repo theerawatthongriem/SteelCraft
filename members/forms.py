@@ -26,7 +26,7 @@ class ProductForm(forms.ModelForm):
             'category':'หมวดหมู่',
         }
 
-        exclude = ['user','price','product_deposit']
+        exclude = ['user','price','product_deposit','production_time',]
 
 class ProductImageForm(forms.ModelForm):
     class Meta:

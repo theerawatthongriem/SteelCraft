@@ -80,17 +80,25 @@ def handle_message(event):
         order_status = Order.objects.filter(user=user_msg.user).exclude(status='ยกเลิก')
         print(order_status)
 
-        for i in order_status:
-            order_user = f'คำสั่งซื้อที่ {i.id} \nลูกค้า คุณ {i.first_name} {i.last_name}'
-            order_product = f'\n\nสินค้า : {i.product.name} \n'
-            order_price = f'ราคา {int(i.product.price):,} บาท \n'
-            order_qty = f'จำนวน {i.quantity} รายการ \n'
-            order_total_price = f'ราคารวม {int(i.total_price):,} บาท'
-            order_state = f'\n\n สถานะ : {i.status}'
-             
-            text_msg =  (order_user + order_product + order_qty + order_price
-            + order_total_price + order_state)
+        if order_status:
+            for i in order_status:
+                order_user = f'คำสั่งซื้อที่ {i.id} \nลูกค้า คุณ {i.first_name} {i.last_name}'
+                order_product = f'\n\nสินค้า : {i.product.name} \n'
+                order_price = f'ราคา {int(i.product.price):,} บาท \n'
+                order_qty = f'จำนวน {i.quantity} รายการ \n'
+                order_total_price = f'ราคารวม {int(i.total_price):,} บาท'
+                order_state = f'\n\n สถานะ : {i.status}'
+                
+                text_msg =  (order_user + order_product + order_qty + order_price
+                + order_total_price + order_state)
+                send_line_message(user_id, message=text_msg)
+        else:
+            text_msg = 'ไม่พบคำสั่งซื้อ'
             send_line_message(user_id, message=text_msg)
+    if text == 'ติดต่อเจ้าหน้าที่':  # รับ user_id ของผู้ส่งข้อความ
+        text_msg = 'รอเจ้าหน้าที่ตอบกลับ'
+        send_line_message(user_id, message=text_msg)
+
 
 def send_line_message(user_id, message):
     url = 'https://api.line.me/v2/bot/message/push'
@@ -113,10 +121,14 @@ def send_line_message(user_id, message):
 def connect_line_user(request):
     if request.method == 'POST':
         data = request.POST.get('userId')
-        check = UserMessage.objects.filter(user=request.user)
-        if check is not None:
+        check = UserMessage.objects.filter(user=request.user).first()
+        if check is None:
             UserMessage.objects.create(user=request.user, line_id=data)
             message = f'{request.user} {request.user.first_name} {request.user.last_name} \n เชื่อมต่อบัญชีไลน์เรียบร้อย ครับ/ค่ะ'
+            # You might want to add some logic here to display the message
+        else:
+            return redirect('dashboard')
+            
         url = 'https://api.line.me/v2/bot/message/push'
         headers = {
         'Content-Type': 'application/json',
@@ -205,26 +217,23 @@ def profile(request):
 
 @login_required(login_url='login')
 def editprofile(request):
-    user = UserProfile.objects.get(user=request.user)
-    userprofile = UserProfileForm(instance=user)
-    form = EditForm(instance=request.user)
+    user = request.user
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+    
     if request.method == 'POST':
-        form = EditForm(request.POST, instance=request.user)
-        userprofile = UserProfileForm(request.POST, instance=user)
-
-        if form.is_valid() and userprofile.is_valid():
-            userprofile.save()
+        form = EditForm(request.POST, instance=user)
+        userprofile_form = UserProfileForm(request.POST, instance=user_profile)
+        
+        if form.is_valid() and userprofile_form.is_valid():
             form.save()
+            userprofile_form.save()
             return redirect('profile')
-        else:
-            form = EditForm()
-            userprofile = UserProfileForm(instance=user)
     else:
-        form = EditForm(instance=request.user)
-        userprofile = UserProfileForm(instance=user)
+        form = EditForm(instance=user)
+        userprofile_form = UserProfileForm(instance=user_profile)
 
     return render(request,'editprofile.html',{
-        'form':form ,'userprofile':userprofile ,
+        'form':form ,'userprofile':userprofile_form ,
         'favorite_count':favorite_count(request)})
 
 @login_required(login_url='login')
